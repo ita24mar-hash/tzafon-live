@@ -72,11 +72,12 @@ h3 { font-size: .98rem; margin: 18px 0 8px; }
   text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---------- סינון ---------- */
-.chips { display: flex; gap: 6px; overflow-x: auto; padding: 4px 16px 10px; scrollbar-width: none; margin: 0 -16px; }
-.chips::-webkit-scrollbar { display: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 12px; }
 .chip { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px;
   padding: 7px 13px; font-size: .88rem; min-height: 38px; display: inline-flex; align-items: center; gap: 7px; }
 .chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--muted)); }
+.chip b { font-weight: 600; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip.on b { color: inherit; opacity: .75; }
 .chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .more-filters { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 4px; }
 .more-filters > summary { list-style: none; padding: 11px 0; font-size: .9rem; color: var(--muted); display: flex; justify-content: space-between; cursor: pointer; }

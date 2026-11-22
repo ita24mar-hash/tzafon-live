@@ -214,7 +214,9 @@ function renderFeed(target, events, emptyText) {
 function renderPulse(recent, filtered, meta, sources) {
   const n = recent.length, h = $("#pulse-head");
   const scope = filtered ? "לפי הסינון, " : "";
-  h.textContent = n === 0 ? (filtered ? "אין אירועים שתואמים את הסינון" : "שקט בצפון ב-24 השעות האחרונות")
+  const t = state.filters.type && TYPES[state.filters.type] ? TYPES[state.filters.type][0] : null;
+  h.textContent = n === 0 ? (t ? `אין אירועים מסוג ${t} ב-24 השעות האחרונות`
+    : filtered ? "אין אירועים שתואמים את הסינון ב-24 השעות האחרונות" : "שקט בצפון ב-24 השעות האחרונות")
     : n === 1 ? `${scope}אירוע אחד בצפון ב-24 השעות האחרונות` : `${scope}${n} אירועים בצפון ב-24 השעות האחרונות`;
   h.className = n === 0 && !filtered ? "quiet" : "";
   const checked = meta.generated_at || meta.server_time;
@@ -233,7 +235,6 @@ function renderPulse(recent, filtered, meta, sources) {
 /* ---------- טעינה וסינון ---------- */
 async function loadEvents() {
   const f = state.filters, q = {};
-  if (f.type) q.type = f.type;
   if (f.hours) q.hours = f.hours;
   if (f.verification) q.verification = f.verification;
   if (f.location_id === "gps" && state.gps) {
@@ -243,10 +244,16 @@ async function loadEvents() {
     if (f.radius_km) q.radius_km = f.radius_km;
   }
   try {
-    const [events, meta, raw, sources] = await Promise.all([fetchEvents(q), getData("meta"), getData("raw"),
+    const [allTypes, meta, raw, sources] = await Promise.all([fetchEvents(q), getData("meta"), getData("raw"),
       getData("sources").catch(() => [])]);
+    // הסינון לפי סוג נעשה כאן, כדי שאפשר יהיה להציג כמה אירועים יש מכל סוג
+    state.typeCounts = {};
+    for (const e of allTypes) state.typeCounts[e.event_type] = (state.typeCounts[e.event_type] || 0) + 1;
+    state.typeTotal = allTypes.length;
+    const events = f.type ? allTypes.filter((e) => e.event_type === f.type) : allTypes;
+    if (state.drawChips) state.drawChips();
     state.events = events;
-    const filtered = Object.keys(q).length > 0;
+    const filtered = Object.keys(q).length > 0 || !!f.type;
     const recentEv = events.filter((e) => isRecent(e.updated_at)), olderEv = events.filter((e) => !isRecent(e.updated_at));
     renderFeed($("#feed"), recentEv, filtered ? "אין אירועים שתואמים את הסינון."
       : "כשיזוהה אירוע בצפון באחד המקורות, הוא יופיע כאן.");
@@ -299,11 +306,20 @@ function updateFilterSummary() {
 
 function setupFilters() {
   const chips = $("#type-chips");
-  const draw = () => chips.replaceChildren(
-    el("button", { class: "chip" + (state.filters.type ? "" : " on"), onclick: () => pick("") }, "הכול"),
-    ...Object.entries(TYPES).map(([k, [label, icon]]) =>
-      el("button", { class: "chip" + (state.filters.type === k ? " on" : ""), style: `--c: var(--t-${k})`, onclick: () => pick(k) },
-        el("i", {}), label)));
+  // רק סוגים שיש בהם אירועים (וסוג שנבחר), עם מספר. כך התפריט קצר ונכנס במסך בלי גלילה הצידה.
+  const draw = () => {
+    const counts = state.typeCounts || {};
+    const shown = Object.entries(TYPES).filter(([k]) => counts[k] || state.filters.type === k)
+      .sort((a, b) => (counts[b[0]] || 0) - (counts[a[0]] || 0));
+    chips.replaceChildren(
+      el("button", { class: "chip" + (state.filters.type ? "" : " on"), "aria-pressed": String(!state.filters.type), onclick: () => pick("") },
+        "הכול", el("b", {}, String(state.typeTotal ?? ""))),
+      ...shown.map(([k, [label]]) =>
+        el("button", { class: "chip" + (state.filters.type === k ? " on" : ""), style: `--c: var(--t-${k})`,
+          "aria-pressed": String(state.filters.type === k), onclick: () => pick(k) },
+          el("i", {}), label, el("b", {}, String(counts[k] || 0)))));
+  };
+  state.drawChips = draw;
   const pick = (k) => { state.filters.type = k; draw(); changed(); };
   const changed = () => {
     updateFilterSummary();
