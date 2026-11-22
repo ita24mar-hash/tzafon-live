@@ -84,6 +84,20 @@ def is_historical(published_at: str, ingested_at: str) -> bool:
     return _ts(ingested_at) - _ts(published_at) > timedelta(hours=FRESH_HOURS)
 
 
+def detect_gap(con, source_id: int, messages: list[dict]) -> int:
+    """כמה מספרי הודעות דילגנו עליהם מאז ההרצה הקודמת. 0 = אין פער (או הרצה ראשונה).
+
+    הדף הציבורי מציג רק את ~20 ההודעות האחרונות; אם בין הרצות פורסמו יותר, חלק לא ייקלט.
+    מספר גבוה יכול לנבוע גם מהודעות שנמחקו בערוץ, לכן זו אזהרה ולא שגיאה.
+    """
+    row = con.execute("SELECT MAX(CAST(external_id AS INTEGER)) AS m FROM raw_reports WHERE source_id = ?",
+                      (source_id,)).fetchone()
+    ids = [int(m["external_id"]) for m in messages if m["external_id"].isdigit()]
+    if row["m"] is None or not ids:
+        return 0
+    return max(0, min(ids) - row["m"] - 1)
+
+
 def source_freshness(con, now: datetime | None = None) -> dict[int, dict]:
     """לכל מקור: מועד ההודעה האחרונה שפורסמה בו, והאם הוא פרסם ב-24 השעות האחרונות."""
     now = now or datetime.now(timezone.utc)

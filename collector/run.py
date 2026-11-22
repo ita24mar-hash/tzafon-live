@@ -12,6 +12,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -36,10 +37,12 @@ def main(argv=None, fetch=None) -> dict:
     run_seed()
     results = []
     with connect() as con:
-        ids, active = {}, []
+        ids, active, extra = {}, [], {}
         for s in json.loads(Path(args.sources).read_text(encoding="utf-8")):
             src = repo.create_source(con, repo.SourceIn(**s), "collector")
             ids[src["address_norm"]] = src["id"]
+            # פרטי זיהוי ותיעוד שאינם חלק מטבלת המקורות (סוג, רמת אימות, ראיה, סיבת השבתה)
+            extra[src["id"]] = {k: s.get(k) for k in ("category", "identity", "evidence", "note")}
             if src["enabled"] and src["kind"] == "telegram":
                 active.append(src)
         loaded = ingest.load_log(con, Path(args.log), ids)
@@ -49,11 +52,18 @@ def main(argv=None, fetch=None) -> dict:
 
         for src in active:
             res = {"source": src["name"], "new": 0, "edited": 0, "seen": 0, "error": None,
-                   "new_recent": 0, "new_historical": 0, "newest_published_at": None, "fresh": None}
+                   "new_recent": 0, "new_historical": 0, "newest_published_at": None, "fresh": None,
+                   "gap": 0, "source_id": src["id"]}
             try:
+                if fetch is None and active.index(src):
+                    time.sleep(1.5)   # לא להעמיס על טלגרם
                 kwargs = {"fetch": fetch} if fetch else {}
                 messages = telegram_web.fetch_channel(src["address_norm"], **kwargs)
                 stamp = now_iso()
+                res["gap"] = ingest.detect_gap(con, src["id"], messages)
+                if res["gap"]:
+                    print(f"::warning::{src['name']}: ייתכן שהוחמצו עד {res['gap']} הודעות בין ההרצות "
+                          "(הדף הציבורי מציג רק את 20 האחרונות)")
                 for m in messages:
                     outcome = ingest.upsert_report(con, src["id"], m, stamp)
                     res["seen"] += 1
@@ -78,14 +88,14 @@ def main(argv=None, fetch=None) -> dict:
         con.execute("UPDATE sources SET ingested_count ="
                     " (SELECT COUNT(*) FROM raw_reports WHERE source_id = sources.id) WHERE is_demo = 0")
         total = ingest.save_log(con, Path(args.log))
-        export_site(con, Path(args.out), results, now_iso(), ok)
+        export_site(con, Path(args.out), results, now_iso(), ok, extra)
 
     report(results, loaded, total, ok)
     shutil.rmtree(tmp, ignore_errors=True)
     return {"ok": ok, "results": results, "total": total, "pruned": pruned}
 
 
-def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool) -> None:
+def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool, extra=None) -> None:
     from app import ingest, repo
     if out.exists():
         shutil.rmtree(out)
@@ -97,9 +107,14 @@ def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool) 
     data = out / "data"
     data.mkdir()
     fresh = ingest.source_freshness(con)
+    extra = extra or {}
+    gaps = {r["source_id"]: r["gap"] for r in results}
     sources = [{k: s[k] for k in ("name", "kind", "address", "is_official", "enabled", "status", "priority",
                                   "last_check_at", "last_error", "last_ingest_at", "ingested_count", "is_demo")}
-               | {"newest_published_at": fresh.get(s["id"], {}).get("newest_published_at")}
+               | {"newest_published_at": fresh.get(s["id"], {}).get("newest_published_at"),
+                  "url": f"https://t.me/{s['address_norm']}" if s["kind"] == "telegram" else s["address"],
+                  "last_gap": gaps.get(s["id"], 0)}
+               | extra.get(s["id"], {})
                for s in repo.list_sources(con)]
     newest = con.execute("SELECT MAX(published_at) AS t FROM raw_reports WHERE is_demo = 0").fetchone()["t"]
     meta = repo.meta(con) | {"generated_at": generated_at, "static": True, "collector": results,
@@ -121,6 +136,8 @@ def report(results, loaded, total, ok) -> None:
         lines.append(f"- ✅ {r['source']}: הקריאה הצליחה. נקראו {r['seen']}; חדשות למערכת {r['new']}"
                      f" (מתוכן עדכניות {r['new_recent']}, היסטוריות {r['new_historical']}); נערכו {r['edited']}")
         lines.append(f"  - הודעה אחרונה שפורסמה במקור: {r['newest_published_at'] or 'אין'}")
+        if r["gap"]:
+            lines.append(f"  - ⚠️ ייתכן שהוחמצו עד {r['gap']} הודעות בין ההרצות")
         if not r["fresh"]:
             warn = f"{r['source']}: המקור לא פרסם הודעה ב-24 השעות האחרונות. קריאה מוצלחת אינה אומרת שהמקור עדכני."
             lines.append(f"  - ⚠️ {warn}")

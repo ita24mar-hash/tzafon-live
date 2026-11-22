@@ -128,7 +128,8 @@ function rawCard(r) {
   return el("article", { class: "card raw" + (recent ? "" : " old") },
     el("div", { class: "card-head" },
       el("span", { class: "tag" }, r.source_name),
-      r.is_official && el("span", { class: "tag official" }, "מקור רשמי"),
+      r.is_official ? el("span", { class: "tag official" }, "מקור רשמי")
+        : el("span", { class: "tag single_source" }, "מקור לא רשמי · לא מאומת"),
       el("span", { class: "tag" }, "הודעה גולמית · טרם נותחה"),
       r.historical && el("span", { class: "tag historical" }, "היסטורית · נקלטה באיחור, אינה דיווח חדש"),
       !recent && !r.historical && el("span", { class: "tag historical" }, "ישנה מ-24 שעות"),
@@ -382,25 +383,54 @@ async function loadSources() {
   }
 }
 
+const IDENTITY = {
+  telegram_verified: ["רשמי · מאומת בטלגרם", "official"],
+  official_link: ["רשמי · קישור מחשבון רשמי של הגוף", "official"],
+  self_declared: ["מציג עצמו כרשמי · לא אומת", "single_source"],
+  unofficial: ["לא רשמי", "single_source"],
+};
+
+function sourceHealth(s) {
+  if (!s.enabled) return ["מושבת", ""];
+  if (s.status === "error") return ["שגיאה בקריאה", "st-error"];
+  if (!s.newest_published_at) return ["לא נקלטו הודעות", "st-error"];
+  if (!isRecent(s.newest_published_at)) return ["תקין · לא פרסם ב-24 שעות", "single_source"];
+  return ["תקין · פרסם ב-24 השעות האחרונות", "st-ingesting"];
+}
+
+function sourceRow(s) {
+  const [health, hcls] = sourceHealth(s);
+  const [idText, idCls] = IDENTITY[s.identity] || [s.is_official ? "רשמי" : "לא רשמי", s.is_official ? "official" : "single_source"];
+  const when = (iso) => (iso ? `${clock(iso)} (${ago(iso)})` : "—");
+  return el("article", { class: "card src" + (s.enabled ? "" : " ended") },
+    el("div", { class: "card-head" },
+      el("span", { class: `tag ${hcls}` }, health),
+      el("span", { class: `tag ${idCls}` }, idText),
+      s.last_gap > 0 && el("span", { class: "tag st-error" }, `ייתכן שהוחמצו ${s.last_gap} הודעות`)),
+    el("h3", {}, s.name),
+    el("dl", { class: "times" },
+      el("dt", {}, "קישור"), el("dd", {}, el("a", { href: s.url || s.address, target: "_blank", rel: "noopener noreferrer", dir: "ltr" },
+        (s.url || s.address).replace("https://", ""))),
+      el("dt", {}, "סוג מקור"), el("dd", {}, `${KIND[s.kind]}${s.category ? " · " + s.category : ""}`),
+      el("dt", {}, "פרסום אחרון במקור"), el("dd", {}, when(s.newest_published_at)),
+      el("dt", {}, "בדיקה אחרונה"), el("dd", {}, when(s.last_check_at)),
+      el("dt", {}, "הודעות שנקלטו"), el("dd", {}, String(s.ingested_count)),
+      s.evidence && el("dt", {}, "בסיס לזיהוי"), s.evidence && el("dd", {}, s.evidence)),
+    s.note && el("p", { class: "note" }, s.note),
+    s.last_error && el("p", { class: "error" }, "שגיאה: " + s.last_error));
+}
+
 async function loadSourcesReadOnly() {
   $("#admin-static").hidden = false; $("#admin-login").hidden = true; $("#admin-panel").hidden = true;
   try {
-    const list = await getData("sources");
-    $("#sources-ro").replaceChildren(...list.map((s) => el("article", { class: "card" },
-      el("div", { class: "card-head" },
-        el("span", { class: "tag" }, KIND[s.kind]),
-        el("span", { class: `tag st-${s.status}` }, SRC_STATUS[s.status]),
-        !s.enabled && el("span", { class: "tag" }, "מושבת"),
-        s.is_official && el("span", { class: "tag official" }, "רשמי")),
-      el("h3", {}, s.name),
-      el("div", { class: "meta" },
-        el("span", { dir: "ltr" }, s.address),
-        el("span", {}, "הודעות שנקלטו: " + s.ingested_count),
-        el("span", {}, "הודעה אחרונה שפורסמה במקור: " + (s.newest_published_at ? clock(s.newest_published_at) + " (" + ago(s.newest_published_at) + ")" : "אין")),
-        el("span", {}, "קריאה אחרונה מטלגרם: " + (s.last_check_at ? ago(s.last_check_at) : "לא בוצעה"))),
-      s.enabled && s.newest_published_at && !isRecent(s.newest_published_at) &&
-        el("p", { class: "warn" }, "⚠️ לא פורסמה הודעה ב-24 השעות האחרונות. הקריאה הצליחה, אבל המקור אינו עדכני."),
-      s.last_error && el("p", { class: "error" }, "שגיאה: " + s.last_error))));
+    const list = (await getData("sources")).filter((x) => !x.is_demo);
+    const on = list.filter((x) => x.enabled), off = list.filter((x) => !x.enabled);
+    const ok = on.filter((x) => sourceHealth(x)[1] === "st-ingesting").length;
+    $("#sources-ro").replaceChildren(
+      el("p", { class: "status" }, `${on.length} מקורות פעילים · ${ok} פרסמו ב-24 השעות האחרונות · ${off.length} נבדקו ולא הופעלו`),
+      el("h3", {}, "מקורות פעילים"), ...on.map(sourceRow),
+      off.length && el("details", { class: "archive" },
+        el("summary", {}, `מקורות שנבדקו ולא הופעלו (${off.length})`), ...off.map(sourceRow)));
   } catch (e) { $("#sources-ro").replaceChildren(el("p", { class: "empty" }, "לא ניתן לטעון: " + e.message)); }
 }
 

@@ -179,3 +179,36 @@ def test_verify_against_original_links(tmp_path):
     res = {r["id"]: r["status"] for r in verify(log, fetch=lambda u: (200, changed))}
     assert res["101"] == "mismatch" and res["102"] == "ok"
     assert {r["status"] for r in verify(log, fetch=lambda u: (403, b""))} == {"unverified"}
+
+
+def test_gap_detection_and_source_metadata(tmp_path):
+    from collector.run import main
+    srcs = tmp_path / "s.json"
+    srcs.write_text(json.dumps([{"name": "ערוץ בדיקה", "kind": "telegram", "address": "https://t.me/Test_Channel",
+                                 "is_official": True, "category": "בדיקה", "identity": "official_link",
+                                 "evidence": "ראיה", "note": "הערה"}]), encoding="utf-8")
+    argv = ["--out", str(tmp_path / "site"), "--log", str(tmp_path / "raw.jsonl"), "--sources", str(srcs)]
+    first = main(argv, fetch=lambda u: (200, FIXTURE))                     # 101-103, הרצה ראשונה: אין פער
+    assert first["results"][0]["gap"] == 0
+    jumped = FIXTURE.replace(b"Test_Channel/101", b"Test_Channel/110").replace(b"Test_Channel/102", b"Test_Channel/111") \
+                    .replace(b"Test_Channel/103", b"Test_Channel/112")
+    second = main(argv, fetch=lambda u: (200, jumped))                     # 104-109 לא נראו
+    assert second["results"][0]["gap"] == 6
+    src = by_name(tmp_path / "site")["ערוץ בדיקה"]
+    assert src["last_gap"] == 6 and src["identity"] == "official_link" and src["url"] == "https://t.me/test_channel"
+    assert src["category"] == "בדיקה" and src["note"] == "הערה"
+
+
+def test_real_sources_file_is_consistent():
+    """רשימת המקורות האמיתית: אין כפילויות, מקור 'רשמי' רק עם ראיה, ולכל מקור מושבת יש סיבה."""
+    from app.repo import SourceIn, normalize_address
+    data = json.loads((Path(__file__).resolve().parent.parent / "collector" / "sources.json").read_text("utf-8"))
+    norms = [normalize_address(s["kind"], s["address"]) for s in data]
+    assert len(norms) == len(set(norms))
+    for s in data:
+        SourceIn(**s)
+        if s["is_official"]:
+            assert s["identity"] in ("telegram_verified", "official_link") and s["evidence"]
+        if not s["enabled"]:
+            assert s["note"].startswith("לא הופעל")
+    assert 5 <= sum(s["enabled"] for s in data) <= 10
