@@ -135,6 +135,7 @@ function rawCard(r) {
       !recent && !r.historical && el("span", { class: "tag historical" }, "ישנה מ-24 שעות"),
       r.edited_at && el("span", { class: "tag" }, "נערכה")),
     el("p", { class: "raw-text", dir: "auto" }, r.content || "(הודעה ללא טקסט – תמונה או סרטון בלבד)"),
+    r.content && r.content.endsWith("…") && el("p", { class: "note" }, "פתיח בלבד. הטקסט המלא נמצא בהודעה המקורית."),
     el("dl", { class: "times" },
       el("dt", {}, "פורסם בטלגרם"), el("dd", {}, clock(r.published_at) + " (" + ago(r.published_at) + ")"),
       el("dt", {}, "נקלט במערכת"), el("dd", {}, clock(r.ingested_at) + " (" + ago(r.ingested_at) + ")")),

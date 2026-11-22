@@ -8,7 +8,8 @@ from pathlib import Path
 from .db import now_iso
 
 FIELDS = ("external_id", "url", "published_at", "ingested_at", "edited_at", "content", "content_hash", "lang")
-MAX_CONTENT = 8000          # תקרת אורך להודעה בודדת
+MAX_CONTENT = 8000          # תקרת אורך לטקסט שממנו מחושבת טביעת האצבע
+EXCERPT_CHARS = 150         # רק פתיח קצר נשמר ומוצג; הטקסט המלא נשאר במקור
 FRESH_HOURS = 24            # רק הודעה שפורסמה ב-24 השעות האחרונות נחשבת עדכנית
 PHONE = re.compile(r"(?<!\d)(?:\+972[-\s]?|0)(?:[23489]|5\d|7\d)[-\s]?\d{3}[-\s]?\d{4}(?!\d)")
 
@@ -34,6 +35,17 @@ def clean(text: str) -> str:
     return mask_phones(text)[:MAX_CONTENT]
 
 
+def excerpt(text: str, limit: int = EXCERPT_CHARS) -> str:
+    """פתיח קצר שנחתך בגבול מילה. אידמפוטנטי: פתיח של פתיח לא משתנה."""
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) <= limit:
+        return text
+    cut = text[:limit - 1]
+    if " " in cut[limit // 2:]:
+        cut = cut[:cut.rfind(" ")]
+    return cut.rstrip(" ,.;:-–") + "…"
+
+
 def prune(con, max_per_source: int) -> int:
     """מגביל את גודל המאגר: שומר רק את N ההודעות החדשות ביותר מכל מקור."""
     n = 0
@@ -45,10 +57,20 @@ def prune(con, max_per_source: int) -> int:
     return n
 
 
-def upsert_report(con, source_id: int, msg: dict, ingested_at: str | None = None) -> str:
-    """מחזיר 'new' / 'edited' / 'same'. אילוץ הייחודיות (source_id, external_id) מונע כפילות."""
-    msg = msg | {"content": clean(msg["content"])}
-    h = content_hash(msg["content"])
+def upsert_report(con, source_id: int, msg: dict, ingested_at: str | None = None, from_log: bool = False) -> str:
+    """מחזיר 'new' / 'edited' / 'same'. אילוץ הייחודיות (source_id, external_id) מונע כפילות.
+
+    נשמר רק פתיח קצר. טביעת האצבע (content_hash) מחושבת מהטקסט המלא לפני הקיצור,
+    כך שעריכה בהמשך ההודעה עדיין מזוהה. בטעינה מהיומן משתמשים בטביעה השמורה.
+    """
+    if from_log:
+        h = msg["content_hash"]
+        lang = msg.get("lang")
+        msg = msg | {"content": excerpt(msg["content"])}
+    else:
+        full = clean(msg["content"])
+        h, lang = content_hash(full), detect_lang(full)
+        msg = msg | {"content": excerpt(full)}
     row = con.execute("SELECT id, content_hash FROM raw_reports WHERE source_id = ? AND external_id = ?",
                       (source_id, msg["external_id"])).fetchone()
     if row is None:
@@ -57,12 +79,12 @@ def upsert_report(con, source_id: int, msg: dict, ingested_at: str | None = None
             " content, content_hash, lang) VALUES (?,?,?,?,?,?,?,?,?)",
             (source_id, msg["external_id"], msg.get("url"), msg["published_at"],
              msg.get("ingested_at") or ingested_at or now_iso(), msg.get("edited_at"),
-             msg["content"], h, msg.get("lang") or detect_lang(msg["content"])),
+             msg["content"], h, lang),
         )
         return "new"
     if row["content_hash"] != h:
         con.execute("UPDATE raw_reports SET content = ?, content_hash = ?, edited_at = ?, lang = ? WHERE id = ?",
-                    (msg["content"], h, msg.get("edited_at") or now_iso(), detect_lang(msg["content"]), row["id"]))
+                    (msg["content"], h, msg.get("edited_at") or now_iso(), lang, row["id"]))
         return "edited"
     return "same"
 
@@ -131,7 +153,7 @@ def load_log(con, path: Path, source_ids: dict[str, int]) -> int:
         rec = json.loads(line)
         sid = source_ids.get(rec["source"])
         if sid is not None:
-            upsert_report(con, sid, rec)
+            upsert_report(con, sid, rec, from_log=True)
             n += 1
     return n
 

@@ -28,7 +28,8 @@ def verify(log: Path, n: int = 5, fetch=None) -> list[dict]:
                 res["status"], res["detail"] = "unverified", f"לא ניתן לקרוא את דף ההודעה (קוד {code})"
             else:
                 m = live[0]
-                same_text = ingest.clean(m["content"]) == r["content"]
+                # משווים את טביעת האצבע של הטקסט המלא בטלגרם לזו שנשמרה (נשמר רק פתיח)
+                same_text = ingest.content_hash(ingest.clean(m["content"])) == r["content_hash"]
                 same_time = m["published_at"] == r["published_at"]
                 res["status"] = "ok" if same_text and same_time else "mismatch"
                 res["detail"] = f"טקסט {'זהה' if same_text else 'שונה'}, זמן פרסום {'זהה' if same_time else 'שונה'}" \

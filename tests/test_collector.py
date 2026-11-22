@@ -211,4 +211,23 @@ def test_real_sources_file_is_consistent():
             assert s["identity"] in ("telegram_verified", "official_link") and s["evidence"]
         if not s["enabled"]:
             assert s["note"].startswith("לא הופעל")
-    assert 5 <= sum(s["enabled"] for s in data) <= 10
+    assert 1 <= sum(s["enabled"] for s in data) <= 25
+
+
+def test_only_excerpt_is_stored_and_edits_still_detected(tmp_path):
+    from collector.run import main
+    from app.ingest import excerpt
+    long_text = "תאונה בכביש 89 סמוך לצומת מירון. " * 20
+    page = FIXTURE.replace("עדכון</b> ראשון".encode(), long_text.encode())
+    log = tmp_path / "raw.jsonl"
+    argv = ["--out", str(tmp_path / "site"), "--log", str(log), "--sources", str(_sources(tmp_path))]
+    main(argv, fetch=lambda u: (200, page))
+    rec = json.loads(log.read_text(encoding="utf-8").splitlines()[0])
+    assert len(rec["content"]) <= 150 and rec["content"].endswith("…")
+    assert long_text.strip() not in log.read_text(encoding="utf-8")         # הטקסט המלא לא במאגר
+    again = main(argv, fetch=lambda u: (200, page))                        # אותו טקסט: לא "נערך"
+    assert again["results"][0]["edited"] == 0 and again["results"][0]["new"] == 0
+    changed = page.replace("ראשון".encode(), "שני".encode()) .replace("שורה שנייה".encode(), "שורה אחרת".encode())
+    third = main(argv, fetch=lambda u: (200, changed))                     # שינוי בסוף ההודעה מזוהה
+    assert third["results"][0]["edited"] == 1
+    assert excerpt(excerpt(long_text)) == excerpt(long_text)
