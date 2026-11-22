@@ -1,28 +1,107 @@
 [
-  {"username": "PikudHaOref_all", "claimed": "פיקוד העורף", "category": "ביטחון והתרעות", "claims_official": true,
-   "evidence": "לא נמצא קישור מאתר רשמי של פיקוד העורף לערוץ"},
-  {"username": "mdaisrael", "claimed": "מגן דוד אדום", "category": "הצלה ורפואה", "claims_official": true,
-   "evidence": "חשבון X הרשמי של מד\"א וערוץ היוטיוב הרשמי מקשרים ל-t.me/mdaisrael"},
-  {"username": "Israel_Police_100", "claimed": "דוברות משטרת ישראל", "category": "משטרה ותנועה", "claims_official": true,
-   "evidence": "חשבון X @Dovrut_Police מקשר ל-t.me/Israel_Police_100 כ\"ערוץ הטלגרם הרשמי\""},
-  {"username": "israelpoliceforce", "claimed": "משטרת ישראל", "category": "משטרה ותנועה", "claims_official": true,
-   "evidence": "לא נמצא קישור רשמי; הדוברות מפנה לערוץ אחר (Israel_Police_100)"},
-  {"username": "idf_telegram", "claimed": "צה\"ל", "category": "ביטחון", "claims_official": true,
-   "evidence": "שם הערוץ \"צה״ל - הערוץ הרשמי\"; ייבדק תג מאומת"},
-  {"username": "newsk8", "claimed": "עיריית קריית שמונה", "category": "רשות מקומית", "claims_official": true,
-   "evidence": "השם @newsk8 מופיע בדף הקישורים של עיריית קריית שמונה (linktr.ee/moked)"},
-  {"username": "karmielkarmiel", "claimed": "עיריית כרמיאל", "category": "רשות מקומית", "claims_official": true,
-   "evidence": "מופיע כ\"הערוץ הרשמי של עיריית כרמיאל\" רק בערוץ המלצות לא רשמי"},
-  {"username": "fireisrael7777", "claimed": "כבאות והצלה ארצי", "category": "כבאות", "claims_official": false,
-   "evidence": "תיאור הערוץ: הקבוצה אינה רשמית של כבאות והצלה"},
-  {"username": "North_Media", "claimed": "חדשות הצפון", "category": "חדשות צפון", "claims_official": false, "evidence": "ערוץ חדשות פרטי"},
-  {"username": "hazfon1", "claimed": "חדשות לפני כולם", "category": "חדשות צפון", "claims_official": false, "evidence": "ערוץ חדשות פרטי"},
-  {"username": "ramreports", "claimed": "מבזקי רעם", "category": "ביטחון וחדשות", "claims_official": false, "evidence": "ערוץ חדשות פרטי"},
-  {"username": "divuhim1234", "claimed": "דיווחים חמים מהשטח", "category": "ביטחון וחדשות", "claims_official": false, "evidence": "ערוץ חדשות פרטי"},
-  {"username": "hamoked_il", "claimed": "חדשות המוקד", "category": "חדשות", "claims_official": false, "evidence": "ערוץ חדשות פרטי"},
-  {"username": "newsil", "claimed": "חדשות ישראל בטלגרם", "category": "חדשות", "claims_official": false, "evidence": "ערוץ חדשות פרטי"},
-  {"username": "tzevaadomm", "claimed": "צופר - צבע אדום", "category": "התרעות", "claims_official": false,
-   "evidence": "ערוץ של מערכת התרעות פרטית (צופר)"},
-  {"username": "CumtaAlertsChannel", "claimed": "כומתה - צבע אדום", "category": "התרעות", "claims_official": false,
-   "evidence": "ערוץ של מערכת התרעות פרטית (כומתה)"}
+ {
+  "username": "divuchimbizmanemet",
+  "claimed": "דיווחים בזמן אמת",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "New_security8200",
+  "claimed": "ערוץ החדשות 8200",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "News_cabinet_news",
+  "claimed": "חדשות - הקבינט הביטחוני",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "hotnews1",
+  "claimed": "החדשות החמות",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "pkpoi",
+  "claimed": "חדשות הבזק ללא צנזורה",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "israel_news_telegram",
+  "claimed": "ללא צנזורה חדשות ישראל",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "tzap1",
+  "claimed": "צאפ מגזין",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "mivzakim",
+  "claimed": "חדשות mivzakim.net",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "red_color",
+  "claimed": "ערוץ התרעות צבע אדום",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "yedidya_epshteyn",
+  "claimed": "ידידיה אפשטיין",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "newsil_tme",
+  "claimed": "חדשות ישראל בטלגרם",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "firstreportsnews",
+  "claimed": "חדשות ישראל בטלגרם (2)",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "newssil",
+  "claimed": "ערוץ חדשות ישראל",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "News_il_h",
+  "claimed": "חדשות ישראל",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ },
+ {
+  "username": "yediotnews25",
+  "claimed": "חדשות מהשטח",
+  "category": "חדשות (לא רשמי)",
+  "claims_official": false,
+  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+ }
 ]
