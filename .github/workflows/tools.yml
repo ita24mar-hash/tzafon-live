@@ -23,6 +23,8 @@ jobs:
           python-version: "3.12"
       - run: pip install requests pyproj openpyxl
       - name: הרצה
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: PYTHONPATH=. python "tools/${{ inputs.script }}"
       - name: שמירת קובצי נתוני עזר שנוצרו
         run: |
