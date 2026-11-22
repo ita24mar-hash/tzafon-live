@@ -107,3 +107,22 @@ def test_lebanon_event_is_not_a_northern_event():
     # אבל אם מוזכר יישוב ישראלי ספציפי, זה כן אירוע בצפון
     a = analyze("חיזבאללה שיגר רקטות לעבר קריית שמונה, נפילה בשטח פתוח")
     assert a["relevant"] and a["location"] == "קריית שמונה"
+
+
+def test_genre_report_vs_article():
+    from app.analyze import analyze
+    # מאמר דעה שמזכיר מקום וסוג אירוע: לא אירוע
+    a = analyze("התבוסה הישראלית בחזית השמינית: הנזק העצום לתדמית. לדעתי מה שקרה בצפת אחרי ירי הרקטות מוכיח זאת")
+    assert (a["genre"], a["relevant"]) == ("opinion", False)
+    # מעצר וסיכומים: לא אירוע חי
+    assert analyze("צעיר חשוד במעורבות בתאונת פגע וברח נעצר בראשון לציון")["genre"] == "followup"
+    assert analyze("שוטרי מחוז ש\"י סיכלו בשבוע החולף גניבת 29 כלי רכב בירושלים")["genre"] == "followup"
+    assert analyze("בהמשך לאירוע השריפה שאירע לפנות בוקר בכרמיאל, אנו מבקשים להביע תמיכה")["genre"] == "followup"
+    assert analyze("ח\"כ תקף את השר אחרי ירי הרקטות לשדרות, ועדת החוץ והביטחון תתכנס")["genre"] == "politics"
+    assert analyze("לקראת סוף השבוע אנו מבקשים לרענן הנחיות ביטחון לתושבי כרמיאל")["genre"] == "guidance"
+    # דיווח חי נשאר דיווח גם כשיש בו מילה של סיכום
+    a = analyze("לפני זמן קצר: מחבל ביצע ירי בצומת גולני ונעצר. כוחות בזירה")
+    assert (a["genre"], a["relevant"]) == ("report", True)
+    a = analyze("דוברות מד\"א: בשעה 21:55 התקבל דיווח על תאונת דרכים בכביש 89 סמוך לצפת")
+    assert (a["genre"], a["relevant"]) == ("report", True)
+    assert analyze("כפר תבור שריפה")["relevant"]          # הודעה קצרה בלי סימנים = דיווח

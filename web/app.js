@@ -35,6 +35,7 @@ const REGIONS = [
   ["shfela", "השפלה"], ["jerusalem", "ירושלים והסביבה"], ["south", "הדרום"], ["yosh", "יהודה ושומרון"],
 ];
 const REGION_NAME = Object.fromEntries(REGIONS);
+const GENRE_NAME = { opinion: "מאמר או דעה", politics: "פוליטיקה", followup: "סיכום, מעצר או המשך", guidance: "הנחיות כלליות" };
 const inRegion = (e, r) => !r || (e.regions || []).includes(r);
 const regionIn = (r) => r ? "ב" + REGION_NAME[r].replace(/^ה/, "") : "בכל הארץ";
 
@@ -177,7 +178,8 @@ function rawCard(r) {
       r.noise && el("span", { class: "tag st-error" }, "סונן: " + r.noise),
       !r.noise && r.analysis && (r.analysis.relevant
         ? el("span", { class: "tag st-ingesting" }, `נכלל באירוע · ${TYPES[r.analysis.type][0]} · ${r.analysis.location}`)
-        : el("span", { class: "tag" }, (r.analysis.places || []).length ? "לא נכלל: לא זוהה סוג אירוע" : "לא נכלל: לא זוהה מקום בישראל"))),
+        : el("span", { class: "tag" }, r.analysis.genre && r.analysis.genre !== "report" ? "לא נכלל: " + (GENRE_NAME[r.analysis.genre] || "לא דיווח")
+          : (r.analysis.places || []).length ? "לא נכלל: לא זוהה סוג אירוע" : "לא נכלל: לא זוהה מקום בישראל"))),
     el("p", { class: "raw-text", dir: "auto" }, r.content || "(הודעה ללא טקסט – תמונה או סרטון בלבד)"),
     r.content && r.content.endsWith("…") && el("p", { class: "note" }, "פתיח בלבד. הטקסט המלא נמצא בהודעה המקורית."),
     el("dl", { class: "times" },

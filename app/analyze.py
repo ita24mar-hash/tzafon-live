@@ -8,7 +8,7 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-2"   # rules-2: כיסוי ארצי + שיוך לאזורים
+VERSION = "rules-3"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -67,6 +67,40 @@ ABROAD = re.compile(r"לבנון|לבנוני|בלבנון|חיזבאללה|הכ
 GENERIC = {name for kind, name, *_ in PLACES if kind == "region"}
 
 
+# ---------- סוגה: האם זו ידיעה על אירוע שקורה עכשיו, או משהו אחר ----------
+# סימנים לדיווח חי. אם יש אחד מהם, ההודעה נחשבת דיווח גם אם יש בה מילים של סיכום או דעה.
+LIVE = re.compile(r"בשעה \d|התקבל דיווח|היכנסו|הכנסו|למרחב המוגן|לפני זמן קצר|לפני דקות|ממש עכשיו|כעת|ברגעים אלו|"
+                  r"בשעה זו|בשעה האחרונה|בשעות האחרונות|מבזק|דיווח ראשוני|פועלים במקום|בזירה|בדרך לזירה|"
+                  r"לוחמי האש|צוותי כיבוי|חובשים ופראמדיקים|🚨|🔴|במהלך השעות הקרובות|בשעות הקרובות|"
+                  r"יכולים לצאת|הוסר החשש|נוטרל|נוטרלו|צפוי להתבצע|צפוי להימשך|צפי התיקון|הצפי לתיקון")
+GENRES = [
+    # (סוגה, ביטוי). הראשון שמתאים קובע.
+    ("opinion", r"לדעתי|לטעמי|בעיניי|אני חושב|אני חושבת|אני סבור|אני סבורה|מאמר|פרשנות|טור דעה|אתחיל ב|"
+                r"אסביר|נשאלת השאלה|השאלה הגדולה|הגיע הזמן ש|כולנו יודעים|המונח|האידיוט|התבוסה|הכישלון ה|"
+                r"ברשת תוקפים|ציוץ|צייץ|ציייצה|בראיון ל|אמר בראיון|כתב בטור|פודקאסט"),
+    ("politics", r"ח[\"״]כ |חבר הכנסת|חברת הכנסת|במליאת הכנסת|ועדת ה|הקואליציה|האופוזיציה|בג[\"״]ץ|הצעת חוק|"
+                 r"הממשלה אישרה|ישיבת הממשלה|הקבינט אישר|סקר:|סקר מנדטים"),
+    ("followup", r"נעצר|נעצרו|נעצרה|ועצרו|ולעצור|מעצרו|מעצרם|כתב אישום|כתבי אישום|בית המשפט|בית הדין|גזר הדין|"
+                 r"נגזרו|הורשע|הורשעה|נידון|נידונה|הסגיר את עצמו|חשוד במעורבות|חשודים במעורבות|"
+                 r"בשבוע החולף|בשבוע האחרון|בחודש האחרון|בתקופה האחרונה|במהלך סוף השבוע|בסוף השבוע האחרון|"
+                 r"סיכום (?:ה)?(?:שבוע|חודש|שנה|פעילות)|מבצע אכיפה|אכיפה נגד|נתפסו|סיכלו|"
+                 r"בהמשך לאירוע|על רקע האירוע|האירוע אתמול|אמש נרצח|לפני (?:שבוע|חודש|שנה|שנתיים|\d+ שנים)|"
+                 r"יום השנה|לזכר|אזכרה|הלווית|הובא למנוחות|הובאה למנוחות|נחקר|חקירת המשטרה|התחקיר"),
+    ("guidance", r"לרענן|תזכורת|נבקש להזכיר|טיפים|כיצד להתכונן|איך להתכונן|מומלץ להצטייד|הנחיות כלליות"),
+]
+GENRE_RX = [(g, re.compile(rx)) for g, rx in GENRES]
+GENRE_NAMES = {"report": "דיווח", "opinion": "מאמר או דעה", "politics": "פוליטיקה", "followup": "סיכום, מעצר או המשך",
+               "guidance": "הנחיות כלליות"}
+
+
+def genre(text: str) -> str:
+    """'report' = ידיעה על אירוע שקורה עכשיו או הודעה רשמית לציבור; אחרת: סוג התוכן."""
+    t = re.sub(r"\s+", " ", text or "")
+    if LIVE.search(t):
+        return "report"
+    return next((g for g, rx in GENRE_RX if rx.search(t)), "report")
+
+
 def analyze(text: str) -> dict:
     t = re.sub(r"\s+", " ", text or "")
     places = find_places(STREET.sub(" ", HOSPITAL.sub(" ", t)))
@@ -75,6 +109,7 @@ def analyze(text: str) -> dict:
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
     severity = 3 if SEVERE.search(t) else 2 if MEDIUM.search(t) else 1
     names = [p["name"] for p in places]
+    g = genre(t)
     regions = regions_for(names)
     return {
         "v": VERSION,
@@ -85,8 +120,9 @@ def analyze(text: str) -> dict:
         "type": etype,
         "severity": severity,
         "ended": bool(ENDED.search(t)),
-        # ההחלטה אם להציג: דיווח (לא רעש) + מקום בישראל + סוג אירוע מזוהה
-        "relevant": bool(places) and etype is not None,
+        "genre": g,
+        # ההחלטה אם להציג: דיווח (לא רעש, לא מאמר/סיכום) + מקום בישראל + סוג אירוע מזוהה
+        "relevant": bool(places) and etype is not None and g == "report",
     }
 
 
@@ -95,7 +131,9 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
     את המקומות והסוג שלה ורק מוסיפים אזורים. כל השאר מנותח מחדש מהקטע השמור."""
     if old and old.get("v") == VERSION:
         return old
-    if old and old.get("v") == "rules-1" and old.get("relevant"):
+    if old and (old.get("relevant") or old.get("v") == "rules-2"):
         regions = regions_for(old["places"])
-        return old | {"v": VERSION, "regions": regions, "north": bool(set(regions) & NORTH_REGIONS)}
+        g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
+        return old | {"v": VERSION, "regions": regions, "north": bool(set(regions) & NORTH_REGIONS), "genre": g,
+                      "relevant": bool(old["places"]) and old["type"] is not None and g == "report"}
     return analyze(excerpt)
