@@ -1,107 +1,23 @@
 [
  {
-  "username": "divuchimbizmanemet",
-  "claimed": "דיווחים בזמן אמת",
+  "username": "news_HaMadlif",
+  "claimed": "המדליף הסדרתי – חדשות כללי",
   "category": "חדשות (לא רשמי)",
   "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+  "evidence": "רשת ערוצים פרטית; נשלח על ידי מנהל המערכת"
  },
  {
-  "username": "New_security8200",
-  "claimed": "ערוץ החדשות 8200",
+  "username": "rotter_HaMadlif",
+  "claimed": "המדליף הסדרתי – חדשות רוטר",
   "category": "חדשות (לא רשמי)",
   "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+  "evidence": "רשת ערוצים פרטית; נשלח על ידי מנהל המערכת"
  },
  {
-  "username": "News_cabinet_news",
-  "claimed": "חדשות - הקבינט הביטחוני",
+  "username": "haredim_HaMadlif",
+  "claimed": "המדליף הסדרתי – חדשות חרדים",
   "category": "חדשות (לא רשמי)",
   "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "hotnews1",
-  "claimed": "החדשות החמות",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "pkpoi",
-  "claimed": "חדשות הבזק ללא צנזורה",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "israel_news_telegram",
-  "claimed": "ללא צנזורה חדשות ישראל",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "tzap1",
-  "claimed": "צאפ מגזין",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "mivzakim",
-  "claimed": "חדשות mivzakim.net",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "red_color",
-  "claimed": "ערוץ התרעות צבע אדום",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "yedidya_epshteyn",
-  "claimed": "ידידיה אפשטיין",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "newsil_tme",
-  "claimed": "חדשות ישראל בטלגרם",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "firstreportsnews",
-  "claimed": "חדשות ישראל בטלגרם (2)",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "newssil",
-  "claimed": "ערוץ חדשות ישראל",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "News_il_h",
-  "claimed": "חדשות ישראל",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
- },
- {
-  "username": "yediotnews25",
-  "claimed": "חדשות מהשטח",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נמצא בחיפוש: ערוץ פרטי"
+  "evidence": "רשת ערוצים פרטית; נשלח על ידי מנהל המערכת"
  }
 ]
