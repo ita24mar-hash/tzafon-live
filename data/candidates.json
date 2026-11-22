@@ -1,0 +1,222 @@
+{
+ "generated_at": "2026-11-22T21:40:14+00:00",
+ "scanned_sources": 16,
+ "found": 9,
+ "checked": 9,
+ "candidates": [
+  {
+   "username": "yediyot_bnei_brak",
+   "url": "https://t.me/yediyot_bnei_brak",
+   "title": "🔸ידיעות בני ברק🔸",
+   "description": "*🔸ידיעות בני ברק🔸*\nכל החדשות\nכל העידכונים\nכל מה שמתרחש בעיר התורה והחסידות בני ברק\nהיכנסו עכשו ותתחילו להתעדכן.\n\nלשליחת הודעות למערכת: @David_Keshet https://api",
+   "verified": false,
+   "subscribers": "6.24K",
+   "messages": 20,
+   "newest": "2026-11-22T21:39:13+00:00",
+   "age_hours": 0.0,
+   "noise_share": 0.0,
+   "report_share": 0.2,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 4
+   },
+   "samples": [
+    "המדרכות המסוכנות בעיר: כוחות הצלה הוזעקו בשעה 16:35 לשביל ברחוב אברבנאל בקרית הרצוג, בעקבות דיווח על גבר כבן 70 שנפל ברחוב, הוא סבל מחבלות בגפיים…",
+    "המדרכות המסוכנות בעיר: כוחות הצלה הוזעקו בשעה 20:25 לרחוב עזרא בעיר, בעקבות דיווח על אישה כבת 70 שנפלה במדרכה ברחוב, היא סבלה מחבלות בראש ובגפיים…"
+   ],
+   "verdict": "recommended",
+   "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
+   "mentioned_by": [
+    "כבאות והצלה ארצי (לא רשמי)"
+   ],
+   "mentions": 2
+  },
+  {
+   "username": "zufefrati",
+   "url": "https://t.me/zufefrati",
+   "title": "צוף אפרתי",
+   "description": "ניתוחים, מידע ופרשנות מקורית שלא תמצאו במקום אחר בטלגרם.\n\nמגמת הערוץ היא להציע רעיונות חדשניים להתמודדות עם מציאות קיימת.",
+   "verified": false,
+   "subscribers": "1.59K",
+   "messages": 14,
+   "newest": "2026-11-22T19:27:18+00:00",
+   "age_hours": 2.2,
+   "noise_share": 0.0,
+   "report_share": 0.07,
+   "north_share": 0.07,
+   "regions": {
+    "galil-elyon": 1,
+    "yosh": 1
+   },
+   "samples": [
+    "התבוסה הישראלית בחזית השמינית: הטהרנות הישראלית המופרזת והנזק העצום שגורמים \"האידיוטים השימושיים\" לתדמית הישראלית בעולם אתחיל בפירוש למונח \"אידיוט…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "mentioned_by": [
+    "חדשות 301 העולם הערבי (לא רשמי)"
+   ],
+   "mentions": 10
+  },
+  {
+   "username": "technology_HaMadlif",
+   "url": "https://t.me/technology_HaMadlif",
+   "title": "טכנולוגיה - המדליף",
+   "description": "חדשות כללי:\n@news_HaMadlif\n\nחדשות רוטר:\n@rotter_HaMadlif\n\nחדשות טכנולוגיה:\n@technology_HaMadlif\n\nחדשות ספורט:\n@sport_HaMadlif\n\nחדשות חרדים:\n@haredim_HaMadlif\n\nל",
+   "verified": false,
+   "subscribers": "14.3K",
+   "messages": 20,
+   "newest": "2026-11-22T17:34:06+00:00",
+   "age_hours": 4.1,
+   "noise_share": 0.0,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "mentioned_by": [
+    "המדליף – חדשות כללי (לא רשמי)",
+    "המדליף – חרדים (לא רשמי)",
+    "המדליף – רוטר (לא רשמי)"
+   ],
+   "mentions": 12
+  },
+  {
+   "username": "sport_HaMadlif",
+   "url": "https://t.me/sport_HaMadlif",
+   "title": "ספורט - המדליף",
+   "description": "חדשות כללי:\n@news_HaMadlif\n\nחדשות רוטר:\n@rotter_HaMadlif\n\nחדשות טכנולוגיה:\n@technology_HaMadlif\n\nחדשות ספורט:\n@sport_HaMadlif\n\nחדשות חרדים:\n@haredim_HaMadlif\n\nל",
+   "verified": false,
+   "subscribers": "1.31K",
+   "messages": 20,
+   "newest": "2026-11-22T21:08:11+00:00",
+   "age_hours": 0.5,
+   "noise_share": 0.0,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "mentioned_by": [
+    "המדליף – חדשות כללי (לא רשמי)",
+    "המדליף – חרדים (לא רשמי)",
+    "המדליף – רוטר (לא רשמי)"
+   ],
+   "mentions": 12
+  },
+  {
+   "username": "MadlifSidrati_admin",
+   "url": "https://t.me/MadlifSidrati_admin",
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "mentioned_by": [
+    "המדליף – חדשות כללי (לא רשמי)",
+    "המדליף – חרדים (לא רשמי)",
+    "המדליף – רוטר (לא רשמי)"
+   ],
+   "mentions": 12
+  },
+  {
+   "username": "Israelnewsil25",
+   "url": "https://t.me/Israelnewsil25",
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "mentioned_by": [
+    "חדשות ישראל בטלגרם (לא רשמי)"
+   ],
+   "mentions": 18
+  },
+  {
+   "username": "Send_me_news",
+   "url": "https://t.me/Send_me_news",
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "mentioned_by": [
+    "חדשות ישראל בטלגרם (לא רשמי)"
+   ],
+   "mentions": 18
+  },
+  {
+   "username": "bitahoninthemiddleeast",
+   "url": "https://t.me/bitahoninthemiddleeast",
+   "title": "יאיר גולדבלט - ביטחון ומזרח תיכון",
+   "description": "ברוכים הבאים לביטחון ומזרח תיכון!\n\nמי כמונו, אזרחי ישראל, שיודעים שאף פעם לא משעמם במזרח התיכון?\n\nהצטרפו להיות הראשונים לקבל את כל הזוויות, הדיווחים והפרשנויות ",
+   "verified": false,
+   "subscribers": "3.55K",
+   "messages": 15,
+   "newest": "2026-11-22T21:17:13+00:00",
+   "age_hours": 0.4,
+   "noise_share": 0.0,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "mentioned_by": [
+    "חדשות 301 העולם הערבי (לא רשמי)"
+   ],
+   "mentions": 9
+  },
+  {
+   "username": "hamivtzar",
+   "url": "https://t.me/hamivtzar",
+   "title": "המבצר",
+   "description": "ערוץ החדשות והאקטואליה של אור בן יחזקאל - 301 העולם הערבי",
+   "verified": false,
+   "subscribers": "151",
+   "messages": 19,
+   "newest": "2026-11-22T16:26:58+00:00",
+   "age_hours": 5.2,
+   "noise_share": 0.05,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "mentioned_by": [
+    "חדשות 301 העולם הערבי (לא רשמי)"
+   ],
+   "mentions": 2
+  }
+ ]
+}
