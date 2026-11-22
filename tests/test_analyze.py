@@ -91,3 +91,11 @@ def test_hospital_phrasings():
                  "והועבר למיון המרכז הרפואי בנהריה"]:
         a = analyze(f"דוברות מד\"א: פצוע מאירוע אלימות בסח'נין. חובשים מעניקים טיפול {tail}")
         assert a["places"] == ["סכנין"], tail
+
+
+def test_lebanon_event_is_not_a_northern_event():
+    a = analyze("לפי דיווחים ערביים, כוחותינו מבצעים כעת פיצוצי מבנים בכפר השיעי בני חיאן, סמוך לגבול הצפון")
+    assert not a["relevant"] and a["places"] == []
+    # אבל אם מוזכר יישוב ישראלי ספציפי, זה כן אירוע בצפון
+    a = analyze("חיזבאללה שיגר רקטות לעבר קריית שמונה, נפילה בשטח פתוח")
+    assert a["relevant"] and a["location"] == "קריית שמונה"

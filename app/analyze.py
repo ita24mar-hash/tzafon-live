@@ -56,9 +56,17 @@ HOSPITAL = re.compile(r"(?:ל|ב|ה|ו)?(?:בית ה?חולים|בי[\"״]ח|ב�
                       r"מלר\"ד|המיון|חדר ה?מיון)[^.,;\n]{0,45}")
 
 
+# הודעה שעוסקת בזירה מחוץ לישראל. בה, אזכור כללי של "הצפון" אינו מקום האירוע.
+ABROAD = re.compile(r"לבנון|לבנוני|בלבנון|חיזבאללה|הכפר השיעי|בכפר השיעי|סוריה|בסוריה|סורי|"
+                    r"רצועת עזה|ברצועה|בעזה|דיווחים ערביים|כלי תקשורת בלבנון")
+GENERIC = {"צפון הארץ"}
+
+
 def analyze(text: str) -> dict:
     t = re.sub(r"\s+", " ", text or "")
     places = find_places(HOSPITAL.sub(" ", t))
+    if places and ABROAD.search(t) and all(p["name"] in GENERIC for p in places):
+        places = []   # למשל "פיצוצים בכפר בלבנון ... ליד גבול הצפון": האירוע בלבנון, לא בצפון
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
     severity = 3 if SEVERE.search(t) else 2 if MEDIUM.search(t) else 1
     return {
