@@ -10,8 +10,8 @@ from pydantic import BaseModel, Field
 
 from .db import audit, now_iso
 
-EVENT_TYPES = ("security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "other")
-EventType = Literal["security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "other"]
+EVENT_TYPES = ("security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "medical", "other")
+EventType = Literal["security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "medical", "other"]
 SourceKind = Literal["telegram", "rss", "api", "website", "other"]
 TG_USER = re.compile(r"^[A-Za-z][A-Za-z0-9_]{3,31}$")
 
@@ -210,6 +210,7 @@ def _event_row(con, r, dist=None) -> dict:
         "location": location, "location_precision": r["location_precision"],
         "occurred_at": r["occurred_at"], "first_reported_at": r["first_reported_at"],
         "updated_at": r["updated_at"], "is_demo": bool(r["is_demo"]),
+        "places": json.loads(r["places"]), "analyzer": r["analyzer"],
         "independent_sources": len(independent),
         "distance_km": round(dist, 1) if dist is not None else None,
         "reports": [{"source_name": x["source_name"], "is_official": bool(x["is_official"]),

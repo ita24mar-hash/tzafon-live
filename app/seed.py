@@ -5,31 +5,15 @@
 לצמתים ולכבישים אין קואורדינטות בשלב זה – ולכן לא יוצגו כנקודה על המפה.
 """
 import hashlib
+import json
 import os
 from datetime import datetime, timedelta, timezone
 
 from .db import connect, now_iso
 
-LOCATIONS = [
-    # kind, name, aliases(JSON), lat, lon
-    ("region", "הגליל העליון", '["גליל עליון"]', None, None),
-    ("region", "מרום הגליל", '["מועצה אזורית מרום הגליל"]', None, None),
-    ("locality", "צפת", '["صفد","Safed","Tzfat"]', 32.9646, 35.4960),
-    ("locality", "מירון", '["ميرون","Meron"]', 32.9820, 35.4380),
-    ("locality", "אור הגנוז", '["Or HaGanuz"]', 32.9940, 35.4270),
-    ("locality", "בר יוחאי", '["Bar Yohai"]', 32.9980, 35.4490),
-    ("locality", "ספסופה", '["כפר חושן","Safsufa"]', 33.0100, 35.4430),
-    ("locality", "כרמיאל", '["كرميئيل","Karmiel"]', 32.9190, 35.2950),
-    ("locality", "ראש פינה", '["Rosh Pina"]', 32.9689, 35.5425),
-    ("locality", "חצור הגלילית", '["חצור","Hatzor HaGlilit"]', 32.9803, 35.5433),
-    ("locality", "קריית שמונה", '["קרית שמונה","Kiryat Shmona"]', 33.2075, 35.5697),
-    ("road", "כביש 89", '["89"]', None, None),
-    ("road", "כביש 85", '["85"]', None, None),
-    ("road", "כביש 90", '["90"]', None, None),
-    ("road", "כביש 866", '["866"]', None, None),
-    ("junction", "צומת מירון", '[]', None, None),
-    ("junction", "צומת עין זיתים", '[]', None, None),
-]
+from .gazetteer import PLACES
+
+LOCATIONS = [(kind, name, json.dumps(aliases, ensure_ascii=False), lat, lon) for kind, name, aliases, lat, lon in PLACES]
 
 DEMO_EVENTS = [
     # title, summary, type, status, verification, severity, location, precision, minutes_ago, n_reports

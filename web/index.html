@@ -18,27 +18,9 @@
 
 <main>
   <section id="view-feed" class="view">
-    <div class="seg" role="group" aria-label="סוג התצוגה">
-      <button id="seg-raw">הודעות גולמיות</button>
-      <button id="seg-events">אירועים מאומתים</button>
-    </div>
-    <div id="raw-pane" hidden>
-      <p class="note">הודעות אמיתיות כפי שפורסמו במקור, לפני ניתוח. זו אינה מערכת התרעה: המידע מגיע באיחור של רבע שעה ויותר. בחירום פועלים רק לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
-      <p class="status" id="run-status"></p>
-      <div id="source-warnings"></div>
-      <h3>דיווחים עדכניים · פורסמו ב-24 השעות האחרונות</h3>
-      <div id="raw" class="feed" aria-live="polite"></div>
-      <details id="archive" class="archive">
-        <summary id="archive-title">ארכיון</summary>
-        <p class="note">הודעות שפורסמו לפני יותר מ-24 שעות. הן נשמרות לתיעוד בלבד ואינן דיווחים עדכניים. הודעות שנקלטו כשהיו כבר ישנות (למשל בהרצה הראשונה) מסומנות "היסטורית".</p>
-        <div id="raw-archive" class="feed"></div>
-      </details>
-      <details id="noise" class="archive">
-        <summary id="noise-title">סוננו</summary>
-        <p class="note">הודעות שנקלטו אבל אינן נראות כמו דיווח: שאלות, הודעות קצרות מדי, קישורים לקבוצות ופרסומות. הסינון אוטומטי ולפי כללים פשוטים, ולכן מוצגות כאן לבדיקה.</p>
-        <div id="raw-noise" class="feed"></div>
-      </details>
-    </div>
+    <p class="note">אירועים בצפון שזוהו אוטומטית מתוך הודעות במקורות. זו אינה מערכת התרעה: המידע מגיע באיחור של רבע שעה ויותר. בחירום פועלים רק לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
+    <p class="status" id="run-status"></p>
+    <div id="source-warnings"></div>
     <div id="events-pane">
     <div class="chips" id="type-chips" role="group" aria-label="סינון לפי סוג אירוע"></div>
     <div class="filters">
@@ -58,7 +40,12 @@
       <button id="gps" class="link-btn">השתמש במיקום משוער שלי (לא חובה)</button>
       <span id="gps-state"></span>
     </div>
+    <h3 id="feed-title">אירועים מ-24 השעות האחרונות</h3>
     <div id="feed" class="feed" aria-live="polite"></div>
+    <details id="feed-archive-box" class="archive">
+      <summary id="feed-archive-title">אירועים קודמים</summary>
+      <div id="feed-archive" class="feed"></div>
+    </details>
     </div>
   </section>
 
@@ -85,6 +72,22 @@
     <div id="admin-static" hidden>
       <p class="note">מצב כל מקור בהרצת האיסוף האחרונה. "תקין" אומר שהקריאה מטלגרם הצליחה – לא שהמידע במקור נכון או עדכני. רשימת המקורות נערכת בקובץ collector/sources.json במאגר.</p>
       <div id="sources-ro" class="feed"></div>
+      <details id="raw-pane" class="archive">
+        <summary>כל ההודעות שנקלטו, לפני ניתוח</summary>
+        <p class="note">ההודעות כפי שפורסמו במקורות. הן לא מוצגות בפיד; מכאן נבנים האירועים. לכל הודעה מצוין אם נכללה באירוע ולמה לא.</p>
+      <h3>דיווחים עדכניים · פורסמו ב-24 השעות האחרונות</h3>
+      <div id="raw" class="feed" aria-live="polite"></div>
+      <details id="archive" class="archive">
+        <summary id="archive-title">ארכיון</summary>
+        <p class="note">הודעות שפורסמו לפני יותר מ-24 שעות. הן נשמרות לתיעוד בלבד ואינן דיווחים עדכניים. הודעות שנקלטו כשהיו כבר ישנות (למשל בהרצה הראשונה) מסומנות "היסטורית".</p>
+        <div id="raw-archive" class="feed"></div>
+      </details>
+      <details id="noise" class="archive">
+        <summary id="noise-title">סוננו</summary>
+        <p class="note">הודעות שנקלטו אבל אינן נראות כמו דיווח: שאלות, הודעות קצרות מדי, קישורים לקבוצות ופרסומות. הסינון אוטומטי ולפי כללים פשוטים, ולכן מוצגות כאן לבדיקה.</p>
+        <div id="raw-noise" class="feed"></div>
+      </details>
+      </details>
     </div>
     <div id="admin-login">
       <p class="note">הזינו את קוד המנהל שהוגדר בשרת. הקוד נשמר רק עד סגירת הלשונית.</p>

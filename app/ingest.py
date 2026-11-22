@@ -5,10 +5,11 @@ import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from . import analyze as analyzer
 from .db import now_iso
 
 FIELDS = ("external_id", "url", "published_at", "ingested_at", "edited_at", "content", "content_hash", "lang",
-          "noise")
+          "noise", "analysis")
 MAX_CONTENT = 8000          # תקרת אורך לטקסט שממנו מחושבת טביעת האצבע
 EXCERPT_CHARS = 150         # רק פתיח קצר נשמר ומוצג; הטקסט המלא נשאר במקור
 FRESH_HOURS = 24            # רק הודעה שפורסמה ב-24 השעות האחרונות נחשבת עדכנית
@@ -116,29 +117,34 @@ def upsert_report(con, source_id: int, msg: dict, ingested_at: str | None = None
         msg = msg | {"content": excerpt(msg["content"])}
         # כללים חדשים חלים גם על הודעות ישנות (לפי הפתיח השמור)
         noise = msg.get("noise") or classify_noise(msg["content"])
+        a = msg.get("analysis")
+        analysis = a if a and a.get("v") == analyzer.VERSION else analyzer.analyze(msg["content"])
     else:
         full = clean(msg["content"])
         h, lang = content_hash(full), detect_lang(full)
         noise = classify_noise(full)   # הסיווג נעשה על הטקסט המלא, לא על הפתיח
+        analysis = analyzer.analyze(full)
         msg = msg | {"content": excerpt(full)}
     row = con.execute("SELECT id, content_hash FROM raw_reports WHERE source_id = ? AND external_id = ?",
                       (source_id, msg["external_id"])).fetchone()
     if row is None:
         con.execute(
             "INSERT INTO raw_reports(source_id, external_id, url, published_at, ingested_at, edited_at,"
-            " content, content_hash, lang, noise) VALUES (?,?,?,?,?,?,?,?,?,?)",
+            " content, content_hash, lang, noise, ai_result) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
             (source_id, msg["external_id"], msg.get("url"), msg["published_at"],
              msg.get("ingested_at") or ingested_at or now_iso(), msg.get("edited_at"),
-             msg["content"], h, lang, noise),
+             msg["content"], h, lang, noise, json.dumps(analysis, ensure_ascii=False)),
         )
         return "new"
     if row["content_hash"] != h:
-        con.execute("UPDATE raw_reports SET content = ?, content_hash = ?, edited_at = ?, lang = ?, noise = ?"
-                    " WHERE id = ?", (msg["content"], h, msg.get("edited_at") or now_iso(), lang, noise, row["id"]))
+        con.execute("UPDATE raw_reports SET content = ?, content_hash = ?, edited_at = ?, lang = ?, noise = ?,"
+                    " ai_result = ? WHERE id = ?", (msg["content"], h, msg.get("edited_at") or now_iso(), lang, noise,
+                                                    json.dumps(analysis, ensure_ascii=False), row["id"]))
         return "edited"
     if not from_log:
         # הודעה שכבר שמורה: מעדכנים את הסיווג לפי הטקסט המלא (לרשומות ישנות היה רק פתיח)
-        con.execute("UPDATE raw_reports SET noise = ? WHERE id = ?", (noise, row["id"]))
+        con.execute("UPDATE raw_reports SET noise = ?, ai_result = ? WHERE id = ?",
+                    (noise, json.dumps(analysis, ensure_ascii=False), row["id"]))
     return "same"
 
 
@@ -187,10 +193,12 @@ def source_freshness(con, now: datetime | None = None) -> dict[int, dict]:
 def list_raw_reports(con, limit: int = 200) -> list[dict]:
     rows = con.execute(
         "SELECT rr.id, rr.external_id, rr.url, rr.published_at, rr.ingested_at, rr.edited_at, rr.content,"
-        " rr.lang, rr.noise, s.name AS source_name, s.kind AS source_kind, s.is_official"
+        " rr.lang, rr.noise, rr.ai_result, s.name AS source_name, s.kind AS source_kind, s.is_official"
         " FROM raw_reports rr JOIN sources s ON s.id = rr.source_id"
         " WHERE rr.is_demo = 0 ORDER BY rr.published_at DESC, rr.id DESC LIMIT ?", (limit,)).fetchall()
-    return [dict(r) | {"is_official": bool(r["is_official"]),
+    return [{k: v for k, v in dict(r).items() if k != "ai_result"}
+            | {"analysis": json.loads(r["ai_result"]) if r["ai_result"] else None,
+               "is_official": bool(r["is_official"]),
                        "historical": is_historical(r["published_at"], r["ingested_at"])} for r in rows]
 
 
@@ -220,6 +228,7 @@ def save_log(con, path: Path) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as f:
         for r in rows:
-            rec = {"source": r["source"]} | {k: r[k] for k in FIELDS}
+            rec = {"source": r["source"]} | {k: r[k] for k in FIELDS if k != "analysis"}
+            rec["analysis"] = json.loads(r["ai_result"]) if r["ai_result"] else None
             f.write(json.dumps(rec, ensure_ascii=False, sort_keys=True) + "\n")
     return len(rows)

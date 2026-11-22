@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS events (
     title              TEXT NOT NULL,
     summary            TEXT NOT NULL DEFAULT '',
     event_type         TEXT NOT NULL CHECK (event_type IN
-                       ('security','accident','fire','closure','infrastructure','weather','hazard','other')),
+                       ('security','accident','fire','closure','infrastructure','weather','hazard','medical','other')),
     status             TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new','ongoing','ended','unknown')),
     verification       TEXT NOT NULL DEFAULT 'single_source'
                        CHECK (verification IN ('single_source','multi_source','official','retracted')),
@@ -75,6 +75,8 @@ CREATE TABLE IF NOT EXISTS events (
     first_reported_at  TEXT NOT NULL,
     updated_at         TEXT NOT NULL,
     published          INTEGER NOT NULL DEFAULT 1,     -- 0 = מושהה עד בדיקה אנושית
+    places             TEXT NOT NULL DEFAULT '[]',     -- JSON: כל המקומות שזוהו
+    analyzer           TEXT,                           -- איזה מנתח יצר את האירוע (rules-1 / ai-...)
     is_demo            INTEGER NOT NULL DEFAULT 0,
     CHECK (location_id IS NOT NULL OR location_precision = 'unknown')
 );

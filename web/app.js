@@ -3,7 +3,8 @@
 
 const TYPES = {
   security: ["ביטחון", "🛡️"], accident: ["תאונה", "🚗"], fire: ["שריפה", "🔥"], closure: ["חסימה", "🚧"],
-  infrastructure: ["תשתיות", "⚡"], weather: ["מזג אוויר", "🌧️"], hazard: ["מפגע", "⚠️"], other: ["אחר", "📌"],
+  infrastructure: ["תשתיות", "⚡"], weather: ["מזג אוויר", "🌧️"], hazard: ["מפגע", "⚠️"], medical: ["רפואי", "🚑"],
+  other: ["אחר", "📌"],
 };
 const STATUS = { new: "חדש", ongoing: "מתמשך", ended: "הסתיים", unknown: "מצב לא ידוע" };
 const VERIF = {
@@ -35,7 +36,7 @@ const store = {
 const state = {
   filters: store.get("tl_filters", { type: "", location_id: "", radius_km: "", hours: "", verification: "" }),
   gps: null, // נשמר בזיכרון בלבד, לא נשלח לשמירה ולא נכתב למכשיר
-  locations: [], events: [], map: null, layer: null, editing: null, seg: null,
+  locations: [], events: [], map: null, layer: null, editing: null,
 };
 
 async function api(path, opts = {}) {
@@ -107,7 +108,8 @@ function eventCard(e) {
       el("span", { class: "tag" }, `${icon} ${label}`),
       el("span", { class: "tag" }, STATUS[e.status]),
       el("span", { class: `tag ${e.verification}` }, VERIF[e.verification]),
-      e.is_demo && el("span", { class: "tag demo" }, "נתוני הדגמה")),
+      e.is_demo && el("span", { class: "tag demo" }, "נתוני הדגמה"),
+      e.analyzer && e.analyzer.startsWith("rules") && el("span", { class: "tag historical" }, "זוהה אוטומטית לפי כללים")),
     el("h3", {}, e.title),
     el("div", { class: "meta" },
       el("span", {}, "📍 " + loc),
@@ -115,8 +117,9 @@ function eventCard(e) {
       el("span", { title: clock(e.first_reported_at) }, "פורסם " + ago(e.first_reported_at)),
       e.occurred_at ? el("span", {}, "זמן האירוע: " + clock(e.occurred_at)) : el("span", {}, "זמן האירוע לא ידוע"),
       e.updated_at !== e.first_reported_at && el("span", {}, "עודכן " + ago(e.updated_at))),
-    e.summary && el("p", {}, e.summary),
-    el("div", { class: "srcs" }, `${e.independent_sources} מקורות עצמאיים: `, links));
+    e.places && e.places.length > 1 && el("p", { class: "note" }, "מקומות שהוזכרו: " + e.places.join(", ")),
+    e.summary && el("p", { class: "raw-text", dir: "auto" }, e.summary),
+    el("div", { class: "srcs" }, e.independent_sources === 1 ? "מקור אחד: " : `${e.independent_sources} מקורות עצמאיים: `, links));
 }
 
 /* ---------- הודעה גולמית ממקור ---------- */
@@ -130,11 +133,13 @@ function rawCard(r) {
       el("span", { class: "tag" }, r.source_name),
       r.is_official ? el("span", { class: "tag official" }, "מקור רשמי")
         : el("span", { class: "tag single_source" }, "מקור לא רשמי · לא מאומת"),
-      el("span", { class: "tag" }, "הודעה גולמית · טרם נותחה"),
       r.historical && el("span", { class: "tag historical" }, "היסטורית · נקלטה באיחור, אינה דיווח חדש"),
       !recent && !r.historical && el("span", { class: "tag historical" }, "ישנה מ-24 שעות"),
       r.edited_at && el("span", { class: "tag" }, "נערכה"),
-      r.noise && el("span", { class: "tag st-error" }, "סונן: " + r.noise)),
+      r.noise && el("span", { class: "tag st-error" }, "סונן: " + r.noise),
+      !r.noise && r.analysis && (r.analysis.relevant
+        ? el("span", { class: "tag st-ingesting" }, `נכלל באירוע · ${TYPES[r.analysis.type][0]} · ${r.analysis.location}`)
+        : el("span", { class: "tag" }, r.analysis.north ? "לא נכלל: לא זוהה סוג אירוע" : "לא נכלל: לא זוהה מקום בצפון"))),
     el("p", { class: "raw-text", dir: "auto" }, r.content || "(הודעה ללא טקסט – תמונה או סרטון בלבד)"),
     r.content && r.content.endsWith("…") && el("p", { class: "note" }, "פתיח בלבד. הטקסט המלא נמצא בהודעה המקורית."),
     el("dl", { class: "times" },
@@ -171,11 +176,6 @@ function renderRaw(raw, sources, meta) {
   $("#source-warnings").replaceChildren(...warn.map((t) => el("p", { class: "warn" }, t)));
 }
 
-function setSeg(which) {
-  state.seg = which;
-  $("#raw-pane").hidden = which !== "raw"; $("#events-pane").hidden = which !== "events";
-  $("#seg-raw").classList.toggle("on", which === "raw"); $("#seg-events").classList.toggle("on", which === "events");
-}
 
 function renderFeed(target, events, emptyText) {
   target.replaceChildren(...(events.length ? events.map(eventCard) : [el("p", { class: "empty" }, emptyText)]));
@@ -198,10 +198,13 @@ async function loadEvents() {
       getData("sources").catch(() => [])]);
     state.events = events;
     const filtered = Object.keys(q).length > 0;
-    renderFeed($("#feed"), events, filtered ? "אין אירועים שתואמים את הסינון."
-      : "עדיין אין אירועים מאומתים. הודעות גולמיות אינן הופכות לאירועים, אינן מופיעות על המפה ואינן מפעילות התראות עד שיתווסף שלב הניתוח והאימות.");
+    const recentEv = events.filter((e) => isRecent(e.updated_at)), olderEv = events.filter((e) => !isRecent(e.updated_at));
+    renderFeed($("#feed"), recentEv, filtered ? "אין אירועים שתואמים את הסינון ב-24 השעות האחרונות."
+      : "אין אירועים בצפון מ-24 השעות האחרונות. הודעות מהמקורות מוצגות כאן רק אחרי שזוהה בהן מקום בצפון וסוג אירוע.");
+    $("#feed-archive").replaceChildren(...olderEv.map(eventCard));
+    $("#feed-archive-box").hidden = !olderEv.length;
+    $("#feed-archive-title").textContent = `אירועים קודמים · ${olderEv.length}`;
     renderRaw(raw, sources, meta);
-    if (state.seg === null) setSeg(raw.length && !events.length ? "raw" : "events");
     const checked = meta.generated_at || meta.server_time;
     $("#updated").textContent = STATIC ? "נבדק " + ago(checked)
       : meta.last_updated ? "עדכון אחרון: " + ago(meta.last_updated) : "אין נתונים";
@@ -494,8 +497,6 @@ async function start() {
   setupTheme();
   document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.view)));
   try { state.locations = await getData("locations"); } catch { state.locations = []; }
-  $("#seg-raw").addEventListener("click", () => setSeg("raw"));
-  $("#seg-events").addEventListener("click", () => setSeg("events"));
   setupFilters(); setupAlerts(); setupAdmin();
   await loadEvents();
   setInterval(() => { if (!document.hidden) loadEvents(); }, 60000);

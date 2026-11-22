@@ -88,11 +88,14 @@ def main(argv=None, fetch=None) -> dict:
         con.execute("UPDATE sources SET ingested_count ="
                     " (SELECT COUNT(*) FROM raw_reports WHERE source_id = sources.id) WHERE is_demo = 0")
         total = ingest.save_log(con, Path(args.log))
+        from app.events_builder import build_events
+        n_events = build_events(con)
         export_site(con, Path(args.out), results, now_iso(), ok, extra)
 
     report(results, loaded, total, ok)
+    print(f"אירועים מנותחים (לפי כללים): {n_events}")
     shutil.rmtree(tmp, ignore_errors=True)
-    return {"ok": ok, "results": results, "total": total, "pruned": pruned}
+    return {"ok": ok, "results": results, "total": total, "pruned": pruned, "events": n_events}
 
 
 def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool, extra=None) -> None:
