@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1b2d">
+<title>צפון LIVE – תמונת מצב אזורית</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot"></span>צפון <b>LIVE</b></div>
+  <div class="top-meta" id="updated">טוען…</div>
+  <button id="theme" class="icon-btn" aria-label="החלפת מצב כהה/בהיר">◐</button>
+</header>
+<div id="demo-banner" class="banner" hidden></div>
+
+<main>
+  <section id="view-feed" class="view">
+    <div class="seg" role="group" aria-label="סוג התצוגה">
+      <button id="seg-raw">הודעות גולמיות</button>
+      <button id="seg-events">אירועים מאומתים</button>
+    </div>
+    <div id="raw-pane" hidden>
+      <p class="note">הודעות אמיתיות כפי שפורסמו במקור, לפני ניתוח. זו אינה מערכת התרעה: המידע מגיע באיחור של רבע שעה ויותר. בחירום פועלים רק לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
+      <p class="status" id="run-status"></p>
+      <div id="raw" class="feed" aria-live="polite"></div>
+    </div>
+    <div id="events-pane">
+    <div class="chips" id="type-chips" role="group" aria-label="סינון לפי סוג אירוע"></div>
+    <div class="filters">
+      <label>אזור<select id="f-loc"></select></label>
+      <label>רדיוס<select id="f-radius">
+        <option value="">המקום עצמו</option><option value="5">5 ק"מ</option>
+        <option value="10">10 ק"מ</option><option value="25">25 ק"מ</option></select></label>
+      <label>זמן<select id="f-hours">
+        <option value="">הכול</option><option value="3">3 שעות</option><option value="12">12 שעות</option>
+        <option value="24">24 שעות</option><option value="168">שבוע</option></select></label>
+      <label>אימות<select id="f-verif">
+        <option value="">הכול</option><option value="official">רשמי</option>
+        <option value="multi_source">כמה מקורות</option><option value="single_source">מקור אחד</option>
+        <option value="retracted">הוכחש</option></select></label>
+    </div>
+    <div class="gps-row">
+      <button id="gps" class="link-btn">השתמש במיקום משוער שלי (לא חובה)</button>
+      <span id="gps-state"></span>
+    </div>
+    <div id="feed" class="feed" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="view-map" class="view" hidden>
+    <div id="map"></div>
+    <p class="note" id="map-note"></p>
+  </section>
+
+  <section id="view-alerts" class="view" hidden>
+    <h2>התראות בתוך האפליקציה</h2>
+    <p class="note">הכללים נשמרים במכשיר שלך בלבד. דיווח ביטחוני לא מאומת אינו התרעה רשמית – יש לפעול לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
+    <div class="filters">
+      <label>אזור / כביש<select id="a-loc"></select></label>
+      <label>סוג<select id="a-type"></select></label>
+      <button id="a-add" class="btn">הוספת כלל</button>
+    </div>
+    <ul id="a-rules" class="rules"></ul>
+    <h3>אירועים תואמים (24 שעות אחרונות)</h3>
+    <div id="a-feed" class="feed"></div>
+  </section>
+
+  <section id="view-admin" class="view" hidden>
+    <h2>מקורות</h2>
+    <div id="admin-static" hidden>
+      <p class="note">מצב המקורות בהרצת האיסוף האחרונה. בניסוי הזה רשימת המקורות נמצאת בקובץ collector/sources.json; עריכה מהמסך תתאפשר בגרסת השרת.</p>
+      <div id="sources-ro" class="feed"></div>
+    </div>
+    <div id="admin-login">
+      <p class="note">הזינו את קוד המנהל שהוגדר בשרת. הקוד נשמר רק עד סגירת הלשונית.</p>
+      <div class="filters">
+        <label>קוד מנהל<input id="admin-token" type="password" autocomplete="off"></label>
+        <button id="admin-enter" class="btn">כניסה</button>
+      </div>
+      <p class="error" id="admin-err"></p>
+    </div>
+    <div id="admin-panel" hidden>
+      <form id="src-form" class="card form">
+        <h3 id="src-form-title">הוספת מקור</h3>
+        <label>שם<input id="s-name" required maxlength="120"></label>
+        <label>סוג<select id="s-kind">
+          <option value="telegram">טלגרם (ערוץ ציבורי)</option><option value="rss">RSS</option>
+          <option value="api">API</option><option value="website">אתר</option><option value="other">אחר</option>
+        </select></label>
+        <label>כתובת / שם ערוץ<input id="s-address" required maxlength="500" dir="ltr" placeholder="https://t.me/channel"></label>
+        <label>עדיפות (1–5)<input id="s-priority" type="number" min="1" max="5" value="3"></label>
+        <label>אזורי כיסוי<select id="s-coverage" multiple size="4"></select></label>
+        <fieldset><legend>סוגי מידע רצויים</legend><div id="s-types" class="checks"></div></fieldset>
+        <label class="check"><input id="s-official" type="checkbox"> מקור רשמי</label>
+        <div class="row">
+          <button class="btn" type="submit">שמירה</button>
+          <button class="btn ghost" type="button" id="s-cancel" hidden>ביטול עריכה</button>
+        </div>
+        <p class="note" id="src-msg"></p>
+        <p class="error" id="src-err"></p>
+      </form>
+      <div id="sources" class="feed"></div>
+      <button class="link-btn" id="admin-exit">יציאה מממשק הניהול</button>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="ניווט ראשי">
+  <button data-view="feed" class="on"><span>📰</span>פיד</button>
+  <button data-view="map"><span>🗺️</span>מפה</button>
+  <button data-view="alerts"><span>🔔</span>התראות</button>
+  <button data-view="admin"><span>⚙️</span>מקורות</button>
+</nav>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

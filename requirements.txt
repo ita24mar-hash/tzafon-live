@@ -1,0 +1,6 @@
+starlette==1.7.0
+uvicorn==0.54.0
+pydantic==2.13.5
+requests==2.34.2
+anyio
+pytest==9.1.1

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "פיקוד העורף",
+    "kind": "telegram",
+    "address": "https://t.me/PikudHaOref_all",
+    "is_official": true,
+    "enabled": true
+  },
+  {
+    "name": "מגן דוד אדום",
+    "kind": "telegram",
+    "address": "https://t.me/mdaisrael",
+    "is_official": true,
+    "enabled": false
+  },
+  {
+    "name": "North_Media (חדשות הצפון)",
+    "kind": "telegram",
+    "address": "https://t.me/North_Media",
+    "is_official": false,
+    "enabled": false
+  },
+  {
+    "name": "חדשות לפני כולם בטלגרם",
+    "kind": "telegram",
+    "address": "https://t.me/hazfon1",
+    "is_official": false,
+    "enabled": false
+  },
+  {
+    "name": "מבזקי רעם",
+    "kind": "telegram",
+    "address": "https://t.me/ramreports",
+    "is_official": false,
+    "enabled": false
+  }
+]
