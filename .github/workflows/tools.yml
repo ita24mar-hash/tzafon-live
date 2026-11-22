@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write   # רק לשמירת קובצי נתוני עזר (app/localities.json)
+  models: read      # בדיקת מודלים של GitHub Models (חינם, ללא מפתח)
 
 jobs:
   run:
