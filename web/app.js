@@ -540,7 +540,7 @@ function candidateCard(c) {
       el("dt", {}, "קישור"), el("dd", {}, el("a", { href: c.url, target: "_blank", rel: "noopener noreferrer", dir: "ltr" }, "t.me/" + c.username)),
       el("dt", {}, "דיווחים מתוך ההודעות"), el("dd", {}, `${pct(c.report_share)} (בצפון: ${pct(c.north_share)})`),
       regions.length && el("dt", {}, "אזורים"), regions.length && el("dd", {}, regions.join(", ")),
-      el("dt", {}, "מנויים"), el("dd", {}, c.subscribers ? Number(c.subscribers).toLocaleString("he-IL") : "—"),
+      el("dt", {}, "מנויים"), el("dd", { dir: "ltr" }, c.subscribers ? String(c.subscribers) : "—"),
       el("dt", {}, "הודעה אחרונה"), el("dd", {}, c.newest ? ago(c.newest) : "—"),
       el("dt", {}, "הוזכר אצל"), el("dd", {}, (c.mentioned_by || []).join(", "))),
     ...(c.samples || []).map((t) => el("blockquote", { class: "sample" }, t)));
