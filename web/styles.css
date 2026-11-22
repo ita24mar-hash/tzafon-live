@@ -131,6 +131,7 @@ select, input:not([type=checkbox]) { font: inherit; font-size: .93rem; color: va
 .tag-demo { background: #f6e7c8; color: #5a3d06; border-radius: 4px; padding: 0 6px; font-weight: 700; }
 .empty-state { padding: 14px 0 4px; color: var(--muted); font-size: .92rem; }
 .fineprint { color: var(--muted); font-size: .78rem; margin: 26px 0 10px; border-top: 1px solid var(--line); padding-top: 12px; }
+.fineprint.copyright { border: 0; margin-top: 0; padding-top: 0; }
 
 /* ---------- רשימות מקופלות ---------- */
 .archive { margin-top: 14px; }
