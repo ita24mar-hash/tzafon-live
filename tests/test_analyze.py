@@ -23,9 +23,17 @@ def test_real_messages():
     assert a["type"] == "security" and a["ended"]
     a = analyze("תושבים יקרים, במהלך בדיקות שגרתיות נמצאו נתונים חריגים במי השתיה בכרמיאל")
     assert (a["type"], a["location"]) == ("infrastructure", "כרמיאל")
-    # אירוע אמיתי אבל לא בצפון → לא רלוונטי
+    # כיסוי ארצי: אירוע במרכז הארץ רלוונטי, ומשויך לאזור שלו
     a = analyze("דוברות מד\"א: התקבל דיווח במוקד 101 על רוכב אופנוע שנפגע מרכב בראשון לציון")
-    assert a["type"] == "accident" and not a["relevant"]
+    assert (a["type"], a["location"], a["relevant"], a["north"], a["regions"]) == \
+        ("accident", "ראשון לציון", True, False, ["shfela"])
+    assert analyze("שריפה בכרמיאל")["regions"] == ["galil-maaravi"]
+    assert analyze("ירי רקטות לעוטף עזה")["regions"] == ["south"]
+    # שם יישוב שהוא גם מילה נפוצה לא מזוהה כמקום
+    assert analyze("תאונה ליד הגשר, נהג נפגע")["places"] == []
+    # שם רחוב אינו מקום האירוע
+    assert analyze("הולכת רגל נפגעה מרכב ברחוב משמר הירדן בתל אביב")["places"] == ["תל אביב - יפו"]
+    assert analyze("מחאה בשדרות חיים בר לב בירושלים, חסימת צירים")["places"] == ["ירושלים"]
     # בצפון אבל לא אירוע → לא רלוונטי
     assert not analyze("סוכות בכרמיאל: כל הפעילויות והאירועים היום")["relevant"]
 
@@ -66,8 +74,8 @@ def test_events_merge_alert_update_and_copies(tmp_path, monkeypatch):
         _add(con, u2["id"], "20", "2026-11-22T10:05:00+00:00", "שריפה בכרמיאל ליד הקניון")          # העתקה מילה במילה
         _add(con, u2["id"], "21", "2026-11-22T10:20:00+00:00", "צוותי כיבוי פועלים בשריפה בכרמיאל")   # דיווח עצמאי
         _add(con, u1["id"], "11", "2026-11-22T18:00:00+00:00", "שריפה חדשה בכרמיאל")                  # אחרי 8 שעות: אירוע חדש
-        _add(con, u1["id"], "12", "2026-11-22T11:00:00+00:00", "תאונה בראשון לציון")                 # לא בצפון
-        assert build_events(con) == 3
+        _add(con, u1["id"], "12", "2026-11-22T11:00:00+00:00", "תאונה בראשון לציון")                 # במרכז הארץ
+        assert build_events(con) == 4
         evs = repo.list_events(con)
     alert = next(e for e in evs if e["title"] == "אירוע ביטחוני בזרעית ועוד מקום אחד")
     assert [r["relation"] for r in alert["reports"]] == ["report", "report", "update"]

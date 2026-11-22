@@ -6,9 +6,9 @@ analyze(text) מחזיר מילון באותו מבנה שמנתח AI יחזיר
 """
 import re
 
-from .gazetteer import PLACES
+from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-1"
+VERSION = "rules-2"   # rules-2: כיסוי ארצי + שיוך לאזורים
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -32,7 +32,8 @@ ENDED = re.compile(r"האירוע הסתיים|הסתיים|הוסר החשש|נ
 def _pattern(name: str) -> re.Pattern:
     # תחיליות עבריות נפוצות: ב, ל, מ, ו, ה, ש, כ (עד שתיים), ולא חלק ממילה ארוכה יותר
     body = re.escape(name).replace("\\ ", r"[\s\-–]+")
-    return re.compile(rf"(?<![{HEB}\w])(?:[ובלמהשכ]{{0,2}}){body}(?![{HEB}\w])")
+    tail = rf"(?![{HEB}\w])" + (rf"(?!\s+[{HEB}])" if name in STREETLIKE else "")
+    return re.compile(rf"(?<![{HEB}\w])(?:[ובלמהשכ]{{0,2}}){body}{tail}")
 
 
 _INDEX = []
@@ -56,27 +57,45 @@ HOSPITAL = re.compile(r"(?:ל|ב|ה|ו)?(?:בית ה?חולים|בי[\"״]ח|ב�
                       r"מלר\"ד|המיון|חדר ה?מיון)[^.,;\n]{0,45}")
 
 
+# שם רחוב שהוא גם שם של יישוב ("ברחוב משמר הירדן בתל אביב"): עד שתי מילים אחרי "רחוב", עד מילה שמתחילה ב-ב
+STREET = re.compile(rf"(?:ב|ל|מ|ו)?(?:רחוב|רח'|רח׳|שדרות|שד'|שד׳)(?:\s+(?!ב)[{HEB}\"'׳״\-]+){{1,2}}")
+
+
 # הודעה שעוסקת בזירה מחוץ לישראל. בה, אזכור כללי של "הצפון" אינו מקום האירוע.
 ABROAD = re.compile(r"לבנון|לבנוני|בלבנון|חיזבאללה|הכפר השיעי|בכפר השיעי|סוריה|בסוריה|סורי|"
                     r"רצועת עזה|ברצועה|בעזה|דיווחים ערביים|כלי תקשורת בלבנון")
-GENERIC = {"צפון הארץ"}
+GENERIC = {name for kind, name, *_ in PLACES if kind == "region"}
 
 
 def analyze(text: str) -> dict:
     t = re.sub(r"\s+", " ", text or "")
-    places = find_places(HOSPITAL.sub(" ", t))
+    places = find_places(STREET.sub(" ", HOSPITAL.sub(" ", t)))
     if places and ABROAD.search(t) and all(p["name"] in GENERIC for p in places):
         places = []   # למשל "פיצוצים בכפר בלבנון ... ליד גבול הצפון": האירוע בלבנון, לא בצפון
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
     severity = 3 if SEVERE.search(t) else 2 if MEDIUM.search(t) else 1
+    names = [p["name"] for p in places]
+    regions = regions_for(names)
     return {
         "v": VERSION,
-        "north": bool(places),
-        "places": [p["name"] for p in places],
+        "north": bool(set(regions) & NORTH_REGIONS),
+        "regions": regions,
+        "places": names,
         "location": places[0]["name"] if places else None,
         "type": etype,
         "severity": severity,
         "ended": bool(ENDED.search(t)),
-        # ההחלטה אם להציג: דיווח (לא רעש) + מקום בצפון + סוג אירוע מזוהה
+        # ההחלטה אם להציג: דיווח (לא רעש) + מקום בישראל + סוג אירוע מזוהה
         "relevant": bool(places) and etype is not None,
     }
+
+
+def upgrade(old: dict | None, excerpt: str) -> dict:
+    """ניתוח שמור מגרסה קודמת. הודעה שכבר זוהתה כאירוע נותחה מהטקסט המלא, ולכן שומרים
+    את המקומות והסוג שלה ורק מוסיפים אזורים. כל השאר מנותח מחדש מהקטע השמור."""
+    if old and old.get("v") == VERSION:
+        return old
+    if old and old.get("v") == "rules-1" and old.get("relevant"):
+        regions = regions_for(old["places"])
+        return old | {"v": VERSION, "regions": regions, "north": bool(set(regions) & NORTH_REGIONS)}
+    return analyze(excerpt)

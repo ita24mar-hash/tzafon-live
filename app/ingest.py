@@ -117,8 +117,7 @@ def upsert_report(con, source_id: int, msg: dict, ingested_at: str | None = None
         msg = msg | {"content": excerpt(msg["content"])}
         # כללים חדשים חלים גם על הודעות ישנות (לפי הפתיח השמור)
         noise = msg.get("noise") or classify_noise(msg["content"])
-        a = msg.get("analysis")
-        analysis = a if a and a.get("v") == analyzer.VERSION else analyzer.analyze(msg["content"])
+        analysis = analyzer.upgrade(msg.get("analysis"), msg["content"])
     else:
         full = clean(msg["content"])
         h, lang = content_hash(full), detect_lang(full)

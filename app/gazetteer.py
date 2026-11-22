@@ -60,3 +60,155 @@ PLACES = [
         ("מחלף אליפלט", []),
     ]],
 ]
+
+
+# ======================================================================
+# כיסוי ארצי: רשימת היישובים הרשמית (רשות האוכלוסין, data.gov.il) + חלוקה לאזורים לפי נפה
+# ======================================================================
+import json as _json
+import re as _re
+from pathlib import Path as _Path
+
+# אזורים שהמשתמש בוחר מהם. כל נפה של הלמ"ס שייכת לאזור אחד.
+REGIONS = [
+    ("galil-elyon", "הגליל העליון והגולן", ["צפת", "גולן"]),
+    ("galil-maaravi", "הגליל המערבי ומרכז הגליל", ["עכו"]),
+    ("kineret-amakim", "כנרת והעמקים", ["כנרת", "עפולה", "נצרת"]),
+    ("haifa", "חיפה והקריות", ["חיפה"]),
+    ("sharon", "השרון וחדרה", ["חדרה", "השרון"]),
+    ("dan", "גוש דן", ["תל אביב", "רמת גן", "חולון", "פתח תקווה"]),
+    ("shfela", "השפלה", ["רמלה", "רחובות"]),
+    ("jerusalem", "ירושלים והסביבה", ["ירושלים"]),
+    ("south", "הדרום", ["אשקלון", "באר שבע"]),
+    ("yosh", "יהודה ושומרון", ["ראמאללה", "ירדן )יריחו(", "חברון", "טול כרם", "בית לחם", "ג'נין", "שכם"]),
+]
+NORTH_REGIONS = {"galil-elyon", "galil-maaravi", "kineret-amakim", "haifa"}
+_NAFA_REGION = {n: rid for rid, _, nafot in REGIONS for n in nafot}
+
+# אזורים למקומות שכתבתי ידנית (כבישים, צמתים, אזורים) – ולאזורים כלליים ארציים
+MANUAL_REGIONS = {
+    "הגליל העליון": ["galil-elyon"], "קו העימות": ["galil-elyon", "galil-maaravi"], "הגליל המערבי": ["galil-maaravi"],
+    "הגליל התחתון": ["kineret-amakim"], "מרכז הגליל": ["galil-maaravi"], "מרום הגליל": ["galil-elyon"],
+    "רמת הגולן": ["galil-elyon"], "מבואות החרמון": ["galil-elyon"], "אצבע הגליל": ["galil-elyon"],
+    "צפון הארץ": sorted(NORTH_REGIONS),
+    "כביש 89": ["galil-elyon", "galil-maaravi"], "כביש 85": ["galil-maaravi", "galil-elyon"],
+    "כביש 90": ["galil-elyon", "kineret-amakim", "yosh", "south"], "כביש 866": ["galil-elyon"],
+    "כביש 886": ["galil-elyon"], "כביש 899": ["galil-elyon", "galil-maaravi"], "כביש 91": ["galil-elyon"],
+    "כביש 92": ["kineret-amakim", "galil-elyon"], "כביש 98": ["galil-elyon"], "כביש 87": ["galil-elyon", "kineret-amakim"],
+    "כביש 77": ["kineret-amakim", "galil-maaravi"], "כביש 70": ["haifa", "galil-maaravi"],
+    "צומת שזור": ["galil-maaravi"], "צומת גולני": ["kineret-amakim"], "צומת המוביל": ["galil-maaravi"],
+    "צומת עמיעד": ["galil-elyon"],
+    # מקומות מהרשימה הידנית שהשם שלהם שונה מהרשימה הרשמית
+    "קריית שמונה": ["galil-elyon"], "מעלות תרשיחא": ["galil-maaravi"], "ספסופה": ["galil-elyon"],
+    "קדיתא": ["galil-elyon"], "תל חי": ["galil-elyon"], "זרעית": ["galil-maaravi"], "ערב אל עראמשה": ["galil-maaravi"],
+    "מגדל תפן": ["galil-maaravi"], "כסרא סמיע": ["galil-maaravi"], "דיר אל אסד": ["galil-maaravi"],
+    "מג'ד אל כרום": ["galil-maaravi"], "סכנין": ["galil-maaravi"], "מעיין ברוך": ["galil-elyon"],
+    "כפר יובל": ["galil-elyon"], "ראש הנקרה": ["galil-maaravi"], "אילון": ["galil-maaravi"],
+    "צומת מירון": ["galil-elyon"], "צומת עין זיתים": ["galil-elyon"], "צומת חנניה": ["galil-maaravi"],
+    "צומת חירם": ["galil-elyon"], "צומת סאסא": ["galil-elyon"], "צומת מחניים": ["galil-elyon"],
+    "צומת גומא": ["galil-elyon"], 'צומת כ"ח': ["galil-elyon"], "צומת פרוד": ["galil-elyon"],
+    "צומת ראש פינה": ["galil-elyon"], "צומת דלתון": ["galil-elyon"], "צומת ביריה": ["galil-elyon"],
+    "מחלף אליפלט": ["galil-elyon"],
+    # אזורים כלליים בשאר הארץ (כפי שהם מופיעים בהתרעות ובחדשות)
+    "עוטף עזה": ["south"], "הנגב": ["south"], "גוש דן": ["dan"], "השרון": ["sharon"], "השפלה": ["shfela"],
+    "יהודה ושומרון": ["yosh"], "בקעת הירדן": ["yosh"], "גוש עציון": ["yosh"], "בנימין": ["yosh"],
+}
+EXTRA_PLACES = [
+    ("region", "עוטף עזה", ["אזור עוטף עזה"], None, None),
+    ("region", "הנגב", ["בנגב", "מערב הנגב"], None, None),
+    ("region", "גוש דן", ["אזור דן"], None, None),
+    ("region", "השרון", ["אזור השרון"], None, None),
+    ("region", "השפלה", ["אזור השפלה", "שפלת יהודה"], None, None),
+    ("region", "יהודה ושומרון", ["יו\"ש", "איו\"ש", "אזור שומרון", "בשומרון", "אזור יהודה"], None, None),
+    ("region", "בקעת הירדן", ["אזור בקעת הירדן"], None, None),
+    ("region", "גוש עציון", [], None, None),
+    ("region", "בנימין", ["אזור בנימין"], None, None),
+]
+
+# שמות יישובים שהם גם מילים נפוצות או שמות פרטיים. הם לא יזוהו כמקום כשהם מופיעים לבד.
+# (דוגמאות: "גשר" = מבנה, "מצפה" = נקודת תצפית, "יובל" = שם פרטי, "צופר" = אפליקציית ההתרעות)
+AMBIGUOUS = set("""
+אביאל אביגדור אביגיל אביה אביטל אביעזר אבשלום אדירים אדרת אודים אודם אוהד אומן אומץ אורה אורות אורים אורנים אורנית
+אזור אחווה אחיה אייל אילון אילות אירוס איתמר איתן איתנים אלומה אלומות אלון אלונים אליאב אליקים אלישמע אלמוג אלעד
+אלעזר אמונים אמנון אמציה אסיף אפיק אפיקים אפרת ארגמן ארז אריאל אשכולות אתגר בחן בטחה בניה ברוש ברכה ברכיה ברק ברקן ברקת
+גאולים גאליה גבולות גבים גבע גבעולים גבעות גבעתי גדות גדיש גונן גורן גזית גזר גיאה גילת גלגל גנות גנים געש גפן גשר
+דבורה דביר דולב דור דורות דליה דן דפנה דקל הבונים הודיה הזורע הזורעים החותרים הילה המעפיל הסוללים העוגן הראל הררית
+זוהר זכריה זמר זמרת זרועה זרזיר זרחיה חבר חגור חגי חגלה חולדה חולית חומש חוסן חופית חורשים חזון חיננית חירות חלוץ חלץ
+חמד חמדת חמרה חניאל חצב חצרים חרוצים חרמש חרשה חרשים חשמונאים טללים טלמון טנא טפחות יבול יגור יגל ידידה יהל יובל יובלים
+יונדב יונתן יסודות יעד יעל יעף יערה יפית יפעת יפתח יקום יקיר ירדנה ישע ישעי יתד כדים כיסופים כליל כלנית כמון כנות כנף
+כרכום כרמים כרמל לביא לבנים להב להבים לוטם לוטן לכיש לפיד לפידות לשם מאור מבועים מבטחים מבקיעים מגדים מגדל מגדלים מגל
+מגן מולדת מורן מורשת מזור מזרע מטע מיטב מיטל מיצר מירב מישר מיתר מכחול מכמורת מלאה מלילות מנוחה מנוף מנות מסד מסדה
+מסילות מסלול מעברות מעגלים מעגן מעוז מעון מעונה מעש מפלסים מצליח מצפה מצר משואה משמרות משמרת משען מתן נבטים נגבה נהורה
+נוגה נווה נועם נופים נופית נופך נוקדים נורית נחושה נחלה נחלים נחשולים נחשון נחשונים נטע נטעים נטף ניצן ניצנים נירים
+נירית נמרוד נעורים נעלה נריה נשר סביון סגולה סולם סופה סחלב סלעית סעד סער ספיר עגור עדי עדנים עוזה עולש עומר עופר עופרה
+עוצם עזוז עזר עזריאל עזריה עטרת עידן עיינות עינת עלומים עלי עלמה עמיחי עמינדב עמיעד עמיקם עמיר עמנואל ענב עשהאל עשרת
+פדויים פדיה פורת פטיש פלך פסגות פרשים צביה צבעון צוחר צופיה צופים צופית צופר צוקים צוריאל צורית צפרירים קדמה קדר
+קוממיות קורנית קלע קציר קשת רבבה רבדים רביבים רביד רגבים רווחה רוויה רוחמה רועי רותם רחוב רחלים ריחן רימונים רכסים
+רמות רנן רעים רקפת רשפים רתמים שדמה שובה שובל שוהם שומריה שורש שורשים שחר שחרות שחרית שיבולים שיזף שיטים שילה שילת
+שירה שלווה שלוחות שלומי שלומית שמיר שני שפיר שפר שקד שקף שרונה שריד שרשרת תאשור תדהר תומר תושיה תירוש תלם תלמים תמרה
+תמרת תנובות תעוז תקומה תרום
+ניין נחם כדורי נוב
+""".split())
+# שמות שהם גם שם של רחוב נפוץ ("שדרות רוטשילד"): מזוהים רק כשלא בא אחריהם שם
+STREETLIKE = {"שדרות"}
+
+
+def _clean(name: str) -> str:
+    name = _re.sub(r"\s*\([^)]*\)\s*", " ", name or "")          # "(שבט)" וכדומה
+    return _re.sub(r"\s+", " ", name).strip()
+
+
+def _aliases(name: str) -> list[str]:
+    out = {name}
+    out.add(name.replace(" - ", "-").replace(" -", "-").replace("- ", "-"))
+    out.add(_re.sub(r"\s*-\s*", " ", name))
+    for a in list(out):
+        if "קרית" in a:
+            out.add(a.replace("קרית", "קריית"))
+        if "'" in a:
+            out.add(a.replace("'", "׳"))
+    parts = name.split(" - ")                                     # "תל אביב - יפו" → "תל אביב", "יפו"
+    if len(parts) > 1:                                            # (רק עם רווחים; "חפצי-בה" הוא שם אחד)
+        out.update(p.strip() for p in parts if len(p.strip()) >= 3)
+    return [a for a in out if a and (" " in a or a not in AMBIGUOUS)]
+
+
+def _load_national():
+    path = _Path(__file__).with_name("localities.json")
+    if not path.exists():
+        return [], {}
+    recs = _json.loads(path.read_text(encoding="utf-8"))["records"]
+    places, regions = [], {}
+    for r in recs:
+        name = _clean(r.get("שם_ישוב", ""))
+        rid = _NAFA_REGION.get((r.get("שם_נפה") or "").strip())
+        if not name or not rid:
+            continue
+        aliases = [a for a in _aliases(name) if a != name]
+        if " " not in name and "-" not in name and name in AMBIGUOUS and not aliases:
+            continue                                               # שם שהוא מילה נפוצה, בלי צורה חלופית
+        places.append(("locality", name, aliases, None, None))
+        regions.setdefault(name, set()).add(rid)
+    return places, regions
+
+
+_NATIONAL, _NATIONAL_REGIONS = _load_national()
+_curated_names = {p[1] for p in PLACES}
+CURATED_NAMES = _curated_names | {p[1] for p in EXTRA_PLACES}   # מקומות שמוצגים ברשימת הסינון
+_curated_forms = {n for p in PLACES + EXTRA_PLACES for n in [p[1], *p[2]]}
+_dup = {p[1] for p in _NATIONAL if p[1] in _curated_forms or set(p[2]) & _curated_forms}
+for _n in _dup:                                   # שם רשמי של מקום שכבר ברשימה הידנית (סח'נין = סכנין)
+    _cur = next(p[1] for p in PLACES + EXTRA_PLACES if _n == p[1] or _n in p[2]
+                or set(next(q[2] for q in _NATIONAL if q[1] == _n)) & {p[1], *p[2]})
+    MANUAL_REGIONS.setdefault(_cur, sorted(_NATIONAL_REGIONS[_n]))
+PLACES = PLACES + EXTRA_PLACES + [p for p in _NATIONAL if p[1] not in _dup]
+REGION_OF = {name: sorted(rs) for name, rs in _NATIONAL_REGIONS.items()}
+REGION_OF.update(MANUAL_REGIONS)
+REGION_NAMES = {rid: title for rid, title, _ in REGIONS}
+
+
+def regions_for(places) -> list[str]:
+    out = set()
+    for p in places or []:
+        out.update(REGION_OF.get(p, []))
+    return sorted(out)

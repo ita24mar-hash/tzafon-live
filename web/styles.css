@@ -199,3 +199,18 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .pin.t-hazard { --c: var(--t-hazard); }
 .pin.t-medical { --c: var(--t-medical); }
 .pin.t-other { --c: var(--t-other); }
+
+/* ---------- אזור ---------- */
+.region-btn { background: none; border: 0; padding: 0 0 6px; color: var(--olive); font: inherit; font-size: .9rem;
+  font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.region-btn:focus-visible, .region-opt:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+#region-dialog { border: 0; border-radius: 14px; padding: 20px; width: min(92vw, 420px); background: var(--surface); color: var(--ink); }
+#region-dialog::backdrop { background: rgba(20, 28, 30, .55); }
+#region-dialog h2 { margin: 0 0 6px; font-size: 1.25rem; }
+#region-dialog p { margin: 0 0 14px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+.region-list { display: grid; gap: 6px; }
+.region-opt { text-align: start; padding: 11px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
+  color: var(--ink); font: inherit; cursor: pointer; }
+.region-opt:hover { border-color: var(--olive); }
+.region-opt.all { color: var(--muted); }
+.rest-title { font-size: 1rem; margin: 26px 0 8px; color: var(--muted); font-weight: 700; }

@@ -28,6 +28,16 @@ function el(tag, props = {}, ...kids) {
   for (const c of kids.flat()) if (c !== null && c !== undefined && c !== false) n.append(c);
   return n;
 }
+// אזורים (זהים ל-app/gazetteer.py REGIONS). כל אירוע משויך לאזור לפי היישובים שהוזכרו בו.
+const REGIONS = [
+  ["galil-elyon", "הגליל העליון והגולן"], ["galil-maaravi", "הגליל המערבי ומרכז הגליל"],
+  ["kineret-amakim", "כנרת והעמקים"], ["haifa", "חיפה והקריות"], ["sharon", "השרון וחדרה"], ["dan", "גוש דן"],
+  ["shfela", "השפלה"], ["jerusalem", "ירושלים והסביבה"], ["south", "הדרום"], ["yosh", "יהודה ושומרון"],
+];
+const REGION_NAME = Object.fromEntries(REGIONS);
+const inRegion = (e, r) => !r || (e.regions || []).includes(r);
+const regionIn = (r) => r ? "ב" + REGION_NAME[r].replace(/^ה/, "") : "בכל הארץ";
+
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* אחסון לא זמין */ } },
@@ -167,7 +177,7 @@ function rawCard(r) {
       r.noise && el("span", { class: "tag st-error" }, "סונן: " + r.noise),
       !r.noise && r.analysis && (r.analysis.relevant
         ? el("span", { class: "tag st-ingesting" }, `נכלל באירוע · ${TYPES[r.analysis.type][0]} · ${r.analysis.location}`)
-        : el("span", { class: "tag" }, r.analysis.north ? "לא נכלל: לא זוהה סוג אירוע" : "לא נכלל: לא זוהה מקום בצפון"))),
+        : el("span", { class: "tag" }, (r.analysis.places || []).length ? "לא נכלל: לא זוהה סוג אירוע" : "לא נכלל: לא זוהה מקום בישראל"))),
     el("p", { class: "raw-text", dir: "auto" }, r.content || "(הודעה ללא טקסט – תמונה או סרטון בלבד)"),
     r.content && r.content.endsWith("…") && el("p", { class: "note" }, "פתיח בלבד. הטקסט המלא נמצא בהודעה המקורית."),
     el("dl", { class: "times" },
@@ -211,19 +221,20 @@ function renderFeed(target, events, emptyText) {
 }
 
 /* ---------- תמונת מצב בראש הפיד ---------- */
-function renderPulse(recent, filtered, meta, sources) {
-  const n = recent.length, h = $("#pulse-head");
+function renderPulse(recent, filtered, meta, sources, restCount = 0) {
+  const n = recent.length, h = $("#pulse-head"), where = regionIn(state.region);
   const scope = filtered ? "לפי הסינון, " : "";
   const t = state.filters.type && TYPES[state.filters.type] ? TYPES[state.filters.type][0] : null;
-  h.textContent = n === 0 ? (t ? `אין אירועים מסוג ${t} ב-24 השעות האחרונות`
-    : filtered ? "אין אירועים שתואמים את הסינון ב-24 השעות האחרונות" : "שקט בצפון ב-24 השעות האחרונות")
-    : n === 1 ? `${scope}אירוע אחד בצפון ב-24 השעות האחרונות` : `${scope}${n} אירועים בצפון ב-24 השעות האחרונות`;
+  h.textContent = n === 0 ? (t ? `אין אירועים מסוג ${t} ${where} ב-24 השעות האחרונות`
+    : filtered ? `אין אירועים ${where} שתואמים את הסינון ב-24 השעות האחרונות` : `שקט ${where} ב-24 השעות האחרונות`)
+    : n === 1 ? `${scope}אירוע אחד ${where} ב-24 השעות האחרונות` : `${scope}${n} אירועים ${where} ב-24 השעות האחרונות`;
   h.className = n === 0 && !filtered ? "quiet" : "";
   const checked = meta.generated_at || meta.server_time;
   const on = sources.filter((x) => x.enabled && !x.is_demo);
   const quiet = on.filter((x) => x.status === "error" || !x.newest_published_at || !isRecent(x.newest_published_at));
   $("#pulse-sub").textContent = checked
-    ? `${n === 0 && !filtered ? "לא זוהו אירועים ב" + on.length + " המקורות שנבדקו. " : ""}נבדק ${ago(checked)}.`
+    ? `${n === 0 && !filtered ? "לא זוהו אירועים ב" + on.length + " המקורות שנבדקו. " : ""}` +
+      `${restCount ? (restCount === 1 ? "אירוע אחד" : restCount + " אירועים") + " בשאר הארץ. " : ""}נבדק ${ago(checked)}.`
     : "";
   const link = $("#pulse-sources");
   link.hidden = !quiet.length;
@@ -254,13 +265,19 @@ async function loadEvents() {
     if (state.drawChips) state.drawChips();
     state.events = events;
     const filtered = Object.keys(q).length > 0 || !!f.type;
-    const recentEv = events.filter((e) => isRecent(e.updated_at)), olderEv = events.filter((e) => !isRecent(e.updated_at));
+    const recentAll = events.filter((e) => isRecent(e.updated_at)), olderEv = events.filter((e) => !isRecent(e.updated_at));
+    // האזור שנבחר קודם, ומתחתיו שאר הארץ
+    const recentEv = recentAll.filter((e) => inRegion(e, state.region));
+    const restEv = state.region ? recentAll.filter((e) => !inRegion(e, state.region)) : [];
+    olderEv.sort((a, b) => inRegion(b, state.region) - inRegion(a, state.region) || 0);
     renderFeed($("#feed"), recentEv, filtered ? "אין אירועים שתואמים את הסינון."
-      : "כשיזוהה אירוע בצפון באחד המקורות, הוא יופיע כאן.");
+      : `כשיזוהה אירוע ${regionIn(state.region)} באחד המקורות, הוא יופיע כאן.`);
+    $("#feed-rest-box").hidden = !restEv.length;
+    renderTimeline($("#feed-rest"), restEv);
     renderTimeline($("#feed-archive"), olderEv, { groupByDay: true });
     $("#feed-archive-box").hidden = !olderEv.length;
     $("#feed-archive-title").textContent = `אירועים קודמים (${olderEv.length})`;
-    renderPulse(recentEv, filtered, meta, sources);
+    renderPulse(recentEv, filtered, meta, sources, restEv.length);
     renderRaw(raw, sources, meta);
     const checked = meta.generated_at || meta.server_time;
     $("#updated").textContent = STATIC ? "עודכן " + ago(checked)
@@ -329,7 +346,7 @@ function setupFilters() {
     loadEvents();
   };
   draw();
-  locationOptions($("#f-loc"), "כל הצפון");
+  locationOptions($("#f-loc"), "כל המקומות");
   updateFilterSummary();
   if (state.filters.location_id === "gps") state.filters.location_id = "";
   const bind = (id, key) => {
@@ -560,6 +577,20 @@ function show(view) {
   }
 }
 
+/* ---------- בחירת אזור (בלי GPS) ---------- */
+function setupRegion() {
+  state.region = store.get("tl_region", null);
+  const dlg = $("#region-dialog"), btn = $("#region-btn");
+  const label = () => { btn.textContent = state.region ? `האזור שלי: ${REGION_NAME[state.region]} · שינוי` : "כל הארץ · בחירת אזור"; };
+  const pick = (r) => { state.region = r; store.set("tl_region", r); label(); dlg.close(); loadEvents(); };
+  $("#region-list").replaceChildren(
+    ...REGIONS.map(([id, name]) => el("button", { type: "button", class: "region-opt", onclick: () => pick(id) }, name)),
+    el("button", { type: "button", class: "region-opt all", onclick: () => pick("") }, "כל הארץ, בלי אזור מועדף"));
+  btn.addEventListener("click", () => dlg.showModal());
+  label();
+  if (state.region === null && dlg.showModal) dlg.showModal();   // ביקור ראשון
+}
+
 function setupTheme() {
   const apply = (t) => { document.documentElement.dataset.theme = t; };
   apply(store.get("tl_theme", matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
@@ -574,7 +605,7 @@ async function start() {
   document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.view)));
   try { state.locations = await getData("locations"); } catch { state.locations = []; }
   $("#pulse-sources").addEventListener("click", () => show("admin"));
-  setupFilters(); setupAlerts(); setupAdmin();
+  setupRegion(); setupFilters(); setupAlerts(); setupAdmin();
   await loadEvents();
   setInterval(() => { if (!document.hidden) loadEvents(); }, 60000);
 }

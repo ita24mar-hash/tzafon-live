@@ -123,7 +123,10 @@ def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool, 
     meta = repo.meta(con) | {"generated_at": generated_at, "static": True, "collector": results,
                              "run_ok": run_ok, "newest_published_at": newest,
                              "fresh_hours": ingest.FRESH_HOURS}
-    files = {"events": repo.list_events(con), "locations": repo.list_locations(con), "meta": meta,
+    from app.gazetteer import CURATED_NAMES, NORTH_REGIONS, REGIONS
+    meta["regions"] = [{"id": rid, "name": title, "north": rid in NORTH_REGIONS} for rid, title, _ in REGIONS]
+    locations = [l for l in repo.list_locations(con) if l["name_he"] in CURATED_NAMES]
+    files = {"events": repo.list_events(con), "locations": locations, "meta": meta,
              "raw": ingest.list_raw_reports(con, 300), "sources": sources}
     for name, payload in files.items():
         (data / f"{name}.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")

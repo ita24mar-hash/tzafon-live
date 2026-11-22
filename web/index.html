@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1f2a2e">
-<title>צפון LIVE – תמונת מצב אזורית</title>
+<title>צפון LIVE – תמונת מצב אזורית בזמן אמת</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -15,11 +15,17 @@
   <button id="theme" class="icon-btn" aria-label="החלפת מצב כהה ובהיר"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
 </header>
 <div id="demo-banner" class="banner" hidden></div>
+<dialog id="region-dialog" aria-labelledby="region-q">
+  <h2 id="region-q">איזה אזור מעניין אותך?</h2>
+  <p>אירועים באזור שתבחר יופיעו ראשונים. אירועים בשאר הארץ יופיעו מתחתם. אפשר לשנות בכל רגע.</p>
+  <div class="region-list" id="region-list"></div>
+</dialog>
 
 <main>
   <section id="view-feed" class="view">
     <section class="pulse" aria-live="polite">
-      <h1 id="pulse-head">בודק מה קורה בצפון…</h1>
+      <button class="region-btn" id="region-btn" type="button">בחירת אזור</button>
+      <h1 id="pulse-head">בודק מה קורה…</h1>
       <p class="pulse-sub" id="pulse-sub"></p>
       <button class="pulse-link" id="pulse-sources" hidden></button>
     </section>
@@ -46,6 +52,10 @@
     </div>
     </details>
     <div id="feed" class="timeline"></div>
+    <section id="feed-rest-box" hidden>
+      <h2 class="rest-title" id="feed-rest-title">בשאר הארץ</h2>
+      <div id="feed-rest" class="timeline"></div>
+    </section>
     <details id="feed-archive-box" class="archive">
       <summary id="feed-archive-title">אירועים קודמים</summary>
       <div id="feed-archive" class="timeline"></div>
