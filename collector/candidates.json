@@ -1,23 +1,9 @@
 [
  {
-  "username": "news_HaMadlif",
-  "claimed": "המדליף הסדרתי – חדשות כללי",
-  "category": "חדשות (לא רשמי)",
+  "username": "arabworld301news",
+  "claimed": "301 העולם הערבי",
+  "category": "ביטחון ועולם ערבי (לא רשמי)",
   "claims_official": false,
-  "evidence": "רשת ערוצים פרטית; נשלח על ידי מנהל המערכת"
- },
- {
-  "username": "rotter_HaMadlif",
-  "claimed": "המדליף הסדרתי – חדשות רוטר",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "רשת ערוצים פרטית; נשלח על ידי מנהל המערכת"
- },
- {
-  "username": "haredim_HaMadlif",
-  "claimed": "המדליף הסדרתי – חדשות חרדים",
-  "category": "חדשות (לא רשמי)",
-  "claims_official": false,
-  "evidence": "רשת ערוצים פרטית; נשלח על ידי מנהל המערכת"
+  "evidence": "נשלח על ידי מנהל המערכת"
  }
 ]
