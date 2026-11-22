@@ -23,7 +23,7 @@ jobs:
           python-version: "3.12"
       - run: pip install requests pyproj openpyxl
       - name: הרצה
-        run: python "tools/${{ inputs.script }}"
+        run: PYTHONPATH=. python "tools/${{ inputs.script }}"
       - name: שמירת קובצי נתוני עזר שנוצרו
         run: |
           git add app/localities.json 2>/dev/null || true
