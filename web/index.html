@@ -25,7 +25,14 @@
     <div id="raw-pane" hidden>
       <p class="note">הודעות אמיתיות כפי שפורסמו במקור, לפני ניתוח. זו אינה מערכת התרעה: המידע מגיע באיחור של רבע שעה ויותר. בחירום פועלים רק לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
       <p class="status" id="run-status"></p>
+      <div id="source-warnings"></div>
+      <h3>דיווחים עדכניים · פורסמו ב-24 השעות האחרונות</h3>
       <div id="raw" class="feed" aria-live="polite"></div>
+      <details id="archive" class="archive">
+        <summary id="archive-title">ארכיון</summary>
+        <p class="note">הודעות שפורסמו לפני יותר מ-24 שעות. הן נשמרות לתיעוד בלבד ואינן דיווחים עדכניים. הודעות שנקלטו כשהיו כבר ישנות (למשל בהרצה הראשונה) מסומנות "היסטורית".</p>
+        <div id="raw-archive" class="feed"></div>
+      </details>
     </div>
     <div id="events-pane">
     <div class="chips" id="type-chips" role="group" aria-label="סינון לפי סוג אירוע"></div>

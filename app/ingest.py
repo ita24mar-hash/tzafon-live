@@ -2,12 +2,14 @@
 import hashlib
 import json
 import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .db import now_iso
 
 FIELDS = ("external_id", "url", "published_at", "ingested_at", "edited_at", "content", "content_hash", "lang")
 MAX_CONTENT = 8000          # תקרת אורך להודעה בודדת
+FRESH_HOURS = 24            # רק הודעה שפורסמה ב-24 השעות האחרונות נחשבת עדכנית
 PHONE = re.compile(r"(?<!\d)(?:\+972[-\s]?|0)(?:[23489]|5\d|7\d)[-\s]?\d{3}[-\s]?\d{4}(?!\d)")
 
 
@@ -73,13 +75,34 @@ def mark_ingested(con, source_id: int) -> None:
                     " last_error = NULL WHERE id = ?", (r["n"], r["last"], source_id))
 
 
+def _ts(iso: str) -> datetime:
+    return datetime.fromisoformat(iso)
+
+
+def is_historical(published_at: str, ingested_at: str) -> bool:
+    """הודעה שכבר הייתה ישנה מ-24 שעות ברגע שנקלטה (למשל בהרצה הראשונה) היא היסטורית, לא דיווח חדש."""
+    return _ts(ingested_at) - _ts(published_at) > timedelta(hours=FRESH_HOURS)
+
+
+def source_freshness(con, now: datetime | None = None) -> dict[int, dict]:
+    """לכל מקור: מועד ההודעה האחרונה שפורסמה בו, והאם הוא פרסם ב-24 השעות האחרונות."""
+    now = now or datetime.now(timezone.utc)
+    out = {}
+    for r in con.execute("SELECT source_id, MAX(published_at) AS newest FROM raw_reports WHERE is_demo = 0"
+                         " GROUP BY source_id"):
+        out[r["source_id"]] = {"newest_published_at": r["newest"],
+                               "fresh": now - _ts(r["newest"]) <= timedelta(hours=FRESH_HOURS)}
+    return out
+
+
 def list_raw_reports(con, limit: int = 200) -> list[dict]:
     rows = con.execute(
         "SELECT rr.id, rr.external_id, rr.url, rr.published_at, rr.ingested_at, rr.edited_at, rr.content,"
         " rr.lang, s.name AS source_name, s.kind AS source_kind, s.is_official"
         " FROM raw_reports rr JOIN sources s ON s.id = rr.source_id"
         " WHERE rr.is_demo = 0 ORDER BY rr.published_at DESC, rr.id DESC LIMIT ?", (limit,)).fetchall()
-    return [dict(r) | {"is_official": bool(r["is_official"])} for r in rows]
+    return [dict(r) | {"is_official": bool(r["is_official"]),
+                       "historical": is_historical(r["published_at"], r["ingested_at"])} for r in rows]
 
 
 # ---------- יומן קבוע ----------

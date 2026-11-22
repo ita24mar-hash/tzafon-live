@@ -120,20 +120,48 @@ function eventCard(e) {
 }
 
 /* ---------- הודעה גולמית ממקור ---------- */
+const FRESH_MS = 24 * 3600 * 1000;   // רק הודעה מ-24 השעות האחרונות נחשבת עדכנית
+const isRecent = (iso) => Date.now() - new Date(iso).getTime() <= FRESH_MS;
+
 function rawCard(r) {
-  return el("article", { class: "card raw" },
+  const recent = isRecent(r.published_at);
+  return el("article", { class: "card raw" + (recent ? "" : " old") },
     el("div", { class: "card-head" },
       el("span", { class: "tag" }, r.source_name),
       r.is_official && el("span", { class: "tag official" }, "מקור רשמי"),
       el("span", { class: "tag" }, "הודעה גולמית · טרם נותחה"),
+      r.historical && el("span", { class: "tag historical" }, "היסטורית · נקלטה באיחור, אינה דיווח חדש"),
+      !recent && !r.historical && el("span", { class: "tag historical" }, "ישנה מ-24 שעות"),
       r.edited_at && el("span", { class: "tag" }, "נערכה")),
     el("p", { class: "raw-text", dir: "auto" }, r.content || "(הודעה ללא טקסט – תמונה או סרטון בלבד)"),
-    el("div", { class: "meta" },
-      el("span", {}, "פורסם: " + clock(r.published_at) + " (" + ago(r.published_at) + ")"),
-      el("span", {}, "נקלט: " + clock(r.ingested_at))),
+    el("dl", { class: "times" },
+      el("dt", {}, "פורסם בטלגרם"), el("dd", {}, clock(r.published_at) + " (" + ago(r.published_at) + ")"),
+      el("dt", {}, "נקלט במערכת"), el("dd", {}, clock(r.ingested_at) + " (" + ago(r.ingested_at) + ")")),
     el("div", { class: "srcs" }, r.url
       ? el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, "להודעה המקורית בטלגרם")
       : "אין קישור למקור"));
+}
+
+function renderRaw(raw, sources, meta) {
+  const recent = raw.filter((r) => isRecent(r.published_at)), old = raw.filter((r) => !isRecent(r.published_at));
+  $("#raw").replaceChildren(...(recent.length ? recent.map(rawCard) : [el("p", { class: "empty" },
+    raw.length ? "אין דיווחים מ-24 השעות האחרונות. המקורות לא פרסמו הודעות חדשות בפרק הזמן הזה."
+               : "עדיין לא נקלטו הודעות ממקור אמיתי.")]));
+  $("#raw-archive").replaceChildren(...old.map(rawCard));
+  $("#archive").hidden = !old.length;
+  $("#archive-title").textContent = `ארכיון · ${old.length} הודעות ישנות מ-24 שעות`;
+  // אזהרה לכל מקור פעיל שלא פרסם ב-24 השעות האחרונות: קריאה מוצלחת ≠ מקור עדכני
+  const warn = [];
+  for (const s of sources.filter((x) => x.enabled && !x.is_demo)) {
+    if (s.status === "error") warn.push(`⚠️ ${s.name}: הקריאה האחרונה נכשלה – ${s.last_error || "שגיאה"}.`);
+    else if (!s.newest_published_at) warn.push(`⚠️ ${s.name}: עדיין לא נקלטה ממנו אף הודעה.`);
+    else if (!isRecent(s.newest_published_at))
+      warn.push(`⚠️ ${s.name} לא פרסם הודעה ב-24 השעות האחרונות (האחרונה: ${clock(s.newest_published_at)}, ${ago(s.newest_published_at)}). ` +
+        "הקריאה מטלגרם הצליחה, אבל אין ממנו דיווח עדכני.");
+  }
+  if (STATIC && meta.generated_at && Date.now() - new Date(meta.generated_at).getTime() > 3600 * 1000)
+    warn.push(`⚠️ האיסוף לא רץ מעל שעה (קריאה אחרונה ${ago(meta.generated_at)}). ייתכן שההרצות המתוזמנות נעצרו.`);
+  $("#source-warnings").replaceChildren(...warn.map((t) => el("p", { class: "warn" }, t)));
 }
 
 function setSeg(which) {
@@ -159,12 +187,13 @@ async function loadEvents() {
     if (f.radius_km) q.radius_km = f.radius_km;
   }
   try {
-    const [events, meta, raw] = await Promise.all([fetchEvents(q), getData("meta"), getData("raw")]);
+    const [events, meta, raw, sources] = await Promise.all([fetchEvents(q), getData("meta"), getData("raw"),
+      getData("sources").catch(() => [])]);
     state.events = events;
     const filtered = Object.keys(q).length > 0;
     renderFeed($("#feed"), events, filtered ? "אין אירועים שתואמים את הסינון."
       : "עדיין אין אירועים מאומתים. הודעות גולמיות אינן הופכות לאירועים, אינן מופיעות על המפה ואינן מפעילות התראות עד שיתווסף שלב הניתוח והאימות.");
-    $("#raw").replaceChildren(...(raw.length ? raw.map(rawCard) : [el("p", { class: "empty" }, "עדיין לא נקלטו הודעות ממקור אמיתי.")]));
+    renderRaw(raw, sources, meta);
     if (state.seg === null) setSeg(raw.length && !events.length ? "raw" : "events");
     const checked = meta.generated_at || meta.server_time;
     $("#updated").textContent = STATIC ? "נבדק " + ago(checked)
@@ -176,9 +205,10 @@ async function loadEvents() {
       b.hidden = !none && meta.run_ok;
       b.textContent = none ? "ניסוי: עדיין לא נקלטה אף הודעה אמיתית מטלגרם. המערכת אינה פעילה."
         : "ההרצה האחרונה נכשלה (" + failed.map((r) => r.source + ": " + r.error).join("; ") + "). מוצגות הודעות מהרצות קודמות.";
-      $("#run-status").textContent = `הרצה אחרונה: ${clock(meta.generated_at)} · ${meta.run_ok ? "הצליחה" : "נכשלה"} · ` +
-        `הודעה חדשה נקלטה לאחרונה: ${meta.last_message_ingested_at ? clock(meta.last_message_ingested_at) : "אף פעם"} · ` +
-        `סך הכול ${meta.real_reports_ingested} הודעות`;
+      $("#run-status").textContent = `קריאה אחרונה מטלגרם: ${clock(meta.generated_at)} (${ago(meta.generated_at)})` +
+        ` · הקריאה ${meta.run_ok ? "הצליחה" : "נכשלה"}` +
+        ` · הודעה אחרונה שפורסמה במקורות: ${meta.newest_published_at ? clock(meta.newest_published_at) : "אין"}` +
+        ` · ${meta.real_reports_ingested} הודעות שמורות`;
     } else {
       b.hidden = !(meta.demo_events > 0);
       b.textContent = meta.real_reports_ingested === 0
@@ -366,8 +396,10 @@ async function loadSourcesReadOnly() {
       el("div", { class: "meta" },
         el("span", { dir: "ltr" }, s.address),
         el("span", {}, "הודעות שנקלטו: " + s.ingested_count),
-        el("span", {}, "קליטה אחרונה: " + (s.last_ingest_at ? ago(s.last_ingest_at) : "אף פעם")),
-        el("span", {}, "בדיקה אחרונה: " + (s.last_check_at ? ago(s.last_check_at) : "לא בוצעה"))),
+        el("span", {}, "הודעה אחרונה שפורסמה במקור: " + (s.newest_published_at ? clock(s.newest_published_at) + " (" + ago(s.newest_published_at) + ")" : "אין")),
+        el("span", {}, "קריאה אחרונה מטלגרם: " + (s.last_check_at ? ago(s.last_check_at) : "לא בוצעה"))),
+      s.enabled && s.newest_published_at && !isRecent(s.newest_published_at) &&
+        el("p", { class: "warn" }, "⚠️ לא פורסמה הודעה ב-24 השעות האחרונות. הקריאה הצליחה, אבל המקור אינו עדכני."),
       s.last_error && el("p", { class: "error" }, "שגיאה: " + s.last_error))));
   } catch (e) { $("#sources-ro").replaceChildren(el("p", { class: "empty" }, "לא ניתן לטעון: " + e.message)); }
 }

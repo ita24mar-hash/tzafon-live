@@ -134,7 +134,10 @@ def public_sources(request):
     keys = ("name", "kind", "address", "is_official", "enabled", "status", "priority", "last_check_at",
             "last_error", "last_ingest_at", "ingested_count", "is_demo")
     with connect() as con:
-        return JSONResponse([{k: s[k] for k in keys} for s in repo.list_sources(con)])
+        fresh = ingest.source_freshness(con)
+        return JSONResponse([{k: s[k] for k in keys}
+                             | {"newest_published_at": fresh.get(s["id"], {}).get("newest_published_at")}
+                             for s in repo.list_sources(con)])
 
 
 async def _json_body(request: Request):

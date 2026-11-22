@@ -27,6 +27,10 @@ def test_fetch_errors():
         fetch_channel("x", fetch=lambda url: (200, b"<html>no posts</html>"))
 
 
+def by_name(out):
+    return {s["name"]: s for s in json.loads((out / "data" / "sources.json").read_text(encoding="utf-8"))}
+
+
 def _sources(tmp_path):
     p = tmp_path / "sources.json"
     p.write_text(json.dumps([
@@ -73,7 +77,13 @@ def test_run_persists_and_dedupes(tmp_path):
     assert "[מספר הוסר]" in log.read_text(encoding="utf-8")
     meta = json.loads((out / "data" / "meta.json").read_text(encoding="utf-8"))
     assert meta["demo_events"] == 0 and meta["real_reports_ingested"] == 4
-    assert meta["run_ok"] is True and meta["last_message_ingested_at"] and meta["generated_at"]
+    assert meta["run_ok"] is True and meta["generated_at"]
+    assert meta["newest_published_at"] == "2026-10-20T06:00:00+00:00"
+    # כל הודעות הדוגמה ישנות מ-24 שעות ברגע הקליטה → היסטוריות, ולא נספרו כעדכניות
+    assert all(x["historical"] for x in raw)
+    r1 = first["results"][0]
+    assert (r1["new_recent"], r1["new_historical"], r1["fresh"]) == (0, 3, False)
+    assert by_name(out)["ערוץ בדיקה"]["newest_published_at"] == "2026-10-20T06:00:00+00:00"
     assert json.loads((out / "data" / "events.json").read_text(encoding="utf-8")) == []
     src = json.loads((out / "data" / "sources.json").read_text(encoding="utf-8"))
     by = {s["name"]: s for s in src}
@@ -125,3 +135,47 @@ def test_repo_has_no_secrets():
         text = (root / f).read_text(encoding="utf-8", errors="ignore")
         hits += [f"{f}: {m.group(0)}" for m in bad.finditer(text) if "example.com" not in m.group(0)]
     assert hits == []
+
+
+def _fresh_fixture(minutes_ago: int) -> bytes:
+    from datetime import datetime, timedelta, timezone
+    t = (datetime.now(timezone.utc) - timedelta(minutes=minutes_ago)).isoformat(timespec="seconds")
+    return FIXTURE.replace(b"2026-10-20T06:00:00+00:00", t.encode())
+
+
+def test_recent_message_counted_as_recent(tmp_path):
+    from collector.run import main
+    argv = ["--out", str(tmp_path / "site"), "--log", str(tmp_path / "raw.jsonl"),
+            "--sources", str(_sources(tmp_path))]
+    res = main(argv, fetch=lambda url: (200, _fresh_fixture(30)))
+    r = res["results"][0]
+    assert (r["new_recent"], r["new_historical"], r["fresh"]) == (1, 2, True)
+    raw = {x["external_id"]: x for x in json.loads((tmp_path / "site" / "data" / "raw.json").read_text("utf-8"))}
+    assert raw["103"]["historical"] is False and raw["101"]["historical"] is True
+
+
+def test_historical_rule():
+    from app.ingest import is_historical
+    assert is_historical("2026-11-13T01:00:00+00:00", "2026-11-22T18:15:00+00:00")
+    assert not is_historical("2026-11-22T10:00:00+00:00", "2026-11-22T18:15:00+00:00")
+    assert not is_historical("2026-11-21T18:16:00+00:00", "2026-11-22T18:15:00+00:00")
+
+
+def test_verify_against_original_links(tmp_path):
+    from collector.run import main
+    from collector.verify import verify
+    log = tmp_path / "raw.jsonl"
+    argv = ["--out", str(tmp_path / "site"), "--log", str(log), "--sources", str(_sources(tmp_path))]
+    main(argv, fetch=lambda url: (200, FIXTURE))
+    urls = []
+
+    def fetch(url):
+        urls.append(url)
+        return 200, FIXTURE
+    res = verify(log, fetch=fetch)
+    assert urls[0] == "https://t.me/Test_Channel/103?embed=1"
+    assert [r["status"] for r in res] == ["ok", "ok", "ok"]
+    changed = FIXTURE.replace("ראשון".encode(), "אחר".encode())
+    res = {r["id"]: r["status"] for r in verify(log, fetch=lambda u: (200, changed))}
+    assert res["101"] == "mismatch" and res["102"] == "ok"
+    assert {r["status"] for r in verify(log, fetch=lambda u: (403, b""))} == {"unverified"}

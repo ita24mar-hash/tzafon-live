@@ -35,6 +35,8 @@ jobs:
         env:
           MAX_REPORTS_PER_SOURCE: "2000"
         run: python -m collector.run --out _site
+      - name: בדיקת 5 הודעות מול הקישור המקורי בטלגרם
+        run: python -m collector.verify
       - name: שמירת ההודעות במאגר (רק אם יש שינוי)
         run: |
           git add data/raw_reports.jsonl

@@ -43,11 +43,13 @@ def main(argv=None, fetch=None) -> dict:
             if src["enabled"] and src["kind"] == "telegram":
                 active.append(src)
         loaded = ingest.load_log(con, Path(args.log), ids)
+        names = {v: k for k, v in ids.items()}
         for sid in ids.values():
             ingest.mark_ingested(con, sid)
 
         for src in active:
-            res = {"source": src["name"], "new": 0, "edited": 0, "seen": 0, "error": None}
+            res = {"source": src["name"], "new": 0, "edited": 0, "seen": 0, "error": None,
+                   "new_recent": 0, "new_historical": 0, "newest_published_at": None, "fresh": None}
             try:
                 kwargs = {"fetch": fetch} if fetch else {}
                 messages = telegram_web.fetch_channel(src["address_norm"], **kwargs)
@@ -57,6 +59,9 @@ def main(argv=None, fetch=None) -> dict:
                     res["seen"] += 1
                     if outcome in res:
                         res[outcome] += 1
+                    if outcome == "new":
+                        key = "new_historical" if ingest.is_historical(m["published_at"], stamp) else "new_recent"
+                        res[key] += 1
                 repo.record_check(con, src["id"], True, f"נקראו {len(messages)} הודעות", "collector")
                 ingest.mark_ingested(con, src["id"])
             except Exception as e:  # מקור אחד שנכשל לא עוצר את האחרים
@@ -65,6 +70,10 @@ def main(argv=None, fetch=None) -> dict:
             results.append(res)
 
         ok = bool(results) and all(r["error"] is None for r in results)
+        fresh = ingest.source_freshness(con)
+        for src, res in zip(active, results):
+            f = fresh.get(src["id"], {})
+            res["newest_published_at"], res["fresh"] = f.get("newest_published_at"), f.get("fresh")
         pruned = ingest.prune(con, int(os.environ.get("MAX_REPORTS_PER_SOURCE", "2000")))
         con.execute("UPDATE sources SET ingested_count ="
                     " (SELECT COUNT(*) FROM raw_reports WHERE source_id = sources.id) WHERE is_demo = 0")
@@ -87,12 +96,15 @@ def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool) 
     (out / ".nojekyll").write_text("")
     data = out / "data"
     data.mkdir()
+    fresh = ingest.source_freshness(con)
     sources = [{k: s[k] for k in ("name", "kind", "address", "is_official", "enabled", "status", "priority",
                                   "last_check_at", "last_error", "last_ingest_at", "ingested_count", "is_demo")}
+               | {"newest_published_at": fresh.get(s["id"], {}).get("newest_published_at")}
                for s in repo.list_sources(con)]
-    last = con.execute("SELECT MAX(ingested_at) AS t FROM raw_reports WHERE is_demo = 0").fetchone()["t"]
+    newest = con.execute("SELECT MAX(published_at) AS t FROM raw_reports WHERE is_demo = 0").fetchone()["t"]
     meta = repo.meta(con) | {"generated_at": generated_at, "static": True, "collector": results,
-                             "run_ok": run_ok, "last_message_ingested_at": last}
+                             "run_ok": run_ok, "newest_published_at": newest,
+                             "fresh_hours": ingest.FRESH_HOURS}
     files = {"events": repo.list_events(con), "locations": repo.list_locations(con), "meta": meta,
              "raw": ingest.list_raw_reports(con, 300), "sources": sources}
     for name, payload in files.items():
@@ -104,9 +116,15 @@ def report(results, loaded, total, ok) -> None:
              f"- הודעות שנשמרו מהרצות קודמות: {loaded}", f"- סך הכול ביומן כעת: {total}", ""]
     for r in results:
         if r["error"]:
-            lines.append(f"- ❌ {r['source']}: {r['error']}")
-        else:
-            lines.append(f"- ✅ {r['source']}: נקראו {r['seen']}, חדשות {r['new']}, נערכו {r['edited']}")
+            lines.append(f"- ❌ {r['source']}: הקריאה נכשלה – {r['error']}")
+            continue
+        lines.append(f"- ✅ {r['source']}: הקריאה הצליחה. נקראו {r['seen']}; חדשות למערכת {r['new']}"
+                     f" (מתוכן עדכניות {r['new_recent']}, היסטוריות {r['new_historical']}); נערכו {r['edited']}")
+        lines.append(f"  - הודעה אחרונה שפורסמה במקור: {r['newest_published_at'] or 'אין'}")
+        if not r["fresh"]:
+            warn = f"{r['source']}: המקור לא פרסם הודעה ב-24 השעות האחרונות. קריאה מוצלחת אינה אומרת שהמקור עדכני."
+            lines.append(f"  - ⚠️ {warn}")
+            print(f"::warning::{warn}")
     if not results:
         lines.append("- ❌ אין מקור טלגרם פעיל ב-collector/sources.json")
     text = "\n".join(lines)
