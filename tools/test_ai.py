@@ -18,7 +18,9 @@ for model in ["openai/gpt-4.1-mini", "openai/gpt-4o-mini", "meta/Llama-3.3-70B-I
              "רק עובדות שכתובות בהודעה: מה קרה, איפה, מצב הנפגעים. בלי פרשנות ובלי מידע שלא מופיע."},
             {"role": "user", "content": text}]}, timeout=60)
     print("MODEL", model, "STATUS", r.status_code, f"{time.time()-t0:.1f}s")
-    if r.ok:
+    print("CTYPE", r.headers.get("content-type"), "URL", r.url, "HIST", [h.status_code for h in r.history])
+    print("RAW", r.text[:400].replace("\n", " "))
+    if r.ok and "json" in (r.headers.get("content-type") or ""):
         print("SUMMARY", r.json()["choices"][0]["message"]["content"])
         print("USAGE", r.json().get("usage"))
     else:
