@@ -276,3 +276,15 @@ def test_promo_and_appeals_filtered_without_hiding_news():
     ]
     for t in real_news:
         assert classify_noise(t) is None, t
+
+
+def test_scout_mentions_and_evaluate():
+    from collector import scout
+    html = ('<a class="tgme_widget_message_forwarded_from_name" href="https://t.me/Galil_News/55">x</a>'
+            ' עקבו @kiryat_news ו-t.me/s/haifa_now ולא @mybot או t.me/joinchat/abc או mail@example.com')
+    assert scout.mentions(html) == ["Galil_News", "haifa_now", "kiryat_news"]
+    fixture = (Path(__file__).parent / "fixtures" / "preview.html").read_bytes()
+    r = scout.evaluate("Test_Channel", lambda url: (200, fixture))
+    assert r["messages"] > 0 and r["verdict"] in ("recommended", "possible", "unsuitable") and r["reason"]
+    r = scout.evaluate("empty", lambda url: (200, b"<html></html>"))
+    assert r["verdict"] == "unsuitable" and "ציבורי" in r["reason"]

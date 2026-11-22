@@ -524,6 +524,41 @@ function sourceRow(s) {
     s.last_error && el("p", { class: "error" }, "שגיאה: " + s.last_error));
 }
 
+/* ---------- הצעות של סוכן המקורות ---------- */
+const pct = (x) => (x === null || x === undefined ? "—" : Math.round(x * 100) + "%");
+function candidateCard(c) {
+  const rec = c.verdict === "recommended";
+  const regions = Object.entries(c.regions || {}).sort((a, b) => b[1] - a[1]).map(([r]) => REGION_NAME[r]).filter(Boolean);
+  return el("article", { class: "card src" + (c.verdict === "unsuitable" ? " ended" : "") },
+    el("div", { class: "card-head" },
+      el("span", { class: "tag " + (rec ? "st-ingesting" : c.verdict === "possible" ? "single_source" : "") },
+        rec ? "מומלץ לבדיקה" : c.verdict === "possible" ? "אפשרי" : "לא מתאים"),
+      c.verified && el("span", { class: "tag official" }, "מאומת בטלגרם")),
+    el("h3", {}, c.title || c.username),
+    el("p", { class: "note" }, c.reason + "."),
+    el("dl", { class: "times" },
+      el("dt", {}, "קישור"), el("dd", {}, el("a", { href: c.url, target: "_blank", rel: "noopener noreferrer", dir: "ltr" }, "t.me/" + c.username)),
+      el("dt", {}, "דיווחים מתוך ההודעות"), el("dd", {}, `${pct(c.report_share)} (בצפון: ${pct(c.north_share)})`),
+      regions.length && el("dt", {}, "אזורים"), regions.length && el("dd", {}, regions.join(", ")),
+      el("dt", {}, "מנויים"), el("dd", {}, c.subscribers ? Number(c.subscribers).toLocaleString("he-IL") : "—"),
+      el("dt", {}, "הודעה אחרונה"), el("dd", {}, c.newest ? ago(c.newest) : "—"),
+      el("dt", {}, "הוזכר אצל"), el("dd", {}, (c.mentioned_by || []).join(", "))),
+    ...(c.samples || []).map((t) => el("blockquote", { class: "sample" }, t)));
+}
+
+async function loadCandidates() {
+  const box = $("#candidates");
+  let d;
+  try { d = await getData("candidates"); } catch { box.replaceChildren(); return; }
+  const good = d.candidates.filter((c) => c.verdict !== "unsuitable"), bad = d.candidates.filter((c) => c.verdict === "unsuitable");
+  box.replaceChildren(
+    el("h3", {}, "מקורות שהסוכן מציע"),
+    el("p", { class: "note" }, `הסוכן סרק ${d.scanned_sources} מקורות ${ago(d.generated_at)}, מצא ${d.found} ערוצים שהוזכרו בהם ובדק ${d.checked}. ` +
+      "הוא רק מציע: מקור נכנס לאיסוף אחרי שתאשר אותו. כדי להוסיף, כתוב לי \"הוסף\" עם שם הערוץ. כדי שלא יוצע שוב, \"דחה\" עם שם הערוץ."),
+    ...(good.length ? good.map(candidateCard) : [el("p", { class: "empty" }, "אין כרגע הצעות מתאימות.")]),
+    bad.length && el("details", { class: "archive" }, el("summary", {}, `נבדקו ולא מתאימים (${bad.length})`), ...bad.map(candidateCard)));
+}
+
 async function loadSourcesReadOnly() {
   $("#admin-static").hidden = false; $("#admin-login").hidden = true; $("#admin-panel").hidden = true;
   try {
@@ -535,6 +570,7 @@ async function loadSourcesReadOnly() {
       el("h3", {}, "מקורות פעילים"), ...on.map(sourceRow),
       off.length && el("details", { class: "archive" },
         el("summary", {}, `מקורות שנבדקו ולא הופעלו (${off.length})`), ...off.map(sourceRow)));
+    loadCandidates();
   } catch (e) { $("#sources-ro").replaceChildren(el("p", { class: "empty" }, "לא ניתן לטעון: " + e.message)); }
 }
 

@@ -130,6 +130,9 @@ def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool, 
              "raw": ingest.list_raw_reports(con, 300), "sources": sources}
     for name, payload in files.items():
         (data / f"{name}.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    cands = ROOT / "data" / "candidates.json"          # הצעות סוכן המקורות (אם רץ כבר)
+    if cands.exists():
+        shutil.copy(cands, data / "candidates.json")
 
 
 def report(results, loaded, total, ok) -> None:

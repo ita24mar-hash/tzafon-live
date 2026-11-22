@@ -214,3 +214,5 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .region-opt:hover { border-color: var(--olive); }
 .region-opt.all { color: var(--muted); }
 .rest-title { font-size: 1rem; margin: 26px 0 8px; color: var(--muted); font-weight: 700; }
+
+.sample { margin: 8px 0 0; padding: 6px 10px; border-inline-start: 3px solid var(--line); color: var(--muted); font-size: .88rem; }
