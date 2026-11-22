@@ -69,7 +69,7 @@ def test_events_merge_alert_update_and_copies(tmp_path, monkeypatch):
         _add(con, u1["id"], "12", "2026-11-22T11:00:00+00:00", "תאונה בראשון לציון")                 # לא בצפון
         assert build_events(con) == 3
         evs = repo.list_events(con)
-    alert = next(e for e in evs if e["title"] == "אירוע ביטחוני · זרעית ועוד מקום אחד")
+    alert = next(e for e in evs if e["title"] == "אירוע ביטחוני בזרעית ועוד מקום אחד")
     assert [r["relation"] for r in alert["reports"]] == ["report", "report", "update"]
     assert alert["status"] == "ended" and alert["verification"] == "official"
     fires = sorted((e for e in evs if e["event_type"] == "fire"), key=lambda e: e["first_reported_at"])

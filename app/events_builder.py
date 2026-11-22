@@ -23,6 +23,11 @@ SAME_SOURCE = timedelta(minutes=20)
 ENDED_UPDATE = timedelta(hours=1)
 
 
+def _in(place: str) -> str:
+    """'ב' + שם מקום: "בכרמיאל", "בכביש 89", "בגליל העליון" (ה' הידיעה נבלעת)."""
+    return "ב" + (place[1:] if place.startswith("ה") else place)
+
+
 def _ts(iso):
     return datetime.fromisoformat(iso)
 
@@ -83,7 +88,7 @@ def build_events(con) -> int:
             verification = "single_source"
         others = [p for p in c["places"] if p != main_place and KINDS.get(p) != "region"]
         more = "" if not others else " ועוד מקום אחד" if len(others) == 1 else f" ועוד {len(others)} מקומות"
-        title = f"{TITLE[c['type']]} · {main_place}{more}"
+        title = f"{TITLE[c['type']]} {_in(main_place)}{more}"
         first = next((x for x in reps if x["is_official"]), reps[0])
         status = "ended" if reps[-1]["analysis"]["ended"] else "unknown"
         cur = con.execute(

@@ -3,26 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f1b2d">
+<meta name="theme-color" content="#1f2a2e">
 <title>צפון LIVE – תמונת מצב אזורית</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="top">
-  <div class="brand"><span class="dot"></span>צפון <b>LIVE</b></div>
+  <div class="brand"><span class="brand-he">צפון</span><span class="brand-live"><span class="dot" id="live-dot"></span>LIVE</span></div>
   <div class="top-meta" id="updated">טוען…</div>
-  <button id="theme" class="icon-btn" aria-label="החלפת מצב כהה/בהיר">◐</button>
+  <button id="theme" class="icon-btn" aria-label="החלפת מצב כהה ובהיר"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
 </header>
 <div id="demo-banner" class="banner" hidden></div>
 
 <main>
   <section id="view-feed" class="view">
-    <p class="note">אירועים בצפון שזוהו אוטומטית מתוך הודעות במקורות. זו אינה מערכת התרעה: המידע מגיע באיחור של רבע שעה ויותר. בחירום פועלים רק לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
-    <p class="status" id="run-status"></p>
-    <div id="source-warnings"></div>
+    <section class="pulse" aria-live="polite">
+      <h1 id="pulse-head">בודק מה קורה בצפון…</h1>
+      <p class="pulse-sub" id="pulse-sub"></p>
+      <button class="pulse-link" id="pulse-sources" hidden></button>
+    </section>
     <div id="events-pane">
     <div class="chips" id="type-chips" role="group" aria-label="סינון לפי סוג אירוע"></div>
+    <details class="more-filters" id="more-filters">
+    <summary id="more-filters-title">סינון לפי אזור, זמן ואימות</summary>
     <div class="filters">
       <label>אזור<select id="f-loc"></select></label>
       <label>רדיוס<select id="f-radius">
@@ -40,12 +44,13 @@
       <button id="gps" class="link-btn">השתמש במיקום משוער שלי (לא חובה)</button>
       <span id="gps-state"></span>
     </div>
-    <h3 id="feed-title">אירועים מ-24 השעות האחרונות</h3>
-    <div id="feed" class="feed" aria-live="polite"></div>
+    </details>
+    <div id="feed" class="timeline"></div>
     <details id="feed-archive-box" class="archive">
       <summary id="feed-archive-title">אירועים קודמים</summary>
-      <div id="feed-archive" class="feed"></div>
+      <div id="feed-archive" class="timeline"></div>
     </details>
+    <p class="fineprint">האירועים מזוהים אוטומטית מהודעות במקורות ציבוריים ומגיעים באיחור של רבע שעה ויותר. זו אינה מערכת התרעה: בחירום פועלים רק לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
     </div>
   </section>
 
@@ -63,14 +68,16 @@
       <button id="a-add" class="btn">הוספת כלל</button>
     </div>
     <ul id="a-rules" class="rules"></ul>
-    <h3>אירועים תואמים (24 שעות אחרונות)</h3>
-    <div id="a-feed" class="feed"></div>
+    <h3>אירועים תואמים מ-24 השעות האחרונות</h3>
+    <div id="a-feed" class="timeline"></div>
   </section>
 
   <section id="view-admin" class="view" hidden>
     <h2>מקורות</h2>
     <div id="admin-static" hidden>
       <p class="note">מצב כל מקור בהרצת האיסוף האחרונה. "תקין" אומר שהקריאה מטלגרם הצליחה – לא שהמידע במקור נכון או עדכני. רשימת המקורות נערכת בקובץ collector/sources.json במאגר.</p>
+      <p class="status" id="run-status"></p>
+      <div id="source-warnings"></div>
       <div id="sources-ro" class="feed"></div>
       <details id="raw-pane" class="archive">
         <summary>כל ההודעות שנקלטו, לפני ניתוח</summary>
@@ -124,10 +131,10 @@
 </main>
 
 <nav class="tabs" aria-label="ניווט ראשי">
-  <button data-view="feed" class="on"><span>📰</span>פיד</button>
-  <button data-view="map"><span>🗺️</span>מפה</button>
-  <button data-view="alerts"><span>🔔</span>התראות</button>
-  <button data-view="admin"><span>⚙️</span>מקורות</button>
+  <button data-view="feed" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>פיד</span></button>
+  <button data-view="map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg><span>מפה</span></button>
+  <button data-view="alerts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4l2-2zM10 20a2 2 0 0 0 4 0"/></svg><span>התראות</span></button>
+  <button data-view="admin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v4H5zM5 11h14v4H5zM5 17h9v3H5z"/></svg><span>מקורות</span></button>
 </nav>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

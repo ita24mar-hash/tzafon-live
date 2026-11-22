@@ -95,31 +95,59 @@ function ago(iso) {
 const clock = (iso) => new Date(iso).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" });
 
 /* ---------- כרטיס אירוע ---------- */
-function eventCard(e) {
-  const [label, icon] = TYPES[e.event_type] || TYPES.other;
-  const loc = e.location
-    ? `${e.location.name}${e.location_precision === "approx" ? " (מיקום משוער)" : ""}`
+const TRUST = {
+  official: "מקור רשמי", multi_source: "כמה מקורות עצמאיים", single_source: "מקור יחיד, לא רשמי", retracted: "הוכחש או תוקן",
+};
+const hhmm = (iso) => new Date(iso).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
+const dayLabel = (iso) => {
+  const d = new Date(iso), t = new Date(); const y = new Date(); y.setDate(t.getDate() - 1);
+  if (d.toDateString() === t.toDateString()) return "היום";
+  if (d.toDateString() === y.toDateString()) return "אתמול";
+  return d.toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "numeric" });
+};
+
+// שורה בציר הזמן. כל הטקסט נכנס כ-textContent.
+function eventCard(e, pos = {}) {
+  const [label] = TYPES[e.event_type] || TYPES.other;
+  const where = e.location
+    ? e.location.name + (e.location.lat !== null && e.location_precision === "approx" ? ", מיקום משוער" : "")
     : "מיקום לא ידוע";
-  const links = e.reports.map((r, i) => r.url
-    ? el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, r.source_name)
-    : el("span", {}, r.source_name + " (אין קישור)")).flatMap((n, i) => (i ? [" · ", n] : [n]));
-  return el("article", { class: `card sev-${e.severity} ${e.status === "ended" ? "ended" : ""}` },
-    el("div", { class: "card-head" },
-      el("span", { class: "tag" }, `${icon} ${label}`),
-      el("span", { class: "tag" }, STATUS[e.status]),
-      el("span", { class: `tag ${e.verification}` }, VERIF[e.verification]),
-      e.is_demo && el("span", { class: "tag demo" }, "נתוני הדגמה"),
-      e.analyzer && e.analyzer.startsWith("rules") && el("span", { class: "tag historical" }, "זוהה אוטומטית לפי כללים")),
-    el("h3", {}, e.title),
-    el("div", { class: "meta" },
-      el("span", {}, "📍 " + loc),
-      e.distance_km !== null && el("span", {}, `כ-${e.distance_km} ק״מ`),
-      el("span", { title: clock(e.first_reported_at) }, "פורסם " + ago(e.first_reported_at)),
-      e.occurred_at ? el("span", {}, "זמן האירוע: " + clock(e.occurred_at)) : el("span", {}, "זמן האירוע לא ידוע"),
-      e.updated_at !== e.first_reported_at && el("span", {}, "עודכן " + ago(e.updated_at))),
-    e.places && e.places.length > 1 && el("p", { class: "note" }, "מקומות שהוזכרו: " + e.places.join(", ")),
-    e.summary && el("p", { class: "raw-text", dir: "auto" }, e.summary),
-    el("div", { class: "srcs" }, e.independent_sources === 1 ? "מקור אחד: " : `${e.independent_sources} מקורות עצמאיים: `, links));
+  const reports = e.reports.map((r) => el("li", {},
+    r.url ? el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, r.source_name) : r.source_name,
+    ` · ${clock(r.published_at)}`, r.relation === "copy" ? " (העתק)" : r.relation === "update" ? " (עדכון)" : ""));
+  const n = e.independent_sources;
+  return el("article", { class: `ev sev-${e.severity}${e.status === "ended" ? " ended" : ""}${pos.first ? " first" : ""}${pos.last ? " last" : ""}`,
+    style: `--c: var(--t-${e.event_type})` },
+    el("div", { class: "ev-time", title: clock(e.updated_at) }, hhmm(e.updated_at)),
+    el("div", { class: "ev-rail" }, el("span", { class: "ev-dot" })),
+    el("div", { class: "ev-body" },
+      el("div", { class: "ev-kind" }, label, e.status === "ended" && el("span", { class: "ended" }, " · הסתיים"),
+        e.is_demo && el("span", { class: "tag-demo" }, " נתוני הדגמה ")),
+      el("h3", {}, e.title),
+      !e.location && el("div", { class: "ev-where" }, "מיקום לא ידוע"),
+      e.summary && el("p", { class: "ev-text", dir: "auto" }, e.summary),
+      el("div", { class: "ev-foot" },
+        el("span", { class: `trust ${e.verification}` }, TRUST[e.verification]),
+        el("details", { class: "ev-more" },
+          el("summary", {}, n === 1 ? "המקור" : `${n} מקורות`),
+          el("ul", {}, reports),
+          el("p", {}, (e.places && e.places.length > 1 ? "מקומות שהוזכרו: " + e.places.join(", ") : "מקום: " + where) + "."),
+          el("p", {}, `פורסם לראשונה ${clock(e.first_reported_at)}. ` +
+            (e.analyzer && e.analyzer.startsWith("rules") ? "האירוע זוהה אוטומטית לפי כללים, ללא בדיקה אנושית." : ""))))));
+}
+
+function renderTimeline(target, events, { groupByDay = false } = {}) {
+  const out = [];
+  let day = null;
+  events.forEach((e, i) => {
+    const d = dayLabel(e.updated_at);
+    const newDay = groupByDay && d !== day;
+    if (newDay) { out.push(el("div", { class: "day" }, d)); day = d; }
+    const next = events[i + 1];
+    const last = !next || (groupByDay && dayLabel(next.updated_at) !== d);
+    out.push(eventCard(e, { first: i === 0 || newDay, last }));
+  });
+  target.replaceChildren(...out);
 }
 
 /* ---------- הודעה גולמית ממקור ---------- */
@@ -178,7 +206,28 @@ function renderRaw(raw, sources, meta) {
 
 
 function renderFeed(target, events, emptyText) {
-  target.replaceChildren(...(events.length ? events.map(eventCard) : [el("p", { class: "empty" }, emptyText)]));
+  if (events.length) renderTimeline(target, events);
+  else target.replaceChildren(el("p", { class: "empty-state" }, emptyText));
+}
+
+/* ---------- תמונת מצב בראש הפיד ---------- */
+function renderPulse(recent, filtered, meta, sources) {
+  const n = recent.length, h = $("#pulse-head");
+  const scope = filtered ? "לפי הסינון, " : "";
+  h.textContent = n === 0 ? (filtered ? "אין אירועים שתואמים את הסינון" : "שקט בצפון ב-24 השעות האחרונות")
+    : n === 1 ? `${scope}אירוע אחד בצפון ב-24 השעות האחרונות` : `${scope}${n} אירועים בצפון ב-24 השעות האחרונות`;
+  h.className = n === 0 && !filtered ? "quiet" : "";
+  const checked = meta.generated_at || meta.server_time;
+  const on = sources.filter((x) => x.enabled && !x.is_demo);
+  const quiet = on.filter((x) => x.status === "error" || !x.newest_published_at || !isRecent(x.newest_published_at));
+  $("#pulse-sub").textContent = checked
+    ? `${n === 0 && !filtered ? "לא זוהו אירועים ב" + on.length + " המקורות שנבדקו. " : ""}נבדק ${ago(checked)}.`
+    : "";
+  const link = $("#pulse-sources");
+  link.hidden = !quiet.length;
+  link.textContent = quiet.length === 1 ? "מקור אחד לא פרסם ב-24 השעות האחרונות" : `${quiet.length} מקורות לא פרסמו ב-24 השעות האחרונות`;
+  const fresh = STATIC && checked && Date.now() - new Date(checked).getTime() < 3600 * 1000 && meta.run_ok !== false;
+  $("#live-dot").classList.toggle("on", !!fresh);
 }
 
 /* ---------- טעינה וסינון ---------- */
@@ -199,14 +248,15 @@ async function loadEvents() {
     state.events = events;
     const filtered = Object.keys(q).length > 0;
     const recentEv = events.filter((e) => isRecent(e.updated_at)), olderEv = events.filter((e) => !isRecent(e.updated_at));
-    renderFeed($("#feed"), recentEv, filtered ? "אין אירועים שתואמים את הסינון ב-24 השעות האחרונות."
-      : "אין אירועים בצפון מ-24 השעות האחרונות. הודעות מהמקורות מוצגות כאן רק אחרי שזוהה בהן מקום בצפון וסוג אירוע.");
-    $("#feed-archive").replaceChildren(...olderEv.map(eventCard));
+    renderFeed($("#feed"), recentEv, filtered ? "אין אירועים שתואמים את הסינון."
+      : "כשיזוהה אירוע בצפון באחד המקורות, הוא יופיע כאן.");
+    renderTimeline($("#feed-archive"), olderEv, { groupByDay: true });
     $("#feed-archive-box").hidden = !olderEv.length;
-    $("#feed-archive-title").textContent = `אירועים קודמים · ${olderEv.length}`;
+    $("#feed-archive-title").textContent = `אירועים קודמים (${olderEv.length})`;
+    renderPulse(recentEv, filtered, meta, sources);
     renderRaw(raw, sources, meta);
     const checked = meta.generated_at || meta.server_time;
-    $("#updated").textContent = STATIC ? "נבדק " + ago(checked)
+    $("#updated").textContent = STATIC ? "עודכן " + ago(checked)
       : meta.last_updated ? "עדכון אחרון: " + ago(meta.last_updated) : "אין נתונים";
     const b = $("#demo-banner");
     if (STATIC) {
@@ -240,14 +290,23 @@ function locationOptions(select, first) {
   }
 }
 
+function updateFilterSummary() {
+  const f = state.filters, n = ["location_id", "hours", "verification"].filter((k) => f[k]).length;
+  const t = $("#more-filters-title");
+  t.textContent = n ? `סינון פעיל (${n})` : "סינון לפי אזור, זמן ואימות";
+  t.classList.toggle("active", n > 0);
+}
+
 function setupFilters() {
   const chips = $("#type-chips");
   const draw = () => chips.replaceChildren(
     el("button", { class: "chip" + (state.filters.type ? "" : " on"), onclick: () => pick("") }, "הכול"),
     ...Object.entries(TYPES).map(([k, [label, icon]]) =>
-      el("button", { class: "chip" + (state.filters.type === k ? " on" : ""), onclick: () => pick(k) }, `${icon} ${label}`)));
+      el("button", { class: "chip" + (state.filters.type === k ? " on" : ""), style: `--c: var(--t-${k})`, onclick: () => pick(k) },
+        el("i", {}), label)));
   const pick = (k) => { state.filters.type = k; draw(); changed(); };
   const changed = () => {
+    updateFilterSummary();
     const f = { ...state.filters };
     if (f.location_id === "gps") f.location_id = ""; // בחירת GPS לא נשמרת בין ביקורים
     store.set("tl_filters", f);
@@ -255,6 +314,7 @@ function setupFilters() {
   };
   draw();
   locationOptions($("#f-loc"), "כל הצפון");
+  updateFilterSummary();
   if (state.filters.location_id === "gps") state.filters.location_id = "";
   const bind = (id, key) => {
     const n = $(id); n.value = state.filters[key] ?? "";
@@ -297,7 +357,7 @@ function drawMap() {
     shown++;
     const approx = e.location_precision === "approx" || l.coord_quality !== "verified";
     if (approx) L.circle([l.lat, l.lon], { radius: 1500, color: "#d93a26", weight: 1, dashArray: "4 4", fillOpacity: 0.08 }).addTo(state.layer);
-    L.marker([l.lat, l.lon], { icon: L.divIcon({ className: "pin", html: (TYPES[e.event_type] || TYPES.other)[1], iconSize: [28, 28] }) })
+    L.marker([l.lat, l.lon], { icon: L.divIcon({ className: `pin t-${e.event_type}`, html: "", iconSize: [16, 16] }) })
       .bindPopup(() => eventCard(e), { maxWidth: 300 }).addTo(state.layer);
   }
   const loc = state.locations.find((x) => String(x.id) === String(state.filters.location_id));
@@ -497,6 +557,7 @@ async function start() {
   setupTheme();
   document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.view)));
   try { state.locations = await getData("locations"); } catch { state.locations = []; }
+  $("#pulse-sources").addEventListener("click", () => show("admin"));
   setupFilters(); setupAlerts(); setupAdmin();
   await loadEvents();
   setInterval(() => { if (!document.hidden) loadEvents(); }, 60000);
