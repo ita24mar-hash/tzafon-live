@@ -106,3 +106,55 @@ def fetch_channel(username: str, fetch=net.safe_fetch) -> list[dict]:
         raise RuntimeError("לא נמצאו הודעות בדף: ייתכן שהתצוגה הציבורית של הערוץ כבויה,"
                            " שהערוץ אינו קיים, או שמבנה הדף השתנה")
     return messages
+
+
+class _InfoParser(HTMLParser):
+    """פרטי הערוץ מראש הדף: שם, תיאור, תג מאומת, מספר מנויים."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.info = {"title": "", "description": "", "verified": False, "subscribers": None}
+        self.field = None
+        self.depth = 0
+        self.counter = None
+
+    def handle_starttag(self, tag, attrs):
+        cls = set((dict(attrs).get("class") or "").split())
+        if any("verified" in c for c in cls) and self.field in ("title", None):
+            self.info["verified"] = True
+        if self.field:
+            if tag in ("div", "span"):
+                self.depth += 1
+            elif tag == "br":
+                self.info[self.field] += "\n"
+            return
+        if "tgme_channel_info_header_title" in cls:
+            self.field, self.depth = "title", 1
+        elif "tgme_channel_info_description" in cls:
+            self.field, self.depth = "description", 1
+        elif "counter_value" in cls:
+            self.counter = "value"
+        elif "counter_type" in cls:
+            self.counter = "type"
+
+    def handle_endtag(self, tag):
+        if self.field and tag in ("div", "span"):
+            self.depth -= 1
+            if self.depth == 0:
+                self.field = None
+
+    def handle_data(self, data):
+        if self.field:
+            self.info[self.field] += data
+        elif self.counter == "value":
+            self._last_value, self.counter = data.strip(), None
+        elif self.counter == "type":
+            if "subscriber" in data:
+                self.info["subscribers"] = getattr(self, "_last_value", None)
+            self.counter = None
+
+
+def parse_channel_info(html: str) -> dict:
+    p = _InfoParser()
+    p.feed(html)
+    return {k: v.strip() if isinstance(v, str) else v for k, v in p.info.items()}

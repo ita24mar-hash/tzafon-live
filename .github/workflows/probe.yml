@@ -1,0 +1,20 @@
+name: בדיקת מקורות מועמדים
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read     # קריאה בלבד: הבדיקה לא שומרת דבר במאגר
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-collector.txt
+      - name: בדיקת המקורות
+        run: python -m collector.probe
