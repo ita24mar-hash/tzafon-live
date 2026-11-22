@@ -133,7 +133,8 @@ function rawCard(r) {
       el("span", { class: "tag" }, "הודעה גולמית · טרם נותחה"),
       r.historical && el("span", { class: "tag historical" }, "היסטורית · נקלטה באיחור, אינה דיווח חדש"),
       !recent && !r.historical && el("span", { class: "tag historical" }, "ישנה מ-24 שעות"),
-      r.edited_at && el("span", { class: "tag" }, "נערכה")),
+      r.edited_at && el("span", { class: "tag" }, "נערכה"),
+      r.noise && el("span", { class: "tag st-error" }, "סונן: " + r.noise)),
     el("p", { class: "raw-text", dir: "auto" }, r.content || "(הודעה ללא טקסט – תמונה או סרטון בלבד)"),
     r.content && r.content.endsWith("…") && el("p", { class: "note" }, "פתיח בלבד. הטקסט המלא נמצא בהודעה המקורית."),
     el("dl", { class: "times" },
@@ -145,7 +146,11 @@ function rawCard(r) {
 }
 
 function renderRaw(raw, sources, meta) {
-  const recent = raw.filter((r) => isRecent(r.published_at)), old = raw.filter((r) => !isRecent(r.published_at));
+  const noise = raw.filter((r) => r.noise), reports = raw.filter((r) => !r.noise);
+  const recent = reports.filter((r) => isRecent(r.published_at)), old = reports.filter((r) => !isRecent(r.published_at));
+  $("#raw-noise").replaceChildren(...noise.map(rawCard));
+  $("#noise").hidden = !noise.length;
+  $("#noise-title").textContent = `סוננו · ${noise.length} הודעות שאינן דיווח`;
   $("#raw").replaceChildren(...(recent.length ? recent.map(rawCard) : [el("p", { class: "empty" },
     raw.length ? "אין דיווחים מ-24 השעות האחרונות. המקורות לא פרסמו הודעות חדשות בפרק הזמן הזה."
                : "עדיין לא נקלטו הודעות ממקור אמיתי.")]));

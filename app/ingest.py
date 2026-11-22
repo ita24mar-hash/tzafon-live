@@ -7,7 +7,8 @@ from pathlib import Path
 
 from .db import now_iso
 
-FIELDS = ("external_id", "url", "published_at", "ingested_at", "edited_at", "content", "content_hash", "lang")
+FIELDS = ("external_id", "url", "published_at", "ingested_at", "edited_at", "content", "content_hash", "lang",
+          "noise")
 MAX_CONTENT = 8000          # תקרת אורך לטקסט שממנו מחושבת טביעת האצבע
 EXCERPT_CHARS = 150         # רק פתיח קצר נשמר ומוצג; הטקסט המלא נשאר במקור
 FRESH_HOURS = 24            # רק הודעה שפורסמה ב-24 השעות האחרונות נחשבת עדכנית
@@ -46,6 +47,40 @@ def excerpt(text: str, limit: int = EXCERPT_CHARS) -> str:
     return cut.rstrip(" ,.;:-–") + "…"
 
 
+URL = re.compile(r"https?://\S+|t\.me/\S+|chat\.whatsapp\.com/\S+", re.I)
+PROMO = re.compile(r"תרומ|לתרום|paypal|הוראת קבע|לזכות ב|סגולה|ההגרלה|קוד קופון|הנחה של|"
+                   r"תוכן שיווקי|תוכן ממומן|t\.me/boost", re.I)
+# חתימות קבועות שערוצים מוסיפים לכל הודעה. מוסרות לפני הסיווג כדי שלא ייחשבו פרסומת.
+FOOTER = re.compile(r"(לשליחת תיעוד|לפרסום בערוץ|להצטרפות|לערוץ הוואטסאפ|עקבו אחרינו|לפניות בפרטי).*$", re.S)
+INVITE = re.compile(r"chat\.whatsapp\.com|t\.me/\+|joinchat|הצטרפו לקבוצה|הקבוצה הפנויה", re.I)
+
+
+def classify_noise(text: str) -> str | None:
+    """כללים פשוטים ושקופים להפרדת דיווח מרעש. מחזיר סיבה בעברית, או None אם זה נראה כמו דיווח.
+
+    המטרה אינה לקבוע אם דיווח נכון – רק אם יש בו בכלל דיווח. הודעה מסוננת נשמרת ומוצגת בנפרד.
+    """
+    t = re.sub(r"\s+", " ", text).strip()
+    if not t:
+        return "ללא טקסט (תמונה או סרטון בלבד)"
+    body = FOOTER.sub("", t).strip()
+    if body:
+        t = body
+    if INVITE.search(t):
+        return "קישור או הזמנה לקבוצה"
+    if PROMO.search(t):
+        return "פרסומת או גיוס כספים"
+    bare = URL.sub("", t).strip()
+    words = re.findall(r"[\w\u0590-\u05FF\u0600-\u06FF\"'״׳]+", bare)
+    if not words:
+        return "קישור בלבד"
+    if "?" in bare and len(bare) <= 60:
+        return "שאלה, לא דיווח"
+    if len(words) < 3:
+        return "קצר מדי, חסר הקשר"
+    return None
+
+
 def prune(con, max_per_source: int) -> int:
     """מגביל את גודל המאגר: שומר רק את N ההודעות החדשות ביותר מכל מקור."""
     n = 0
@@ -67,25 +102,30 @@ def upsert_report(con, source_id: int, msg: dict, ingested_at: str | None = None
         h = msg["content_hash"]
         lang = msg.get("lang")
         msg = msg | {"content": excerpt(msg["content"])}
+        noise = msg["noise"] if "noise" in msg else classify_noise(msg["content"])
     else:
         full = clean(msg["content"])
         h, lang = content_hash(full), detect_lang(full)
+        noise = classify_noise(full)   # הסיווג נעשה על הטקסט המלא, לא על הפתיח
         msg = msg | {"content": excerpt(full)}
     row = con.execute("SELECT id, content_hash FROM raw_reports WHERE source_id = ? AND external_id = ?",
                       (source_id, msg["external_id"])).fetchone()
     if row is None:
         con.execute(
             "INSERT INTO raw_reports(source_id, external_id, url, published_at, ingested_at, edited_at,"
-            " content, content_hash, lang) VALUES (?,?,?,?,?,?,?,?,?)",
+            " content, content_hash, lang, noise) VALUES (?,?,?,?,?,?,?,?,?,?)",
             (source_id, msg["external_id"], msg.get("url"), msg["published_at"],
              msg.get("ingested_at") or ingested_at or now_iso(), msg.get("edited_at"),
-             msg["content"], h, lang),
+             msg["content"], h, lang, noise),
         )
         return "new"
     if row["content_hash"] != h:
-        con.execute("UPDATE raw_reports SET content = ?, content_hash = ?, edited_at = ?, lang = ? WHERE id = ?",
-                    (msg["content"], h, msg.get("edited_at") or now_iso(), lang, row["id"]))
+        con.execute("UPDATE raw_reports SET content = ?, content_hash = ?, edited_at = ?, lang = ?, noise = ?"
+                    " WHERE id = ?", (msg["content"], h, msg.get("edited_at") or now_iso(), lang, noise, row["id"]))
         return "edited"
+    if not from_log:
+        # הודעה שכבר שמורה: מעדכנים את הסיווג לפי הטקסט המלא (לרשומות ישנות היה רק פתיח)
+        con.execute("UPDATE raw_reports SET noise = ? WHERE id = ?", (noise, row["id"]))
     return "same"
 
 
@@ -134,7 +174,7 @@ def source_freshness(con, now: datetime | None = None) -> dict[int, dict]:
 def list_raw_reports(con, limit: int = 200) -> list[dict]:
     rows = con.execute(
         "SELECT rr.id, rr.external_id, rr.url, rr.published_at, rr.ingested_at, rr.edited_at, rr.content,"
-        " rr.lang, s.name AS source_name, s.kind AS source_kind, s.is_official"
+        " rr.lang, rr.noise, s.name AS source_name, s.kind AS source_kind, s.is_official"
         " FROM raw_reports rr JOIN sources s ON s.id = rr.source_id"
         " WHERE rr.is_demo = 0 ORDER BY rr.published_at DESC, rr.id DESC LIMIT ?", (limit,)).fetchall()
     return [dict(r) | {"is_official": bool(r["is_official"]),

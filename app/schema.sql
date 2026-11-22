@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS raw_reports (
     content_hash TEXT NOT NULL,
     lang         TEXT,
     ai_result    TEXT,                                 -- JSON: תוצאת הניתוח (שלב ג)
+    noise        TEXT,                                 -- סיבת סינון (שאלה, קצר מדי, פרסומת...) או NULL
     is_demo      INTEGER NOT NULL DEFAULT 0,
     UNIQUE (source_id, external_id)                    -- מניעת קליטה כפולה
 );

@@ -231,3 +231,25 @@ def test_only_excerpt_is_stored_and_edits_still_detected(tmp_path):
     third = main(argv, fetch=lambda u: (200, changed))                     # שינוי בסוף ההודעה מזוהה
     assert third["results"][0]["edited"] == 1
     assert excerpt(excerpt(long_text)) == excerpt(long_text)
+
+
+def test_noise_classifier_on_real_examples():
+    """דוגמאות אמיתיות שנקלטו מהערוצים (22.11.2026)."""
+    from app.ingest import classify_noise
+    noise = {
+        "ללא": "קצר", "לכודים": "קצר", "מקריית שלום": "קצר", "בית שמש?": "שאלה",
+        'מוכר אירוע חומ"ס בבאר שבע?': "שאלה", "איפה בכרמיאל?": "שאלה",
+        "https://chat.whatsapp.com/IZl3NGdbKWBKSHh1I46zw2 כרגע זו הקבוצה הפנויה": "קבוצה",
+        "תוכן שיווקי 👇": "פרסומת", "לתרומות להצלת המשפחה לחצו כאן": "פרסומת", "": "ללא טקסט",
+    }
+    for text, kind in noise.items():
+        assert kind in (classify_noise(text) or ""), text
+    reports = [
+        "כפר תבור שריפה", "בב תניא שריפה", "יש שריפת רכב חשמלי", "ים גזר רכב בוער תחת בניין",
+        "דוברות כבאות והצלה לישראל | מחוז חוף שריפה בבית פרטי בקריית חיים",
+        "תיעוד | צה\"ל פוצץ לפני זמן קצר תשתיות טרור של חיזבאללה בכפר זוטר א-שרקיה "
+        "לשליחת תיעוד מהשטח | לפרסום בערוץ 🔴 חדשות ישראל בטלגרם 🔴 https://t.me/newsil",
+        "רפאל חיון: חמאס מכין רחפנים. לשליחת תיעוד מהשטח | לפרסום בערוץ",
+    ]
+    for text in reports:
+        assert classify_noise(text) is None, text
