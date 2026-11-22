@@ -51,9 +51,13 @@ def find_places(text: str) -> list[dict]:
     return sorted(hits.values(), key=lambda h: (KIND_RANK[h["kind"]], h["pos"]))
 
 
+# מקום שמוזכר רק כיעד פינוי לבית חולים אינו מקום האירוע ("פונה לבית החולים בנהריה")
+HOSPITAL = re.compile(r"(?:פונ[הוי]\w*|הועבר\w*)?\s*(?:ל|ב)?(?:בית החולים|בית חולים|בי\"ח|המרכז הרפואי)[^.,;\n]{0,40}")
+
+
 def analyze(text: str) -> dict:
     t = re.sub(r"\s+", " ", text or "")
-    places = find_places(t)
+    places = find_places(HOSPITAL.sub(" ", t))
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
     severity = 3 if SEVERE.search(t) else 2 if MEDIUM.search(t) else 1
     return {

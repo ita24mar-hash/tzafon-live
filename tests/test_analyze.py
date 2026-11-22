@@ -77,3 +77,10 @@ def test_events_merge_alert_update_and_copies(tmp_path, monkeypatch):
     assert fires[0]["verification"] == "multi_source" and fires[0]["independent_sources"] == 2
     assert fires[1]["verification"] == "single_source"
     assert fires[0]["location"]["name"] == "כרמיאל" and fires[0]["location"]["lat"] is not None
+
+
+def test_hospital_is_not_event_location():
+    a = analyze("דוברות מד\"א: התקבל דיווח במוקד 101 במרחב אשר על פצוע מאירוע אלימות בסח'נין. "
+                "הפצוע פונה לבית החולים לגליל בנהריה במצב בינוני")
+    assert a["location"] == "סכנין" and "נהריה" not in a["places"]
+    assert analyze("תאונה בכביש 85, הפצועים פונו לבית החולים זיו בצפת")["location"] == "כביש 85"
