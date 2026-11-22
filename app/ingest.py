@@ -48,8 +48,16 @@ def excerpt(text: str, limit: int = EXCERPT_CHARS) -> str:
 
 
 URL = re.compile(r"https?://\S+|t\.me/\S+|chat\.whatsapp\.com/\S+", re.I)
+# מילה אחת מספיקה: מילים שכמעט לא מופיעות בדיווח אמיתי
 PROMO = re.compile(r"תרומ|לתרום|paypal|הוראת קבע|לזכות ב|סגולה|ההגרלה|קוד קופון|הנחה של|"
-                   r"תוכן שיווקי|תוכן ממומן|t\.me/boost", re.I)
+                   r"תוכן שיווקי|תוכן ממומן|#פרסומת|#ממומן|שת\"פ|t\.me/boost", re.I)
+# בקשת תרומה: נדרשים לפחות שני ביטויים שונים מהרשימה (ביטוי בודד מופיע גם בחדשות)
+APPEAL = [r"קריאת חירום דחופה", r"עזרה דחופה", r"זעקת", r"חוסר כל", r"חובות", r"יתומ", r"אלמנ",
+          r"\bכלה\b", r"חתונת", r"להצלת", r"מציל חיים", r"הרב (?:ה)?ראשי", r"הצדיק", r"ישועה",
+          r"כל סכום", r"לחצו כאן", r"בקישור המצורף", r"מצוות", r"צדקה", r"גמ\"ח"]
+# פרסומת: מחיר יחד עם מילת מכירה
+PRICE = re.compile(r"₪|ש\"ח|שקלים בלבד")
+SALE = re.compile(r"לרכישה|להזמנות|הזמינו|מבצע|הנחה|קופון|משלוח|במחיר|רק ב-|עכשיו ב")
 # חתימות קבועות שערוצים מוסיפים לכל הודעה. מוסרות לפני הסיווג כדי שלא ייחשבו פרסומת.
 FOOTER = re.compile(r"(לשליחת תיעוד|לפרסום בערוץ|להצטרפות|לערוץ הוואטסאפ|עקבו אחרינו|לפניות בפרטי).*$", re.S)
 INVITE = re.compile(r"chat\.whatsapp\.com|t\.me/\+|joinchat|הצטרפו לקבוצה|הקבוצה הפנויה", re.I)
@@ -70,6 +78,10 @@ def classify_noise(text: str) -> str | None:
         return "קישור או הזמנה לקבוצה"
     if PROMO.search(t):
         return "פרסומת או גיוס כספים"
+    if sum(bool(re.search(a, t)) for a in APPEAL) >= 2:
+        return "בקשת תרומה או עזרה כספית"
+    if PRICE.search(t) and SALE.search(t):
+        return "פרסומת"
     bare = URL.sub("", t).strip()
     words = re.findall(r"[\w\u0590-\u05FF\u0600-\u06FF\"'״׳]+", bare)
     if not words:
@@ -102,7 +114,8 @@ def upsert_report(con, source_id: int, msg: dict, ingested_at: str | None = None
         h = msg["content_hash"]
         lang = msg.get("lang")
         msg = msg | {"content": excerpt(msg["content"])}
-        noise = msg["noise"] if "noise" in msg else classify_noise(msg["content"])
+        # כללים חדשים חלים גם על הודעות ישנות (לפי הפתיח השמור)
+        noise = msg.get("noise") or classify_noise(msg["content"])
     else:
         full = clean(msg["content"])
         h, lang = content_hash(full), detect_lang(full)
