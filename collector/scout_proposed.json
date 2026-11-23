@@ -1,0 +1,246 @@
+{
+ "tg:pakarlive": {
+  "status": "proposed",
+  "issue": 1,
+  "candidate": {
+   "title": "הגל השקט בטלגרם",
+   "description": "קבל התרעות על רקטות, חדירות כלי טיס, חדירות מחבלים ורעידות אדמה מפיקוד העורף בזמן אמת.\n\n*לא תחליף לאמצעים רשמיים של פיקוד העורף*\n\nמפתח הבוט: @NoEff3x\nניתן לצרף ",
+   "verified": false,
+   "subscribers": "7.43K",
+   "messages": 20,
+   "newest": "2026-11-23T05:44:18+00:00",
+   "age_hours": 2.6,
+   "noise_share": 0.35,
+   "report_share": 0.55,
+   "north_share": 0.3,
+   "regions": {
+    "south": 5,
+    "galil-elyon": 3,
+    "galil-maaravi": 6
+   },
+   "samples": [
+    "עדכון מפיקוד העורף השוהים במרחב מוגן באזורים הבאים יכולים לצאת: נחל עוז האירוע הסתיים. התקבל ב-29/09/2026 21:38:44 הגל השקט בטלגרם | אתר",
+    "🔴 אזעקה בערב אל עראמשה. ✈️ חדירת כלי טיס [10/10/2026 19:57:17]: • קו העימות - ערב אל עראמשה. הגל השקט בטלגרם | צפה באתר"
+   ],
+   "verdict": "recommended",
+   "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:pakarlive",
+   "username": "pakarlive",
+   "url": "https://t.me/pakarlive",
+   "address": "https://t.me/pakarlive",
+   "mentioned_by": [
+    "כבאות והצלה ארצי (לא רשמי)"
+   ],
+   "mentions": 1
+  }
+ },
+ "tg:morant55555": {
+  "status": "proposed",
+  "issue": 1,
+  "candidate": {
+   "title": "Moran T",
+   "description": "@MoranT555 מהטוויטר",
+   "verified": false,
+   "subscribers": "7.15K",
+   "messages": 13,
+   "newest": "2026-11-23T07:50:32+00:00",
+   "age_hours": 0.5,
+   "noise_share": 0.0,
+   "report_share": 0.15,
+   "north_share": 0.08,
+   "regions": {
+    "galil-elyon": 1,
+    "jerusalem": 1,
+    "yosh": 1
+   },
+   "samples": [
+    "הזמרת הלבנונית פירוז חוגגת היום 92 שנים, וזה ביצוע מחודש לשיר שלה \"קמרה יא קמרה\" (לבנה/ירח - כינוי לאישה יפה) עם זאת לא נשכח שבאמתחתה גם שירים…",
+    "שני הזמרים הינם מחבלי חמאס משוחררים, פעילי גדודי עז אלדין אלקסאם שפעלו ביו\"ש - חמודה צלאח, במקור מכפר מערבית לשכם, ומצעב אלהשלמון מחברון שניהם…"
+   ],
+   "verdict": "recommended",
+   "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:morant55555",
+   "username": "MoranT55555",
+   "url": "https://t.me/MoranT55555",
+   "address": "https://t.me/MoranT55555",
+   "mentioned_by": [
+    "חֲנַנְאֵל אָבִיב (לא רשמי)"
+   ],
+   "mentions": 1
+  }
+ },
+ "tg:abualiexpress": {
+  "status": "proposed",
+  "issue": 1,
+  "candidate": {
+   "title": "אבו עלי אקספרס",
+   "description": "www.abualiexpress.com",
+   "verified": false,
+   "subscribers": "576K",
+   "messages": 15,
+   "newest": "2026-11-23T07:59:42+00:00",
+   "age_hours": 0.4,
+   "noise_share": 0.2,
+   "report_share": 0.13,
+   "north_share": 0.13,
+   "regions": {
+    "galil-elyon": 2,
+    "yosh": 1
+   },
+   "samples": [
+    "התבוסה הישראלית בחזית השמינית: הטהרנות הישראלית המופרזת והנזק העצום שגורמים \"האידיוטים השימושיים\" לתדמית הישראלית בעולם אתחיל בפירוש למונח \"אידיוט…",
+    "קורבטת טילים רוסית בשווי 200 מיליון דולר הושמדה בפיצוץ אדיר בנמל בנגאזי שבלוב קורבטת הטילים הרוסית \"מרקורי\", מסדרת סטרגושצ'י, עלתה אמש באש בנמל…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:abualiexpress",
+   "username": "abualiexpress",
+   "url": "https://t.me/abualiexpress",
+   "address": "https://t.me/abualiexpress",
+   "mentioned_by": [
+    "צוף אפרתי (לא רשמי)"
+   ],
+   "mentions": 1
+  }
+ },
+ "rss:https://www.ynet.co.il/integration/storyrss1854.xml": {
+  "status": "proposed",
+  "issue": 1,
+  "candidate": {
+   "title": "ynet",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 30,
+   "newest": "2026-11-23T08:16:43+00:00",
+   "age_hours": 0.1,
+   "noise_share": 0.0,
+   "report_share": 0.1,
+   "north_share": 0.07,
+   "regions": {
+    "galil-elyon": 1,
+    "galil-maaravi": 1,
+    "kineret-amakim": 1,
+    "dan": 1
+   },
+   "samples": [
+    "האזעקות בקו העימות: זיהוי שווא",
+    "עשרה פצועים בתאונה ליד נצרת, גבר במצב קשה"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.ynet.co.il/integration/storyrss1854.xml",
+   "username": "www.ynet.co.il",
+   "url": "https://www.ynet.co.il/",
+   "address": "https://www.ynet.co.il/Integration/StoryRss1854.xml",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
+ },
+ "tg:alexmehacarmel": {
+  "status": "proposed",
+  "issue": 1,
+  "candidate": {
+   "title": "Carmel News - חדשות",
+   "description": "בתקופת המלחמה בארץ הערוץ יעסוק בעיקר במלחמה עצמה ובהקשר הרוסי-אוקראיני למלחמה. הערוץ עוסק בחדשות מרוסיה, אוקראינה והסביבה וקצת מהעולם. לבעל הערוץ דעות ימניות. N",
+   "verified": false,
+   "subscribers": "53.7K",
+   "messages": 15,
+   "newest": "2026-11-23T04:48:09+00:00",
+   "age_hours": 3.6,
+   "noise_share": 0.0,
+   "report_share": 0.07,
+   "north_share": 0.07,
+   "regions": {
+    "galil-elyon": 1,
+    "yosh": 1
+   },
+   "samples": [
+    "אבו עלי: התבוסה הישראלית בחזית השמינית: הטהרנות הישראלית המופרזת והנזק העצום שגורמים \"האידיוטים השימושיים\" לתדמית הישראלית בעולם אתחיל בפירוש למונח…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:alexmehacarmel",
+   "username": "alexmehacarmel",
+   "url": "https://t.me/alexmehacarmel",
+   "address": "https://t.me/alexmehacarmel",
+   "mentioned_by": [
+    "צוף אפרתי (לא רשמי)"
+   ],
+   "mentions": 1
+  }
+ },
+ "tg:bitahoninthemiddleeast": {
+  "status": "proposed",
+  "issue": 1,
+  "candidate": {
+   "title": "יאיר גולדבלט - ביטחון ומזרח תיכון",
+   "description": "ברוכים הבאים לביטחון ומזרח תיכון!\n\nמי כמונו, אזרחי ישראל, שיודעים שאף פעם לא משעמם במזרח התיכון?\n\nהצטרפו להיות הראשונים לקבל את כל הזוויות, הדיווחים והפרשנויות ",
+   "verified": false,
+   "subscribers": "3.55K",
+   "messages": 19,
+   "newest": "2026-11-23T08:19:03+00:00",
+   "age_hours": 0.0,
+   "noise_share": 0.0,
+   "report_share": 0.05,
+   "north_share": 0.05,
+   "regions": {
+    "galil-maaravi": 1
+   },
+   "samples": [
+    "דובר צה\"ל: בהמשך להתרעות שהופעלו לפני זמן קצר במרחבים אבן מנחם ושתולה, מדובר בזיהוי שווא. יאיר גולדבלט - ביטחון ומזרח תיכון | ביטחון ומזרח תיכון ב-X"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:bitahoninthemiddleeast",
+   "username": "bitahoninthemiddleeast",
+   "url": "https://t.me/bitahoninthemiddleeast",
+   "address": "https://t.me/bitahoninthemiddleeast",
+   "mentioned_by": [
+    "חדשות 301 העולם הערבי (לא רשמי)"
+   ],
+   "mentions": 4
+  }
+ },
+ "rss:https://www.inn.co.il/rss.aspx?act=.1": {
+  "status": "proposed",
+  "issue": 1,
+  "candidate": {
+   "title": "ערוץ 7",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 20,
+   "newest": "2026-11-23T07:56:00+00:00",
+   "age_hours": 0.4,
+   "noise_share": 0.0,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 1
+   },
+   "samples": [
+    "טרגדיה: יותם בן שלום בן ה-18 נפטר מפצעיו לאחר שנפגע בתאונה בדרך למכינה. יותם בן שלום, חניך מכינת מיתרים לכיש ואוהד מסור של הפועל תל אביב, נפטר…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.inn.co.il/rss.aspx?act=.1",
+   "username": "www.inn.co.il",
+   "url": "https://www.inn.co.il/",
+   "address": "https://www.inn.co.il/Rss.aspx?act=.1",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
+ }
+}

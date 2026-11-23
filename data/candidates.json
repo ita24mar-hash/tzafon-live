@@ -1,46 +1,146 @@
 {
- "generated_at": "2026-11-23T03:36:58+00:00",
- "scanned_sources": 16,
- "found": 9,
- "checked": 9,
+ "generated_at": "2026-11-23T08:24:04+00:00",
+ "scanned_sources": 19,
+ "found": 18,
+ "checked": 18,
+ "sites_checked": 20,
  "candidates": [
   {
-   "username": "yediyot_bnei_brak",
-   "url": "https://t.me/yediyot_bnei_brak",
-   "title": "🔸ידיעות בני ברק🔸",
-   "description": "*🔸ידיעות בני ברק🔸*\nכל החדשות\nכל העידכונים\nכל מה שמתרחש בעיר התורה והחסידות בני ברק\nהיכנסו עכשו ותתחילו להתעדכן.\n\nלשליחת הודעות למערכת: @David_Keshet https://api",
+   "title": "הגל השקט בטלגרם",
+   "description": "קבל התרעות על רקטות, חדירות כלי טיס, חדירות מחבלים ורעידות אדמה מפיקוד העורף בזמן אמת.\n\n*לא תחליף לאמצעים רשמיים של פיקוד העורף*\n\nמפתח הבוט: @NoEff3x\nניתן לצרף ",
    "verified": false,
-   "subscribers": "6.24K",
+   "subscribers": "7.43K",
    "messages": 20,
-   "newest": "2026-11-23T00:29:29+00:00",
-   "age_hours": 3.1,
-   "noise_share": 0.0,
-   "report_share": 0.15,
-   "north_share": 0.0,
+   "newest": "2026-11-23T05:44:18+00:00",
+   "age_hours": 2.6,
+   "noise_share": 0.35,
+   "report_share": 0.55,
+   "north_share": 0.3,
    "regions": {
-    "dan": 3
+    "south": 5,
+    "galil-elyon": 3,
+    "galil-maaravi": 6
    },
    "samples": [
-    "המדרכות המסוכנות בעיר: כוחות הצלה הוזעקו בשעה 20:25 לרחוב עזרא בעיר, בעקבות דיווח על אישה כבת 70 שנפלה במדרכה ברחוב, היא סבלה מחבלות בראש ובגפיים…",
-    "בעקבות שמן על הכביש: כוחות הצלה הוזעקו בשעה 21:40 למחלף גהה, בדרך מפתח תקווה לבני ברק, בעקבות דיווח על שמן בכביש שגורם להחלקה ולתאונות, במקום התרחשה…"
+    "עדכון מפיקוד העורף השוהים במרחב מוגן באזורים הבאים יכולים לצאת: נחל עוז האירוע הסתיים. התקבל ב-29/09/2026 21:38:44 הגל השקט בטלגרם | אתר",
+    "🔴 אזעקה בערב אל עראמשה. ✈️ חדירת כלי טיס [10/10/2026 19:57:17]: • קו העימות - ערב אל עראמשה. הגל השקט בטלגרם | צפה באתר"
    ],
    "verdict": "recommended",
    "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:pakarlive",
+   "username": "pakarlive",
+   "url": "https://t.me/pakarlive",
+   "address": "https://t.me/pakarlive",
    "mentioned_by": [
     "כבאות והצלה ארצי (לא רשמי)"
    ],
-   "mentions": 2
+   "mentions": 1
   },
   {
-   "username": "zufefrati",
-   "url": "https://t.me/zufefrati",
-   "title": "צוף אפרתי",
-   "description": "ניתוחים, מידע ופרשנות מקורית שלא תמצאו במקום אחר בטלגרם.\n\nמגמת הערוץ היא להציע רעיונות חדשניים להתמודדות עם מציאות קיימת.",
+   "title": "Moran T",
+   "description": "@MoranT555 מהטוויטר",
    "verified": false,
-   "subscribers": "1.59K",
-   "messages": 14,
-   "newest": "2026-11-22T19:27:18+00:00",
-   "age_hours": 8.2,
+   "subscribers": "7.15K",
+   "messages": 13,
+   "newest": "2026-11-23T07:50:32+00:00",
+   "age_hours": 0.5,
+   "noise_share": 0.0,
+   "report_share": 0.15,
+   "north_share": 0.08,
+   "regions": {
+    "galil-elyon": 1,
+    "jerusalem": 1,
+    "yosh": 1
+   },
+   "samples": [
+    "הזמרת הלבנונית פירוז חוגגת היום 92 שנים, וזה ביצוע מחודש לשיר שלה \"קמרה יא קמרה\" (לבנה/ירח - כינוי לאישה יפה) עם זאת לא נשכח שבאמתחתה גם שירים…",
+    "שני הזמרים הינם מחבלי חמאס משוחררים, פעילי גדודי עז אלדין אלקסאם שפעלו ביו\"ש - חמודה צלאח, במקור מכפר מערבית לשכם, ומצעב אלהשלמון מחברון שניהם…"
+   ],
+   "verdict": "recommended",
+   "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:morant55555",
+   "username": "MoranT55555",
+   "url": "https://t.me/MoranT55555",
+   "address": "https://t.me/MoranT55555",
+   "mentioned_by": [
+    "חֲנַנְאֵל אָבִיב (לא רשמי)"
+   ],
+   "mentions": 1
+  },
+  {
+   "title": "אבו עלי אקספרס",
+   "description": "www.abualiexpress.com",
+   "verified": false,
+   "subscribers": "576K",
+   "messages": 15,
+   "newest": "2026-11-23T07:59:42+00:00",
+   "age_hours": 0.4,
+   "noise_share": 0.2,
+   "report_share": 0.13,
+   "north_share": 0.13,
+   "regions": {
+    "galil-elyon": 2,
+    "yosh": 1
+   },
+   "samples": [
+    "התבוסה הישראלית בחזית השמינית: הטהרנות הישראלית המופרזת והנזק העצום שגורמים \"האידיוטים השימושיים\" לתדמית הישראלית בעולם אתחיל בפירוש למונח \"אידיוט…",
+    "קורבטת טילים רוסית בשווי 200 מיליון דולר הושמדה בפיצוץ אדיר בנמל בנגאזי שבלוב קורבטת הטילים הרוסית \"מרקורי\", מסדרת סטרגושצ'י, עלתה אמש באש בנמל…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:abualiexpress",
+   "username": "abualiexpress",
+   "url": "https://t.me/abualiexpress",
+   "address": "https://t.me/abualiexpress",
+   "mentioned_by": [
+    "צוף אפרתי (לא רשמי)"
+   ],
+   "mentions": 1
+  },
+  {
+   "title": "ynet",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 30,
+   "newest": "2026-11-23T08:16:43+00:00",
+   "age_hours": 0.1,
+   "noise_share": 0.0,
+   "report_share": 0.1,
+   "north_share": 0.07,
+   "regions": {
+    "galil-elyon": 1,
+    "galil-maaravi": 1,
+    "kineret-amakim": 1,
+    "dan": 1
+   },
+   "samples": [
+    "האזעקות בקו העימות: זיהוי שווא",
+    "עשרה פצועים בתאונה ליד נצרת, גבר במצב קשה"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.ynet.co.il/integration/storyrss1854.xml",
+   "username": "www.ynet.co.il",
+   "url": "https://www.ynet.co.il/",
+   "address": "https://www.ynet.co.il/Integration/StoryRss1854.xml",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "Carmel News - חדשות",
+   "description": "בתקופת המלחמה בארץ הערוץ יעסוק בעיקר במלחמה עצמה ובהקשר הרוסי-אוקראיני למלחמה. הערוץ עוסק בחדשות מרוסיה, אוקראינה והסביבה וקצת מהעולם. לבעל הערוץ דעות ימניות. N",
+   "verified": false,
+   "subscribers": "53.7K",
+   "messages": 15,
+   "newest": "2026-11-23T04:48:09+00:00",
+   "age_hours": 3.6,
    "noise_share": 0.0,
    "report_share": 0.07,
    "north_share": 0.07,
@@ -49,51 +149,184 @@
     "yosh": 1
    },
    "samples": [
-    "התבוסה הישראלית בחזית השמינית: הטהרנות הישראלית המופרזת והנזק העצום שגורמים \"האידיוטים השימושיים\" לתדמית הישראלית בעולם אתחיל בפירוש למונח \"אידיוט…"
+    "אבו עלי: התבוסה הישראלית בחזית השמינית: הטהרנות הישראלית המופרזת והנזק העצום שגורמים \"האידיוטים השימושיים\" לתדמית הישראלית בעולם אתחיל בפירוש למונח…"
    ],
    "verdict": "possible",
    "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:alexmehacarmel",
+   "username": "alexmehacarmel",
+   "url": "https://t.me/alexmehacarmel",
+   "address": "https://t.me/alexmehacarmel",
+   "mentioned_by": [
+    "צוף אפרתי (לא רשמי)"
+   ],
+   "mentions": 1
+  },
+  {
+   "title": "יאיר גולדבלט - ביטחון ומזרח תיכון",
+   "description": "ברוכים הבאים לביטחון ומזרח תיכון!\n\nמי כמונו, אזרחי ישראל, שיודעים שאף פעם לא משעמם במזרח התיכון?\n\nהצטרפו להיות הראשונים לקבל את כל הזוויות, הדיווחים והפרשנויות ",
+   "verified": false,
+   "subscribers": "3.55K",
+   "messages": 19,
+   "newest": "2026-11-23T08:19:03+00:00",
+   "age_hours": 0.0,
+   "noise_share": 0.0,
+   "report_share": 0.05,
+   "north_share": 0.05,
+   "regions": {
+    "galil-maaravi": 1
+   },
+   "samples": [
+    "דובר צה\"ל: בהמשך להתרעות שהופעלו לפני זמן קצר במרחבים אבן מנחם ושתולה, מדובר בזיהוי שווא. יאיר גולדבלט - ביטחון ומזרח תיכון | ביטחון ומזרח תיכון ב-X"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:bitahoninthemiddleeast",
+   "username": "bitahoninthemiddleeast",
+   "url": "https://t.me/bitahoninthemiddleeast",
+   "address": "https://t.me/bitahoninthemiddleeast",
    "mentioned_by": [
     "חדשות 301 העולם הערבי (לא רשמי)"
    ],
    "mentions": 4
   },
   {
-   "username": "b3976a",
-   "url": "https://t.me/b3976a",
-   "title": "חֲנַנְאֵל אָבִיב ◇ حننئيل أبيب",
-   "description": "דיווחים מהעולם הערבי הביטחוני והמזה\"ת, כולל תחקירים, סקירות, פרשנויות, תרגומים בכתוביות בעברית, ותוספות - והכל במקום אחד.\n\n☆ הערוץ הרשמי.\n\nליצירת קשר ופרסומים ב",
+   "title": "ערוץ 7",
+   "description": "",
    "verified": false,
-   "subscribers": "27.2K",
-   "messages": 18,
-   "newest": "2026-11-22T21:45:08+00:00",
-   "age_hours": 5.9,
+   "subscribers": null,
+   "messages": 20,
+   "newest": "2026-11-23T07:56:00+00:00",
+   "age_hours": 0.4,
    "noise_share": 0.0,
-   "report_share": 0.06,
-   "north_share": 0.06,
+   "report_share": 0.05,
+   "north_share": 0.0,
    "regions": {
-    "galil-elyon": 1
+    "dan": 1
    },
    "samples": [
-    "​לבנון: תחנת הרדיו הלבנונית \"לבנון החופשית\", מהמחנה של מתנגדי חיזבאללה במדינה, פרסמה סרטון הסברה העוסק ביחידת הסייבר החשאית של הארגון - \"הארז…"
+    "טרגדיה: יותם בן שלום בן ה-18 נפטר מפצעיו לאחר שנפגע בתאונה בדרך למכינה. יותם בן שלום, חניך מכינת מיתרים לכיש ואוהד מסור של הפועל תל אביב, נפטר…"
    ],
    "verdict": "possible",
    "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.inn.co.il/rss.aspx?act=.1",
+   "username": "www.inn.co.il",
+   "url": "https://www.inn.co.il/",
+   "address": "https://www.inn.co.il/Rss.aspx?act=.1",
    "mentioned_by": [
-    "חדשות 301 העולם הערבי (לא רשמי)"
+    "רשימת אתרים לבדיקה"
    ],
-   "mentions": 1
+   "mentions": 0
   },
   {
-   "username": "technology_HaMadlif",
-   "url": "https://t.me/technology_HaMadlif",
+   "title": "סרוגים",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 50,
+   "newest": "2026-11-23T08:21:37+00:00",
+   "age_hours": 0.0,
+   "noise_share": 0.0,
+   "report_share": 0.04,
+   "north_share": 0.02,
+   "regions": {
+    "galil-elyon": 1,
+    "galil-maaravi": 1,
+    "haifa": 1,
+    "kineret-amakim": 1,
+    "dan": 1
+   },
+   "samples": [
+    "התרעות הופעלו באבן מנחם ובשתולה בעקבות זיהוי שווא. התרעות הופעלו הבוקר ביישובים שעל גבול הצפון. בצה\"ל אומרים כי הפרטים בבדיקה ולאחר מכן עדכנו כי…",
+    "מפקד משטרת התנועה היה מעורב בתאונה בכביש 4; רוכב אופניים נפצע. ניצב משנה אמיר ג'יבלי, מפקד משטרת התנועה הארצית, היה מעורב אמש בתאונת דרכים סמוך…"
+   ],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "rss",
+   "key": "rss:https://www.srugim.co.il/feed",
+   "username": "www.srugim.co.il",
+   "url": "https://www.srugim.co.il/",
+   "address": "https://www.srugim.co.il/feed",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "כיכר השבת",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 49,
+   "newest": "2026-11-23T08:20:06+00:00",
+   "age_hours": 0.1,
+   "noise_share": 0.0,
+   "report_share": 0.04,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 2
+   },
+   "samples": [
+    "הלם בבני ברק; הבחור שמעון צבי גרוסברד ז\"ל נפטר בפתאומיות. אבל כבד בעיר התורה והחסידות בני ברק, עם הגעת הבשורה הקשה על פטירתו הפתאומית של הבחור שמעון…",
+    "תאונה חריגה: מפקד משטרת התנועה התנגש ברוכב אופניים. מפקד משטרת התנועה הארצית היה מעורב בתאונה בכביש 4 סמוך לצומת רעננה, שבה נפגע רוכב אופניים באורח…"
+   ],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "rss",
+   "key": "rss:https://www.kikar.co.il/feed",
+   "username": "www.kikar.co.il",
+   "url": "https://www.kikar.co.il/",
+   "address": "https://www.kikar.co.il/feed",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "ישראל היום",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 100,
+   "newest": "2026-11-23T08:12:35+00:00",
+   "age_hours": 0.2,
+   "noise_share": 0.02,
+   "report_share": 0.03,
+   "north_share": 0.01,
+   "regions": {
+    "galil-elyon": 1,
+    "galil-maaravi": 1,
+    "haifa": 1,
+    "kineret-amakim": 1,
+    "dan": 2
+   },
+   "samples": [
+    "האזעקות בצפון תפסו תלמידים בדרך לבית הספר: \"הפחד לא נעלם\". אזעקות שנשמעו הבוקר ביישובי גבול הצפון תפסו תלמידים שכבר יצאו מבתיהם ועלו להסעות בדרכם…",
+    "מפקד משטרת התנועה פגע ברוכב אופניים בכביש 4 - מצבו בינוני. התאונה התרחשה סמוך לצומת רעננה, במהלכה נצ\"מ אמיר גיבלי פגע ברוכב אופניים, שחצה באור אדום…"
+   ],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "rss",
+   "key": "rss:https://www.israelhayom.co.il/rss",
+   "username": "www.israelhayom.co.il",
+   "url": "https://www.israelhayom.co.il/",
+   "address": "https://www.israelhayom.co.il/rss",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
    "title": "טכנולוגיה - המדליף",
    "description": "חדשות כללי:\n@news_HaMadlif\n\nחדשות רוטר:\n@rotter_HaMadlif\n\nחדשות טכנולוגיה:\n@technology_HaMadlif\n\nחדשות ספורט:\n@sport_HaMadlif\n\nחדשות חרדים:\n@haredim_HaMadlif\n\nל",
    "verified": false,
    "subscribers": "14.3K",
    "messages": 20,
-   "newest": "2026-11-22T17:34:06+00:00",
-   "age_hours": 10.0,
+   "newest": "2026-11-23T07:46:06+00:00",
+   "age_hours": 0.6,
    "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -101,6 +334,11 @@
    "samples": [],
    "verdict": "unsuitable",
    "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:technology_hamadlif",
+   "username": "technology_HaMadlif",
+   "url": "https://t.me/technology_HaMadlif",
+   "address": "https://t.me/technology_HaMadlif",
    "mentioned_by": [
     "המדליף – חדשות כללי (לא רשמי)",
     "המדליף – חרדים (לא רשמי)",
@@ -109,15 +347,13 @@
    "mentions": 12
   },
   {
-   "username": "sport_HaMadlif",
-   "url": "https://t.me/sport_HaMadlif",
    "title": "ספורט - המדליף",
    "description": "חדשות כללי:\n@news_HaMadlif\n\nחדשות רוטר:\n@rotter_HaMadlif\n\nחדשות טכנולוגיה:\n@technology_HaMadlif\n\nחדשות ספורט:\n@sport_HaMadlif\n\nחדשות חרדים:\n@haredim_HaMadlif\n\nל",
    "verified": false,
    "subscribers": "1.31K",
    "messages": 20,
-   "newest": "2026-11-23T02:04:09+00:00",
-   "age_hours": 1.5,
+   "newest": "2026-11-23T08:04:15+00:00",
+   "age_hours": 0.3,
    "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -125,6 +361,11 @@
    "samples": [],
    "verdict": "unsuitable",
    "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:sport_hamadlif",
+   "username": "sport_HaMadlif",
+   "url": "https://t.me/sport_HaMadlif",
+   "address": "https://t.me/sport_HaMadlif",
    "mentioned_by": [
     "המדליף – חדשות כללי (לא רשמי)",
     "המדליף – חרדים (לא רשמי)",
@@ -133,22 +374,25 @@
    "mentions": 12
   },
   {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:madlifsidrati_admin",
    "username": "MadlifSidrati_admin",
    "url": "https://t.me/MadlifSidrati_admin",
-   "title": "",
-   "description": "",
-   "verified": false,
-   "subscribers": null,
-   "messages": 0,
-   "newest": null,
-   "age_hours": null,
-   "noise_share": null,
-   "report_share": null,
-   "north_share": null,
-   "regions": {},
-   "samples": [],
-   "verdict": "unsuitable",
-   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "address": "https://t.me/MadlifSidrati_admin",
    "mentioned_by": [
     "המדליף – חדשות כללי (לא רשמי)",
     "המדליף – חרדים (לא רשמי)",
@@ -157,8 +401,31 @@
    "mentions": 12
   },
   {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:israelnewsil25",
    "username": "Israelnewsil25",
    "url": "https://t.me/Israelnewsil25",
+   "address": "https://t.me/Israelnewsil25",
+   "mentioned_by": [
+    "חדשות ישראל בטלגרם (לא רשמי)"
+   ],
+   "mentions": 18
+  },
+  {
    "title": "",
    "description": "",
    "verified": false,
@@ -173,14 +440,17 @@
    "samples": [],
    "verdict": "unsuitable",
    "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
-   "mentioned_by": [
-    "חדשות ישראל בטלגרם (לא רשמי)"
-   ],
-   "mentions": 18
-  },
-  {
+   "kind": "telegram",
+   "key": "tg:send_me_news",
    "username": "Send_me_news",
    "url": "https://t.me/Send_me_news",
+   "address": "https://t.me/Send_me_news",
+   "mentioned_by": [
+    "חדשות ישראל בטלגרם (לא רשמי)"
+   ],
+   "mentions": 18
+  },
+  {
    "title": "",
    "description": "",
    "verified": false,
@@ -195,21 +465,124 @@
    "samples": [],
    "verdict": "unsuitable",
    "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:david_keshet",
+   "username": "David_Keshet",
+   "url": "https://t.me/David_Keshet",
+   "address": "https://t.me/David_Keshet",
    "mentioned_by": [
-    "חדשות ישראל בטלגרם (לא רשמי)"
+    "ידיעות בני ברק (לא רשמי)"
    ],
-   "mentions": 18
+   "mentions": 12
   },
   {
-   "username": "bitahoninthemiddleeast",
-   "url": "https://t.me/bitahoninthemiddleeast",
-   "title": "יאיר גולדבלט - ביטחון ומזרח תיכון",
-   "description": "ברוכים הבאים לביטחון ומזרח תיכון!\n\nמי כמונו, אזרחי ישראל, שיודעים שאף פעם לא משעמם במזרח התיכון?\n\nהצטרפו להיות הראשונים לקבל את כל הזוויות, הדיווחים והפרשנויות ",
+   "title": "",
+   "description": "",
    "verified": false,
-   "subscribers": "3.55K",
-   "messages": 18,
-   "newest": "2026-11-22T23:38:14+00:00",
-   "age_hours": 4.0,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:yedioth_bnei_brak_movies",
+   "username": "Yedioth_Bnei_Brak_Movies",
+   "url": "https://t.me/Yedioth_Bnei_Brak_Movies",
+   "address": "https://t.me/Yedioth_Bnei_Brak_Movies",
+   "mentioned_by": [
+    "ידיעות בני ברק (לא רשמי)"
+   ],
+   "mentions": 2
+  },
+  {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:noeff3x",
+   "username": "NoEff3x",
+   "url": "https://t.me/NoEff3x",
+   "address": "https://t.me/NoEff3x",
+   "mentioned_by": [
+    "הגל השקט בטלגרם"
+   ],
+   "mentions": 4
+  },
+  {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:alexmehakarmel",
+   "username": "alexmehakarmel",
+   "url": "https://t.me/alexmehakarmel",
+   "address": "https://t.me/alexmehakarmel",
+   "mentioned_by": [
+    "Carmel News - חדשות"
+   ],
+   "mentions": 4
+  },
+  {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:morant555",
+   "username": "MoranT555",
+   "url": "https://t.me/MoranT555",
+   "address": "https://t.me/MoranT555",
+   "mentioned_by": [
+    "Moran T"
+   ],
+   "mentions": 4
+  },
+  {
+   "title": "גדי טאוב: שומר סף",
+   "description": "תנו לנו שקל 1 ביום, ואנחנו ניתן לכם כלי תקשורת עצמאי:\nhttps://pe4ch.com/ref/67vSOtfY2che\nהאזנה:\nhttps://shomersaf.captivate.fm\nקבוצת טלגרם:\nhttps://t.me/shomers",
+   "verified": false,
+   "subscribers": "28.2K",
+   "messages": 20,
+   "newest": "2026-11-23T08:06:48+00:00",
+   "age_hours": 0.3,
    "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -217,10 +590,440 @@
    "samples": [],
    "verdict": "unsuitable",
    "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:shomersaf",
+   "username": "shomersaf",
+   "url": "https://t.me/shomersaf",
+   "address": "https://t.me/shomersaf",
    "mentioned_by": [
-    "חדשות 301 העולם הערבי (לא רשמי)"
+    "Moran T"
    ],
-   "mentions": 7
+   "mentions": 3
+  },
+  {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:pirsumabuali",
+   "username": "PirsumAbuali",
+   "url": "https://t.me/PirsumAbuali",
+   "address": "https://t.me/PirsumAbuali",
+   "mentioned_by": [
+    "אבו עלי אקספרס"
+   ],
+   "mentions": 2
+  },
+  {
+   "title": "YINONEWS - ינון מגל",
+   "description": "מערכת ינוניוז 24/6💬  \n חלק מהתכנים אינם סאטיריים😉\n\nלתוכן שיווקי: https://wa.me/547668151?text=הי+חיים,+אשמח+לברר+אצלך+בנוגע+לפרסום\n\nלשליחת תכנים: https://wa.me/",
+   "verified": true,
+   "subscribers": "140K",
+   "messages": 20,
+   "newest": "2026-11-23T08:02:28+00:00",
+   "age_hours": 0.3,
+   "noise_share": 0.3,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:yinonews",
+   "username": "yinonews",
+   "url": "https://t.me/yinonews",
+   "address": "https://t.me/yinonews",
+   "mentioned_by": [
+    "Moran T"
+   ],
+   "mentions": 1
+  },
+  {
+   "title": "וואלה חדשות",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "news.walla.co.il",
+   "url": "https://news.walla.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "מעריב",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.maariv.co.il",
+   "url": "https://www.maariv.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "mako חדשות",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.mako.co.il",
+   "url": "https://www.mako.co.il/news",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "כאן חדשות",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.kan.org.il",
+   "url": "https://www.kan.org.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "0404",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.0404.co.il",
+   "url": "https://www.0404.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "בחדרי חרדים",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.bhol.co.il",
+   "url": "https://www.bhol.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "JDN",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 8,
+   "newest": "2026-11-23T08:01:12+00:00",
+   "age_hours": 0.4,
+   "noise_share": 0.0,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "rss",
+   "key": "rss:https://www.jdn.co.il/feed/",
+   "username": "www.jdn.co.il",
+   "url": "https://www.jdn.co.il/",
+   "address": "https://www.jdn.co.il/feed/",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "דבר",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.davar1.co.il",
+   "url": "https://www.davar1.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "News1",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.news1.co.il",
+   "url": "https://www.news1.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "חיפו – חדשות חיפה",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.haipo.co.il",
+   "url": "https://www.haipo.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "חדשות הצפון (hm-news)",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 10,
+   "newest": "2026-11-23T07:56:08+00:00",
+   "age_hours": 0.5,
+   "noise_share": 0.1,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "rss",
+   "key": "rss:https://hm-news.co.il/feed/",
+   "username": "www.hm-news.co.il",
+   "url": "https://www.hm-news.co.il/",
+   "address": "https://hm-news.co.il/feed/",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "קול העמק והגליל",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.kolhaemek.co.il",
+   "url": "https://www.kolhaemek.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "פאנט",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.panet.co.il",
+   "url": "https://www.panet.co.il/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "ערב 48",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.arab48.com",
+   "url": "https://www.arab48.com/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "כל אל-ערב",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
+   "kind": "rss",
+   "key": "",
+   "username": "www.kul-alarab.com",
+   "url": "https://www.kul-alarab.com/",
+   "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
   }
  ]
 }
