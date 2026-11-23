@@ -15,6 +15,7 @@ def verify(log: Path, n: int = 5, fetch=None) -> list[dict]:
     from app import ingest, net, telegram_web
     fetch = fetch or net.safe_fetch
     recs = [json.loads(x) for x in log.read_text(encoding="utf-8").splitlines() if x.strip()]
+    recs = [r for r in recs if (r.get("url") or "").startswith("https://t.me/")]   # רק הודעות טלגרם נבדקות מול טלגרם
     recs.sort(key=lambda r: r["published_at"], reverse=True)
     out = []
     for r in recs[:n]:

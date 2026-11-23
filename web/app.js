@@ -4,8 +4,29 @@
 const TYPES = {
   security: ["ביטחון", "🛡️"], accident: ["תאונה", "🚗"], fire: ["שריפה", "🔥"], closure: ["חסימה", "🚧"],
   infrastructure: ["תשתיות", "⚡"], weather: ["מזג אוויר", "🌧️"], hazard: ["מפגע", "⚠️"], medical: ["רפואי", "🚑"],
+  earthquake: ["רעידת אדמה", "〰️"],
   other: ["אחר", "📌"],
 };
+// סמל קטן לכל סוג אירוע (קו, 24x24) – כדי שיבינו במבט מה קרה
+const ICONS = {
+  security: "M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z",
+  fire: "M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.2 1-3.7 2.3-4.8.2 1.6 1 2.6 2.2 3 .2-3-.8-5.6.5-8.2z",
+  accident: "M4 13l2-6h12l2 6v4H4z M4 13h16 M7 17v2 M17 17v2 M7.5 15h.01 M16.5 15h.01",
+  closure: "M3 9h18v5H3z M7 9l3 5 M12 9l3 5 M17 9l3 5 M6 14v6 M18 14v6",
+  infrastructure: "M13 3L5 14h6l-1 7 8-11h-6z",
+  weather: "M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z M8 18l-1 2 M12 18l-1 2 M16 18l-1 2",
+  hazard: "M12 3l9 17H3z M12 10v4 M12 17h.01",
+  medical: "M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z",
+  earthquake: "M2 12h4l2-5 3 11 3-14 3 10 2-2h3",
+  other: "M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z M12 10h.01",
+};
+const iconSvg = (t) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[t] || ICONS.other}"/></svg>`;
+function icon(t, cls = "ico") {
+  const s = document.createElement("span");
+  s.className = cls;
+  s.innerHTML = iconSvg(t);           // מחרוזות קבועות מהקוד בלבד
+  return s;
+}
 const STATUS = { new: "חדש", ongoing: "מתמשך", ended: "הסתיים", unknown: "מצב לא ידוע" };
 const VERIF = {
   single_source: "דיווח ראשוני · מקור אחד", multi_source: "כמה מקורות עצמאיים",
@@ -143,7 +164,7 @@ function eventCard(e, pos = {}) {
   return el("article", { class: `ev sev-${e.severity}${e.status === "ended" ? " ended" : ""}${isNow(e.updated_at) ? "" : " earlier"}${pos.first ? " first" : ""}${pos.last ? " last" : ""}`,
     style: `--c: var(--t-${e.event_type})` },
     el("div", { class: "ev-time", title: clock(e.updated_at) }, hhmm(e.updated_at), el("small", {}, dayLabel(e.updated_at))),
-    el("div", { class: "ev-rail" }, el("span", { class: "ev-dot" })),
+    el("div", { class: "ev-rail" }, icon(e.event_type, "ev-dot")),
     el("div", { class: "ev-body" },
       el("div", { class: "ev-kind" }, el("span", { class: `sev-badge s${e.severity || 1}` }, SEV[e.severity || 1]),
         label, el("span", { class: "ev-ago" }, " · " + since(e.updated_at)),
@@ -383,7 +404,7 @@ function setupFilters() {
       ...shown.map(([k, [label]]) =>
         el("button", { class: "chip" + (state.filters.type === k ? " on" : ""), style: `--c: var(--t-${k})`,
           "aria-pressed": String(state.filters.type === k), onclick: () => pick(k) },
-          el("i", {}), label, el("b", {}, String(counts[k] || 0)))));
+          k === "" ? null : icon(k, "chip-ico"), label, el("b", {}, String(counts[k] || 0)))));
   };
   state.drawChips = draw;
   // בחירת רמת חומרה
@@ -449,7 +470,7 @@ function drawMap() {
     shown++;
     const approx = e.location_precision === "approx" || l.coord_quality !== "verified";
     if (approx) L.circle([l.lat, l.lon], { radius: 1500, color: "#d93a26", weight: 1, dashArray: "4 4", fillOpacity: 0.08 }).addTo(state.layer);
-    L.marker([l.lat, l.lon], { icon: L.divIcon({ className: `pin t-${e.event_type}`, html: "", iconSize: [16, 16] }) })
+    L.marker([l.lat, l.lon], { icon: L.divIcon({ className: `pin t-${e.event_type} sev-${e.severity || 1}`, html: iconSvg(e.event_type), iconSize: [28, 28] }) })
       .bindPopup(() => eventCard(e), { maxWidth: 300 }).addTo(state.layer);
   }
   const loc = state.locations.find((x) => String(x.id) === String(state.filters.location_id));

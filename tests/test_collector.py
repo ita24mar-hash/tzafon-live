@@ -331,3 +331,35 @@ def test_approve_parses_checked_items(tmp_path, monkeypatch):
     approve.main()
     assert [s["address"] for s in _j.loads(src.read_text(encoding="utf-8"))] == ["https://t.me/aaaaa", "https://t.me/goodchan"]
     assert se.ignored() == {"tg:badchan"} and "goodchan" in calls[0]["body"]
+
+
+def test_opendata_quakes_and_flights():
+    import json as _j
+    from datetime import datetime, timezone
+    from app import opendata
+    from app.analyze import analyze
+    now = datetime(2026, 11, 23, 12, 0, tzinfo=timezone.utc)
+    q = {"features": [
+        {"properties": {"unid": "A1", "time": "2026-11-23T09:24:00Z", "mag": 4.1, "flynn_region": "DEAD SEA REGION"},
+         "geometry": {"coordinates": [35.45, 31.5, 10]}},
+        {"properties": {"unid": "A2", "time": "2026-11-23T10:00:00Z", "mag": 3.2, "flynn_region": "LEBANON - SYRIA REGION"},
+         "geometry": {"coordinates": [35.75, 33.3, 10]}}]}
+    msgs = opendata.quakes(lambda url: (200, _j.dumps(q).encode()), now=now)
+    assert [m["external_id"] for m in msgs] == ["A1", "A2"]
+    a1, a2 = analyze(msgs[0]["content"]), analyze(msgs[1]["content"])
+    assert (a1["type"], a1["severity"], a1["relevant"]) == ("earthquake", 3, True)
+    assert (a2["type"], a2["severity"]) == ("earthquake", 2) and a2["north"]
+    assert opendata.quakes(lambda url: (204, b""), now=now) == []
+
+    def recs(n, cancel, delay):
+        out = []
+        for i in range(n):
+            st = "CANCELED" if i < cancel else "DELAYED" if i < cancel + delay else "ON TIME"
+            actual = "2026-11-23T16:30:00" if st == "DELAYED" else "2026-11-23T15:00:00"
+            out.append({"CHSTOL": "2026-11-23T15:00:00", "CHPTOL": actual, "CHRMINE": st})
+        return _j.dumps({"result": {"records": out}}).encode()
+    assert opendata.flights(lambda url: (200, recs(40, 2, 3)), now=now) == []          # יום רגיל
+    m = opendata.flights(lambda url: (200, recs(40, 22, 3)), now=now)
+    a = analyze(m[0]["content"])
+    assert (a["type"], a["severity"], a["places"]) == ("infrastructure", 3, ["נמל התעופה בן גוריון"])
+    assert "22 מתוך 40" in m[0]["content"] and m[0]["external_id"] == "flights-2026112314"
