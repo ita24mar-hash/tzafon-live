@@ -397,6 +397,13 @@ function drawMap() {
   }
   const loc = state.locations.find((x) => String(x.id) === String(state.filters.location_id));
   if (loc && loc.lat !== null) state.map.setView([loc.lat, loc.lon], 12);
+  else {
+    // המפה מתמקדת באירועים: קודם באזור שנבחר, ואם אין בו – בכל האירועים
+    const pts = (ev) => ev.filter((e) => e.location && e.location.lat !== null).map((e) => [e.location.lat, e.location.lon]);
+    const mine = pts(state.events.filter((e) => inRegion(e, state.region))), all = pts(state.events);
+    const use = mine.length ? mine : all;
+    if (use.length) state.map.fitBounds(use, { padding: [30, 30], maxZoom: 12 });
+  }
   $("#map-note").textContent = `על המפה ${shown} מתוך ${state.events.length} אירועים. עיגול מקווקו = מיקום משוער. ` +
     "אירועים ללא מיקום מזוהה מופיעים בפיד בלבד.";
   setTimeout(() => state.map.invalidateSize(), 50);

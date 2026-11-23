@@ -173,6 +173,10 @@ def _aliases(name: str) -> list[str]:
     return [a for a in out if a and (" " in a or a not in AMBIGUOUS)]
 
 
+_COORDS_PATH = _Path(__file__).with_name("locality_coords.json")   # OpenStreetMap (ODbL)
+COORDS = _json.loads(_COORDS_PATH.read_text(encoding="utf-8"))["coords"] if _COORDS_PATH.exists() else {}
+
+
 def _load_national():
     path = _Path(__file__).with_name("localities.json")
     if not path.exists():
@@ -187,7 +191,8 @@ def _load_national():
         aliases = [a for a in _aliases(name) if a != name]
         if " " not in name and "-" not in name and name in AMBIGUOUS and not aliases:
             continue                                               # שם שהוא מילה נפוצה, בלי צורה חלופית
-        places.append(("locality", name, aliases, None, None))
+        lat, lon = COORDS.get(name, (None, None))
+        places.append(("locality", name, aliases, lat, lon))
         regions.setdefault(name, set()).add(rid)
     return places, regions
 
@@ -202,6 +207,9 @@ for _n in _dup:                                   # שם רשמי של מקום 
                 or set(next(q[2] for q in _NATIONAL if q[1] == _n)) & {p[1], *p[2]})
     MANUAL_REGIONS.setdefault(_cur, sorted(_NATIONAL_REGIONS[_n]))
 PLACES = PLACES + EXTRA_PLACES + [p for p in _NATIONAL if p[1] not in _dup]
+# מקומות מהרשימה הידנית בלי נקודה: נקודה מהרשימה הארצית לפי השם או השם הרשמי ("סח'נין" עבור "סכנין")
+PLACES = [p if p[3] is not None or p[0] != "locality" else
+          (p[0], p[1], p[2], *next((COORDS[n] for n in [p[1], *p[2]] if n in COORDS), (None, None))) for p in PLACES]
 REGION_OF = {name: sorted(rs) for name, rs in _NATIONAL_REGIONS.items()}
 REGION_OF.update(MANUAL_REGIONS)
 REGION_NAMES = {rid: title for rid, title, _ in REGIONS}
