@@ -41,6 +41,11 @@ class SourcePatch(BaseModel):
 def normalize_address(kind: str, address: str) -> str:
     """מחזיר כתובת מנורמלת או זורק ValueError עם הסבר בעברית."""
     a = address.strip()
+    if kind == "api" and a.startswith("opendata:"):
+        from .opendata import ADAPTERS          # מקור נתונים פתוח מובנה (רעידות אדמה, טיסות)
+        if a not in ADAPTERS:
+            raise ValueError("מקור נתונים פתוח לא מוכר: " + a)
+        return a
     if kind == "telegram":
         m = re.match(r"^(?:https?://)?(?:t\.me|telegram\.me)/(?:s/)?([^/?#]+)", a, re.I)
         user = m.group(1) if m else a.lstrip("@")
