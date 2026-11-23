@@ -35,7 +35,8 @@ const REGIONS = [
   ["shfela", "השפלה"], ["jerusalem", "ירושלים והסביבה"], ["south", "הדרום"], ["yosh", "יהודה ושומרון"],
 ];
 const REGION_NAME = Object.fromEntries(REGIONS);
-const GENRE_NAME = { opinion: "מאמר או דעה", politics: "פוליטיקה", followup: "סיכום, מעצר או המשך", guidance: "הנחיות כלליות" };
+const GENRE_NAME = { opinion: "מאמר או דעה", politics: "פוליטיקה או הצהרה", followup: "סיכום, מעצר או המשך",
+  guidance: "הנחיות כלליות", abroad: "ידיעה מחו״ל", article: "כתבה ארוכה" };
 const inRegion = (e, r) => !r || (e.regions || []).includes(r);
 const regionIn = (r) => r ? "ב" + REGION_NAME[r].replace(/^ה/, "") : "בכל הארץ";
 
