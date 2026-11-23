@@ -462,7 +462,7 @@ function drawMap() {
   }
   state.layer.clearLayers();
   let shown = 0;
-  const hours = Number($("#map-hours").value || 24);
+  const hours = state.mapHours || 24;
   const inWindow = state.events.filter((e) => Date.now() - new Date(e.updated_at).getTime() <= hours * 3600 * 1000);
   for (const e of inWindow) {
     const l = e.location;
@@ -694,6 +694,7 @@ function setupAdmin() {
 /* ---------- ניווט ועיצוב ---------- */
 function show(view) {
   for (const v of ["feed", "map", "alerts", "admin"]) $("#view-" + v).hidden = v !== view;
+  if (view !== "feed") window.scrollTo(0, 0);      // לא להשאיר את המסך החדש גלול למטה
   document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.view === view));
   if (view === "map") drawMap();
   if (view === "alerts") drawAlerts();
@@ -732,7 +733,14 @@ async function start() {
   try { state.locations = await getData("locations"); } catch { state.locations = []; }
   $("#pulse-sources").addEventListener("click", () => show("admin"));
   setupRegion(); setupFilters(); setupAlerts(); setupAdmin();
-  $("#map-hours").addEventListener("change", () => state.map && drawMap());
+  // טווח הזמן על המפה: כפתורים שצפים על המפה עצמה, כך שהם תמיד גלויים
+  state.mapHours = Number(store.get("tl_maphours", 24));
+  const hb = document.querySelectorAll("#map-hours-box button");
+  const markHours = () => hb.forEach((b) => { const on = Number(b.dataset.h) === state.mapHours;
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
+  hb.forEach((b) => b.addEventListener("click", () => {
+    state.mapHours = Number(b.dataset.h); store.set("tl_maphours", state.mapHours); markHours(); state.map && drawMap(); }));
+  markHours();
   await loadEvents();
   setInterval(() => { if (!document.hidden) loadEvents(); }, 60000);
 }

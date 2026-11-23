@@ -71,10 +71,13 @@
   </section>
 
   <section id="view-map" class="view" hidden>
-    <label class="map-hours">מה להציג על המפה
-      <select id="map-hours"><option value="24" selected>אירועים מהיממה האחרונה</option><option value="48">אירועים מ-48 השעות האחרונות</option></select>
-    </label>
-    <div id="map"></div>
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-hours" id="map-hours-box" role="group" aria-label="טווח זמן על המפה">
+        <button type="button" data-h="24" class="on" aria-pressed="true">24 שעות</button>
+        <button type="button" data-h="48" aria-pressed="false">48 שעות</button>
+      </div>
+    </div>
     <p class="note" id="map-note"></p>
   </section>
 

@@ -226,8 +226,13 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .ev.earlier .ev-dot { filter: grayscale(.6); }
 .ev-time small { display: block; font-size: .72rem; font-weight: 400; color: var(--muted); }
 .ev-ago { font-weight: 600; }
-.map-hours { display: flex; gap: 8px; align-items: center; margin: 0 0 8px; font-size: .9rem; color: var(--muted); }
-.map-hours select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.map-wrap { position: relative; margin-top: 14px; }
+.map-wrap #map { margin-top: 0; }
+.map-hours { position: absolute; top: 10px; inset-inline-start: 10px; z-index: 500; display: flex; padding: 3px; gap: 2px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 8px #0004; }
+.map-hours button { font: inherit; font-size: .85rem; padding: 6px 12px; border: 0; border-radius: 6px; background: none;
+  color: var(--muted); min-height: 34px; }
+.map-hours button.on { background: var(--ink); color: var(--bg); font-weight: 600; }
 
 /* ---------- חומרה ---------- */
 .sev-badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 7px; border-radius: 999px;
