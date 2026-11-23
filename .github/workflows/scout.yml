@@ -14,9 +14,10 @@ concurrency:
 jobs:
   scout:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
-      contents: write          # רק לשמירת data/candidates.json; הסוכן לא משנה את רשימת המקורות
+      contents: write          # רק לשמירת ההצעות; הסוכן לא משנה את רשימת המקורות
+      issues: write            # הגשת ההצעות לאישור (issue עם התראה לבעל המאגר)
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -25,9 +26,13 @@ jobs:
       - run: pip install -r requirements-collector.txt
       - name: חיפוש ובדיקת מקורות
         run: python -m collector.scout
+      - name: הגשת הצעות חדשות לאישור
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m collector.proposals
       - name: שמירת ההצעות
         run: |
-          git add data/candidates.json
+          git add data/candidates.json collector/scout_proposed.json
           if git diff --cached --quiet; then echo "אין שינוי"; exit 0; fi
           git config user.name "tzafon-live-bot"
           git config user.email "tzafon-live-bot@users.noreply.github.com"

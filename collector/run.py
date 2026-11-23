@@ -43,7 +43,7 @@ def main(argv=None, fetch=None) -> dict:
             ids[src["address_norm"]] = src["id"]
             # פרטי זיהוי ותיעוד שאינם חלק מטבלת המקורות (סוג, רמת אימות, ראיה, סיבת השבתה)
             extra[src["id"]] = {k: s.get(k) for k in ("category", "identity", "evidence", "note")}
-            if src["enabled"] and src["kind"] == "telegram":
+            if src["enabled"] and src["kind"] in ("telegram", "rss"):
                 active.append(src)
         loaded = ingest.load_log(con, Path(args.log), ids)
         names = {v: k for k, v in ids.items()}
@@ -58,9 +58,13 @@ def main(argv=None, fetch=None) -> dict:
                 if fetch is None and active.index(src):
                     time.sleep(1.5)   # לא להעמיס על טלגרם
                 kwargs = {"fetch": fetch} if fetch else {}
-                messages = telegram_web.fetch_channel(src["address_norm"], **kwargs)
+                if src["kind"] == "rss":
+                    from app import feeds
+                    messages = feeds.fetch_feed(src["address"], **kwargs)
+                else:
+                    messages = telegram_web.fetch_channel(src["address_norm"], **kwargs)
                 stamp = now_iso()
-                res["gap"] = ingest.detect_gap(con, src["id"], messages)
+                res["gap"] = ingest.detect_gap(con, src["id"], messages) if src["kind"] == "telegram" else 0
                 if res["gap"]:
                     print(f"::warning::{src['name']}: ייתכן שהוחמצו עד {res['gap']} הודעות בין ההרצות "
                           "(הדף הציבורי מציג רק את 20 האחרונות)")

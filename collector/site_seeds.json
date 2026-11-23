@@ -1,0 +1,22 @@
+[
+  {"name": "ynet", "url": "https://www.ynet.co.il/", "feeds": ["https://www.ynet.co.il/Integration/StoryRss1854.xml"]},
+  {"name": "וואלה חדשות", "url": "https://news.walla.co.il/"},
+  {"name": "מעריב", "url": "https://www.maariv.co.il/"},
+  {"name": "ישראל היום", "url": "https://www.israelhayom.co.il/"},
+  {"name": "mako חדשות", "url": "https://www.mako.co.il/news"},
+  {"name": "כאן חדשות", "url": "https://www.kan.org.il/"},
+  {"name": "ערוץ 7", "url": "https://www.inn.co.il/"},
+  {"name": "סרוגים", "url": "https://www.srugim.co.il/"},
+  {"name": "0404", "url": "https://www.0404.co.il/"},
+  {"name": "כיכר השבת", "url": "https://www.kikar.co.il/"},
+  {"name": "בחדרי חרדים", "url": "https://www.bhol.co.il/"},
+  {"name": "JDN", "url": "https://www.jdn.co.il/"},
+  {"name": "דבר", "url": "https://www.davar1.co.il/"},
+  {"name": "News1", "url": "https://www.news1.co.il/"},
+  {"name": "חיפו – חדשות חיפה", "url": "https://www.haipo.co.il/"},
+  {"name": "חדשות הצפון (hm-news)", "url": "https://www.hm-news.co.il/"},
+  {"name": "קול העמק והגליל", "url": "https://www.kolhaemek.co.il/"},
+  {"name": "פאנט", "url": "https://www.panet.co.il/"},
+  {"name": "ערב 48", "url": "https://www.arab48.com/"},
+  {"name": "כל אל-ערב", "url": "https://www.kul-alarab.com/"}
+]

@@ -288,3 +288,46 @@ def test_scout_mentions_and_evaluate():
     assert r["messages"] > 0 and r["verdict"] in ("recommended", "possible", "unsuitable") and r["reason"]
     r = scout.evaluate("empty", lambda url: (200, b"<html></html>"))
     assert r["verdict"] == "unsuitable" and "ציבורי" in r["reason"]
+
+
+def test_feed_parse_and_discovery():
+    from app import feeds
+    rss = """<?xml version="1.0"?><rss><channel><item><title>שריפה בנתניה</title>
+      <description>&lt;p&gt;כוחות כיבוי פועלים במקום&lt;/p&gt;</description><link>https://x.co.il/a/1</link>
+      <guid>abc</guid><pubDate>Mon, 23 Nov 2026 07:20:00 GMT</pubDate></item>
+      <item><title>בלי תאריך</title></item></channel></rss>""".encode()
+    items = feeds.parse_feed(rss)
+    assert len(items) == 1 and items[0]["content"] == "שריפה בנתניה. כוחות כיבוי פועלים במקום"
+    assert items[0]["published_at"] == "2026-11-23T07:20:00+00:00" and items[0]["url"] == "https://x.co.il/a/1"
+    home = b'<link rel="alternate" type="application/rss+xml" title="mivzakim" href="/rss/flash.xml">'
+    assert feeds.discover_feeds("https://x.co.il/", home) == [("mivzakim", "https://x.co.il/rss/flash.xml")]
+    import pytest
+    with pytest.raises(ValueError):
+        feeds.parse_feed(b'<?xml version="1.0"?><!DOCTYPE x [<!ENTITY a "b">]><rss/>')
+
+
+def test_approve_parses_checked_items(tmp_path, monkeypatch):
+    import json as _j
+    from collector import approve, proposals, sources_edit as se
+    src = tmp_path / "sources.json"
+    src.write_text('[\n  {"name": "a", "kind": "telegram", "address": "https://t.me/aaaaa", "enabled": true}\n]\n', encoding="utf-8")
+    monkeypatch.setattr(se, "SOURCES", src)
+    monkeypatch.setattr(se, "IGNORE", tmp_path / "ignore.json")
+    monkeypatch.setattr(proposals, "PROPOSED", tmp_path / "proposed.json")
+    cand = lambda u: {"kind": "telegram", "key": "tg:" + u.lower(), "username": u, "url": "https://t.me/" + u,
+                      "title": u, "report_share": 0.2, "regions": {}, "samples": [], "verdict": "recommended", "age_hours": 1}
+    proposals.save({"tg:goodchan": {"status": "proposed", "issue": 7, "candidate": cand("goodchan")},
+                    "tg:badchan": {"status": "proposed", "issue": 7, "candidate": cand("badchan")}})
+    body = "- [x] `tg:goodchan` **goodchan**\n- [ ] `tg:badchan` **badchan**"
+    ev = tmp_path / "ev.json"
+    ev.write_text(_j.dumps({"action": "closed", "issue": {"number": 7, "body": body, "state": "closed"}}), encoding="utf-8")
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(ev))
+    monkeypatch.setenv("GITHUB_REPOSITORY", "o/r")
+    monkeypatch.setenv("GITHUB_TOKEN", "x")
+    calls = []
+    class R:
+        def raise_for_status(self): pass
+    monkeypatch.setattr(approve.requests, "post", lambda *a, **k: calls.append(k["json"]) or R())
+    approve.main()
+    assert [s["address"] for s in _j.loads(src.read_text(encoding="utf-8"))] == ["https://t.me/aaaaa", "https://t.me/goodchan"]
+    assert se.ignored() == {"tg:badchan"} and "goodchan" in calls[0]["body"]
