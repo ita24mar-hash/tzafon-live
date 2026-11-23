@@ -43,6 +43,12 @@ def _matches(cluster, r) -> str | None:
     if a["location"] in cluster["places"] and gap <= SAME_PLACE:
         return "update" if a["ended"] else "report"
     same_source = any(x["source_id"] == r["source_id"] for x in cluster["reports"])
+    # אותו מקור ואותו סוג תוך דקות: לרוב אותו אירוע – אלא אם ההודעות מציינות יישובים שונים בלי שום מקום משותף
+    # (ערוץ כבאות שמדווח על שריפות בנתניה ובטירה = שני אירועים; התרעה בזרעית ובשומרה, "קו העימות" = אירוע אחד)
+    specific = lambda p: KINDS.get(p) in ("locality", "junction")
+    if (specific(a["location"]) and any(specific(p) for p in cluster["places"])
+            and not set(a["places"]) & set(cluster["places"])):
+        return None
     if same_source and gap <= SAME_SOURCE:
         return "report"
     if same_source and a["ended"] and gap <= ENDED_UPDATE:

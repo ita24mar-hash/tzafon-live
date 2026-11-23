@@ -126,3 +126,18 @@ def test_genre_report_vs_article():
     a = analyze("דוברות מד\"א: בשעה 21:55 התקבל דיווח על תאונת דרכים בכביש 89 סמוך לצפת")
     assert (a["genre"], a["relevant"]) == ("report", True)
     assert analyze("כפר תבור שריפה")["relevant"]          # הודעה קצרה בלי סימנים = דיווח
+
+
+def test_same_source_different_towns_are_separate_events(tmp_path, monkeypatch):
+    monkeypatch.setenv("DATABASE_PATH", str(tmp_path / "t.db"))
+    from app.db import connect, init_db
+    from app.events_builder import build_events
+    from app.seed import run_seed
+    from app import repo
+    init_db(); run_seed()
+    with connect() as con:
+        s = repo.create_source(con, repo.SourceIn(name="כבאות", kind="telegram", address="https://t.me/fire_x", enabled=True), "t")
+        _add(con, s["id"], "1", "2026-11-23T00:01:00+00:00", "נתניה פרישמן שריפת רכב")
+        _add(con, s["id"], "2", "2026-11-23T00:05:00+00:00", "טירה שריפת רכב ברחוב הראשי")
+        _add(con, s["id"], "3", "2026-11-23T00:09:00+00:00", "נתניה שריפה ברחוב דוד, כוחות כיבוי בדרך")
+        assert build_events(con) == 2
