@@ -1,6 +1,6 @@
 {
  "tg:pakarlive": {
-  "status": "proposed",
+  "status": "approved",
   "issue": 1,
   "candidate": {
    "title": "הגל השקט בטלגרם",
@@ -36,7 +36,7 @@
   }
  },
  "tg:morant55555": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": 1,
   "candidate": {
    "title": "Moran T",
@@ -72,7 +72,7 @@
   }
  },
  "tg:abualiexpress": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": 1,
   "candidate": {
    "title": "אבו עלי אקספרס",
@@ -107,10 +107,10 @@
   }
  },
  "rss:https://www.ynet.co.il/integration/storyrss1854.xml": {
-  "status": "proposed",
+  "status": "approved",
   "issue": 1,
   "candidate": {
-   "title": "ynet",
+   "title": "מבזקי ynet",
    "description": "",
    "verified": false,
    "subscribers": null,
@@ -144,7 +144,7 @@
   }
  },
  "tg:alexmehacarmel": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": 1,
   "candidate": {
    "title": "Carmel News - חדשות",
@@ -178,7 +178,7 @@
   }
  },
  "tg:bitahoninthemiddleeast": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": 1,
   "candidate": {
    "title": "יאיר גולדבלט - ביטחון ומזרח תיכון",
@@ -211,7 +211,7 @@
   }
  },
  "rss:https://www.inn.co.il/rss.aspx?act=.1": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": 1,
   "candidate": {
    "title": "ערוץ 7",
