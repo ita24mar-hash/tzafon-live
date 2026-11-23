@@ -28,7 +28,7 @@ jobs:
         run: PYTHONPATH=. python "tools/${{ inputs.script }}"
       - name: שמירת קובצי נתוני עזר שנוצרו
         run: |
-          git add app/localities.json 2>/dev/null || true
+          git add app/localities.json app/locality_coords.json 2>/dev/null || true
           if git diff --cached --quiet; then echo "אין שינוי"; exit 0; fi
           git config user.name "tzafon-live-bot"
           git config user.email "tzafon-live-bot@users.noreply.github.com"
