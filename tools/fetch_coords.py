@@ -3,10 +3,9 @@ import json, re
 from pathlib import Path
 import requests
 
-Q = """[out:json][timeout:120];
-(area["ISO3166-1"="IL"]; area["ISO3166-1"="PS"];)->.a;
-node["place"~"^(city|town|village|hamlet|suburb|isolated_dwelling|locality)$"]["name:he"](area.a);
-out body;"""
+Q = """[out:json][timeout:170];
+nwr["place"~"^(city|town|village|hamlet|suburb|isolated_dwelling|locality|neighbourhood)$"]["name:he"](29.45,34.20,33.35,35.92);
+out center tags;"""
 H = {"User-Agent": "TzafonLive/0.1 (coordinates for a civic info app)"}
 for url in ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]:
     try:
@@ -19,15 +18,17 @@ else:
 print("OSM_NODES", len(els))
 
 norm = lambda s: re.sub(r"[\s\-–'׳\"״()]+", "", (s or "").replace("קריית", "קרית"))
-rank = {"city": 0, "town": 1, "village": 2, "hamlet": 3, "isolated_dwelling": 4, "locality": 5, "suburb": 6}
+rank = {"city": 0, "town": 1, "village": 2, "hamlet": 3, "isolated_dwelling": 4, "locality": 5, "suburb": 6, "neighbourhood": 7}
 osm = {}
 for e in els:
     t = e["tags"]
     for key in ("name:he", "name", "alt_name:he", "old_name:he"):
         for n in (t.get(key) or "").split(";"):
             k = norm(n)
-            if k and (k not in osm or rank[t["place"]] < osm[k][2]):
-                osm[k] = (round(e["lat"], 5), round(e["lon"], 5), rank[t["place"]])
+            if k and (k not in osm or rank[t["place"]] + (0 if e["type"] == "node" else 0.5) < osm[k][2]):
+                lat, lon = (e["lat"], e["lon"]) if "lat" in e else (e["center"]["lat"], e["center"]["lon"])
+                r_ = rank[t["place"]] + (0 if e["type"] == "node" else 0.5)
+                osm[k] = (round(lat, 5), round(lon, 5), r_)
 recs = json.loads(Path("app/localities.json").read_text(encoding="utf-8"))["records"]
 out, miss = {}, []
 for x in recs:
