@@ -217,3 +217,12 @@ def test_cyber_warnings():
     a = analyze("מערך הסייבר: הודעת SMS מתחזה לפיקוד העורף מופצת לאלפי ישראלים, אל תלחצו על הקישור")
     assert (a["type"], a["location"], a["severity"], a["relevant"]) == ("cyber", "כל הארץ", 3, True)
     assert len(a["regions"]) == 10
+
+
+def test_ims_weather_warnings():
+    a = analyze("ים גבוה ומסוכן לרחצה עודכן ב-23/11 09:33. עדכון: אזהרה צהובה על ים גבוה ומסוכן לרחצה בים התיכון ב-23/11 מ-10 עד 22.")
+    assert (a["type"], a["location"], a["severity"], a["relevant"]) == ("weather", "חופי הים התיכון", 1, True)
+    a = analyze("אזהרה כתומה: גשם עז וסכנת שיטפונות בנחלים במדבר יהודה ובערבה")
+    assert (a["type"], a["severity"]) == ("weather", 2)
+    a = analyze("אזהרה אדומה: עומס חום כבד ביותר")
+    assert (a["type"], a["location"], a["severity"]) == ("weather", "כל הארץ", 3)
