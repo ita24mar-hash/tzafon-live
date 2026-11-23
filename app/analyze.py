@@ -8,14 +8,15 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-5"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח
+VERSION = "rules-6"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
     ("security", r"צבע אדום|ירי רקטות|רקטות|טילים|טיל |כטב\"ם|כלי טיס עוין|חדירת מחבלים|חשש לחדירת|מחבל(?:ים)?(?![א-ת])|פיגוע|"
                  r"יירוט|יירוטים|נפילה|נפילות|אזעק|התרעה מפיקוד העורף|התרעות|שיגור|רסיסים|חפץ חשוד|אמל\"ח|"
                  r"מרחב (?:ה)?מוגן|למרחב המוגן|הוסר החשש|פיצוצים|שובלים|עדכון ביטחוני|הנחיות התגוננות"),
-    ("fire", r"שריפ|שרפה|בוער|בוערת|עלה באש|עלתה באש|לוחמי אש|צוותי כיבוי|כבאות והצלה"),
+    # רק מילים של אש. "כבאות והצלה" ו"לוחמי האש" לא נחשבים: הם מחלצים גם בתאונות
+    ("fire", r"שריפ|שרפה|בוער|בוערת|עלה באש|עלתה באש|עולה באש"),
     ("accident", r"תאונ|התנגש|התהפכ|פגע וברח|הולך רגל|הולכת רגל|נפגע מרכב|נפגעה מרכב|רוכב אופנוע|קורקינט|אופניים חשמליים"),
     ("closure", r"חסימ|נחסם|נחסמה|חסום|חסומה|נסגר לתנועה|נסגרה לתנועה|הסדרי תנועה|עומסי תנועה|פקק"),
     ("infrastructure", r"הפסקת חשמל|הפסקות חשמל|הפסקת מים|תקלה ב(?:חשמל|מים|תקשורת)|חברת החשמל|ביוב|פיצוץ צנרת|"
@@ -24,6 +25,46 @@ TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
     ("hazard", r"חומ\"ס|חומרים מסוכנים|דליפ|זיהום|מפגע|נפילת עץ|קריסת"),
     ("medical", r"מד\"א|כוחות הצלה|איחוד הצלה|נפל מגובה|נפלה מגובה|פצוע|פצועה|פצועים|נפגע|נפגעה|נפגעים|מחוסר הכרה|החייאה|נקבע מותו|נקבע מותה"),
 ]
+# ---------- רמת חומרה: 3 = קריטי, 2 = בינוני, 1 = נמוך ----------
+# קריטי: איום על ציבור רחב או אירוע רב-נפגעים. נמוך: פגיעה באדם אחד במצב קל/בינוני, רכב בוער, מפגע קטן.
+CRITICAL = re.compile(r"צבע אדום|אזעק|ירי רקטות|רקטות|טילים|כלי טיס עוין|כטב\"ם|חדירת מחבלים|חשש לחדירת|פיגוע|"
+                      r"מחבל(?:ים)?(?![א-ת])|פגיעה ישירה|נפילת טיל|נפילה בשטח|רעידת אדמה|חומרים מסוכנים|דליפת גז|"
+                      r"פינוי תושבים|פינוי בתים|מפנים תושבים|אירוע רב נפגעים|רב-נפגעים|מטוסי כיבוי|שריפת ענק|"
+                      r"שריפת חורש גדולה|מתפשטת|התפשטות האש")
+DEATH = re.compile(r"נהרג|נהרגה|נהרגו|הרוג|הרוגים|נקבע מות|נקבעה מות")
+GRAVE = re.compile(r"אנוש|תאונה קשה|תאונת דרכים קשה|לכוד|לכודה|נלכד|נלכדה|חילצו|במצב קשה|במצב קריטי|נפצע קשה|נפצעה קשה|נפצעו קשה|נפגע קשה|נפגעה קשה|פצוע קשה|פצועה קשה|פצועים קשה|באורח קשה|מחוסר הכרה|ללא רוח חיים|החייאה")
+MANY = re.compile(r"(?<![א-ת])(?:\d{1,3}|שני|שתי|שלושה|שלוש|ארבעה|ארבע|חמישה|חמש|מספר|כמה|רבים)\s+"
+                  r"(?:פצועים|פצועות|נפגעים|נפגעות|הרוגים|לכודים|בני אדם)|פצועים|נפגעים|הרוגים|לכודים|"
+                  r"(?<![א-ת\d])(?:[3-9]|\d\d|שלושה|ארבעה|חמישה|מספר|כמה)\s+כלי רכב")   # שני כלי רכב = תאונה רגילה
+FALSE_ALARM = re.compile(r"שווא|זיהוי שגוי")
+MINOR = re.compile(r"רכב בוער|שריפת רכב|רכב עלה באש|רכב עולה באש|ללא נפגעים|אין נפגעים|לא נפגע|באורח קל|פצוע קל|"
+                   r"פצועה קל|פצועים קל|שמן על הכביש|שמן בכביש|מפגע|עץ שקרס|נפל עץ|פסולת|ערימת|קוצים|שריפת קוצים|"
+                   r"פח אשפה|פחי אשפה|נפלה במדרכה|נפל במדרכה|נפלה מסוס|נפל מסוס")
+BUILDING_FIRE = re.compile(r"בניין|דירה|דירת|מבנה|בית |בית מגורים|מפעל|מחסן|חנות|קומה|גג")
+
+
+def severity_of(etype: str | None, text: str) -> int:
+    t = re.sub(r"\s+", " ", text or "")
+    if CRITICAL.search(t) and not (FALSE_ALARM.search(t) and etype == "security"):
+        return 3
+    many = bool(MANY.search(t))
+    if DEATH.search(t):
+        return 3 if many else 2
+    if GRAVE.search(t):
+        return 3 if many and re.search(r"פצועים קשה|נפצעו קשה|(?:\d|שני|שלושה)\s+פצועים קשה|רב.נפגעים", t) else 2
+    if etype == "security":
+        if re.search(r"יישמעו|ייתכנו רעשי|ישמעו רעשי|רעשי פיצוצים|תרגיל|ניסוי מתוכנן", t):
+            return 1                # הודעה מראש על פעילות מתוכננת
+        return 2                    # חפץ חשוד, ירי, התרעת שווא, אירוע אלימות
+    if etype in ("closure", "infrastructure", "weather"):
+        return 1 if MINOR.search(t) else 2
+    if etype == "fire":
+        return 2 if BUILDING_FIRE.search(t) and not MINOR.search(t) else 1
+    if etype in ("medical", "accident"):
+        return 2 if many and not re.search(r"באורח קל|פצועים קל|ללא נפגעים", t) else 1
+    return 1
+
+
 SEVERE = re.compile(r"נהרג|נהרגה|הרוג|נקבע מות|אנוש|במצב קשה|פצוע קשה|פצועה קשה|פגיעה ישירה")
 MEDIUM = re.compile(r"בינוני|לכודים|לכוד|נלכד|פצועים|נפגעים|חדירת מחבלים|ירי רקטות")
 ENDED = re.compile(r"האירוע הסתיים|הסתיים|הוסר החשש|נפתח לתנועה|נפתחה לתנועה|כובתה|נשלטה|הושלט|יכולים לצאת")
@@ -154,7 +195,7 @@ def analyze(text: str) -> dict:
     if places and ABROAD.search(t) and all(p["name"] in GENERIC for p in places):
         places = []   # למשל "פיצוצים בכפר בלבנון ... ליד גבול הצפון": האירוע בלבנון, לא בצפון
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
-    severity = 3 if SEVERE.search(t) else 2 if MEDIUM.search(t) else 1
+    severity = severity_of(etype, t)
     names = [p["name"] for p in places]
     g = genre(t)
     regions = regions_for(names)
@@ -179,12 +220,15 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
     את המקומות והסוג שלה ורק מוסיפים אזורים. כל השאר מנותח מחדש מהקטע השמור."""
     if old and old.get("v") == VERSION:
         return old
-    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4")):
+    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5")):
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         if g == "report" and old.get("genre") not in (None, "report"):
             g = old["genre"]        # מה שכבר זוהה כלא-דיווח מהטקסט המלא נשאר כך
+        # סוג מחושב מחדש מהקטע השמור אם מזוהה בו (תיקוני כללים, כמו "מחבלות" שאינו מחבל)
+        etype = next((name for name, rx in TYPE_RULES if re.search(rx, excerpt)), None) or old["type"]
         return old | {"v": VERSION, "regions": regions, "north": bool(set(regions) & NORTH_REGIONS), "genre": g,
+                      "type": etype, "severity": severity_of(etype, excerpt),
                       "recap": recap_word(excerpt),
                       "relevant": bool(old["places"]) and old["type"] is not None and g == "report"}
     return analyze(excerpt)

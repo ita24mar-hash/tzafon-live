@@ -110,6 +110,7 @@ const clock = (iso) => new Date(iso).toLocaleString("he-IL", { day: "numeric", m
 const TRUST = {
   official: "מקור רשמי", multi_source: "כמה מקורות עצמאיים", single_source: "מקור יחיד, לא רשמי", retracted: "הוכחש או תוקן",
 };
+const SEV = { 3: "קריטי", 2: "בינוני", 1: "נמוך" };
 const NOW_MS = 2 * 3600 * 1000;      // "עכשיו" = השעתיים האחרונות
 const isNow = (iso) => Date.now() - new Date(iso).getTime() <= NOW_MS;
 function since(iso) {
@@ -144,7 +145,8 @@ function eventCard(e, pos = {}) {
     el("div", { class: "ev-time", title: clock(e.updated_at) }, hhmm(e.updated_at), el("small", {}, dayLabel(e.updated_at))),
     el("div", { class: "ev-rail" }, el("span", { class: "ev-dot" })),
     el("div", { class: "ev-body" },
-      el("div", { class: "ev-kind" }, label, el("span", { class: "ev-ago" }, " · " + since(e.updated_at)),
+      el("div", { class: "ev-kind" }, el("span", { class: `sev-badge s${e.severity || 1}` }, SEV[e.severity || 1]),
+        label, el("span", { class: "ev-ago" }, " · " + since(e.updated_at)),
         e.status === "ended" && el("span", { class: "ended" }, " · הסתיים"),
         e.is_demo && el("span", { class: "tag-demo" }, " נתוני הדגמה ")),
       el("h3", {}, e.title),
@@ -254,7 +256,9 @@ function renderPulse(recent, filtered, meta, sources, restCount = 0) {
   $("#pulse-sub").textContent = checked
     ? `${earlier ? (earlier === 1 ? "אירוע אחד" : earlier + " אירועים") + " מוקדם יותר ביממה האחרונה" +
         (now === 0 && lastEv ? `, האחרון ${since(lastEv.updated_at)}. ` : ". ") : ""}` +
-      `${restCount ? (restCount === 1 ? "אירוע אחד" : restCount + " אירועים") + " בשאר הארץ. " : ""}נבדק ${ago(checked)}.`
+      `${restCount ? (restCount === 1 ? "אירוע אחד" : restCount + " אירועים") + " בשאר הארץ. " : ""}` +
+      `${state.lowHidden ? (state.lowHidden === 1 ? "אירוע אחד בחומרה נמוכה מוסתר" : state.lowHidden + " אירועים בחומרה נמוכה מוסתרים") + ". " : ""}` +
+      `נבדק ${ago(checked)}.`
     : "";
   const link = $("#pulse-sources");
   link.hidden = true;                 // מקורות שקטים מוצגים רק בלשונית המקורות
@@ -278,10 +282,14 @@ async function loadEvents() {
     const [allTypes, meta, raw, sources] = await Promise.all([fetchEvents(q), getData("meta"), getData("raw"),
       getData("sources").catch(() => [])]);
     // הסינון לפי סוג נעשה כאן, כדי שאפשר יהיה להציג כמה אירועים יש מכל סוג
+    // חומרה: ברירת המחדל מסתירה אירועים בחומרה נמוכה (למשל פצוע אחד במצב קל, רכב בוער)
+    const bySev = allTypes.filter((e) => (e.severity || 1) >= state.minSev);
+    state.lowHidden = allTypes.filter((e) => (e.severity || 1) < state.minSev && isRecent(e.updated_at)
+      && inRegion(e, state.region)).length;
     state.typeCounts = {};
-    for (const e of allTypes) state.typeCounts[e.event_type] = (state.typeCounts[e.event_type] || 0) + 1;
-    state.typeTotal = allTypes.length;
-    const events = f.type ? allTypes.filter((e) => e.event_type === f.type) : allTypes;
+    for (const e of bySev) state.typeCounts[e.event_type] = (state.typeCounts[e.event_type] || 0) + 1;
+    state.typeTotal = bySev.length;
+    const events = f.type ? bySev.filter((e) => e.event_type === f.type) : bySev;
     if (state.drawChips) state.drawChips();
     state.events = events;
     const filtered = Object.keys(q).length > 0 || !!f.type;
@@ -342,6 +350,7 @@ function updateFilterSummary() {
 }
 
 function setupFilters() {
+  state.minSev = Number(store.get("tl_minsev", 2));
   const chips = $("#type-chips");
   // רק סוגים שיש בהם אירועים (וסוג שנבחר), עם מספר. כך התפריט קצר ונכנס במסך בלי גלילה הצידה.
   const draw = () => {
@@ -357,6 +366,13 @@ function setupFilters() {
           el("i", {}), label, el("b", {}, String(counts[k] || 0)))));
   };
   state.drawChips = draw;
+  // בחירת רמת חומרה
+  const sevRow = $("#sev-row");
+  const drawSev = () => sevRow.replaceChildren(el("span", { class: "sev-label" }, "חומרה:"),
+    ...[[3, "קריטי בלבד"], [2, "בינוני ומעלה"], [1, "הכול, כולל נמוך"]].map(([v, t]) =>
+      el("button", { class: "seg" + (state.minSev === v ? " on" : ""), "aria-pressed": String(state.minSev === v),
+        onclick: () => { state.minSev = v; store.set("tl_minsev", v); drawSev(); loadEvents(); } }, t)));
+  drawSev();
   const pick = (k) => { state.filters.type = k; draw(); changed(); };
   const changed = () => {
     updateFilterSummary();

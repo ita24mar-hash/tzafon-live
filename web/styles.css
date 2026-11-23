@@ -224,3 +224,16 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .ev-ago { font-weight: 600; }
 .map-hours { display: flex; gap: 8px; align-items: center; margin: 0 0 8px; font-size: .9rem; color: var(--muted); }
 .map-hours select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+
+/* ---------- חומרה ---------- */
+.sev-badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 7px; border-radius: 999px;
+  margin-inline-end: 6px; vertical-align: 1px; border: 1px solid currentColor; }
+.sev-badge.s3 { color: #fff; background: var(--signal); border-color: var(--signal); }
+.sev-badge.s2 { color: var(--signal); }
+.sev-badge.s1 { color: var(--muted); border-color: var(--line); }
+.sev-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0 4px; font-size: .88rem; }
+.sev-label { color: var(--muted); margin-inline-end: 2px; }
+.seg { font: inherit; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  color: var(--ink); cursor: pointer; }
+.seg.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.seg:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
