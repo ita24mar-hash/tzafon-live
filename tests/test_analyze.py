@@ -209,3 +209,11 @@ def test_every_type_has_title_and_is_allowed():
     from app import analyze, events_builder, repo
     types = {n for n, _ in analyze.TYPE_RULES}
     assert types <= set(events_builder.TITLE) and types <= set(repo.EVENT_TYPES)
+
+
+def test_cyber_warnings():
+    a = analyze("אזהרה לציבור. חשד לניסיון הונאה! בשעות האחרונות מופצות הודעות SMS המתחזות להודעות מטעם אגף הגביה של עיריית קריית שמונה")
+    assert (a["type"], a["places"], a["severity"], a["relevant"]) == ("cyber", ["קריית שמונה"], 2, True)
+    a = analyze("מערך הסייבר: הודעת SMS מתחזה לפיקוד העורף מופצת לאלפי ישראלים, אל תלחצו על הקישור")
+    assert (a["type"], a["location"], a["severity"], a["relevant"]) == ("cyber", "כל הארץ", 3, True)
+    assert len(a["regions"]) == 10

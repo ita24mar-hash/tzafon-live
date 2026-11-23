@@ -12,6 +12,7 @@ VERSION = "rules-6"   # rules-2: כיסוי ארצי + שיוך לאזורים; 
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
+    ("cyber", r"פישינג|דיוג|הונאה|הודעה מתחזה|הודעות מתחזות|הודעות SMS המתחזות|הודעות המתחזות|אתר מתחזה|אתרים מתחזים|מתחזה ל(?:פיקוד|דואר|משטרת|בנק|רשות|עיריית|מועצה|משרד|ביטוח|חברת|אל על)|מתחזות ל|קישור זדוני|קובץ זדוני|מתקפת סייבר|מתקפות סייבר|מערך הסייבר|דלף מידע|הדלפת מידע|כופרה|השבתת אתר|תקיפת סייבר"),
     ("earthquake", r"רעידת אדמה|רעידות אדמה|רעש אדמה"),
     ("security", r"צבע אדום|ירי רקטות|רקטות|טילים|טיל |כטב\"ם|כלי טיס עוין|חדירת מחבלים|חשש לחדירת|מחבל(?:ים)?(?![א-ת])|פיגוע|"
                  r"יירוט|יירוטים|נפילה|נפילות|אזעק|התרעה מפיקוד העורף|התרעות|שיגור|רסיסים|חפץ חשוד|אמל\"ח|"
@@ -46,6 +47,8 @@ BUILDING_FIRE = re.compile(r"בניין|דירה|דירת|מבנה|בית |בי�
 
 def severity_of(etype: str | None, text: str) -> int:
     t = re.sub(r"\s+", " ", text or "")
+    if etype == "cyber":        # התחזות לפיקוד העורף או השבתה של תשתית = קריטי; אזהרת הונאה רגילה = בינוני
+        return 3 if re.search(r"פיקוד העורף|תשתית|השבתת|קריסת מערכות|בתי חולים", t) else 2
     m = re.search(r"רעידת אדמה בעוצמה (\d+(?:\.\d)?)", t)
     if m:                       # עוצמה 4 ומעלה = קריטי; מתחת = בינוני
         return 3 if float(m.group(1)) >= 4 else 2
@@ -204,6 +207,8 @@ def analyze(text: str) -> dict:
     if places and ABROAD.search(t) and all(p["name"] in GENERIC for p in places):
         places = []   # למשל "פיצוצים בכפר בלבנון ... ליד גבול הצפון": האירוע בלבנון, לא בצפון
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
+    if etype == "cyber" and not places and not ABROAD.search(t):
+        places = find_places("כל הארץ")   # אזהרת הונאה או סייבר בלי מקום – רלוונטית לכולם
     severity = severity_of(etype, t)
     names = [p["name"] for p in places]
     g = genre(t)

@@ -17,7 +17,7 @@
   --ok: #3f6b3a;
   /* צבע לפי סוג אירוע: הנקודה בציר הזמן */
   --t-security: #8a2b1d; --t-fire: #c8541f; --t-accident: #a86a12; --t-closure: #6b5a2f;
-  --t-infrastructure: #2f5e7a; --t-weather: #4c6f8a; --t-hazard: #7a5a2f; --t-medical: #a33a4a; --t-earthquake: #7a4f8a; --t-other: #5f6b6a;
+  --t-infrastructure: #2f5e7a; --t-weather: #4c6f8a; --t-hazard: #7a5a2f; --t-medical: #a33a4a; --t-earthquake: #7a4f8a; --t-cyber: #2f7a8a; --t-other: #5f6b6a;
   --radius: 10px;
   --raised: #ffffff;
 }
@@ -27,7 +27,7 @@
   --bg: #0e1619; --surface: #142024; --raised: #1a292e; --chip: #1d2c32; --olive: #9fc46e; --signal: #ff5a3f;
   --amber: #f0a53a; --slate: #7fb6d6; --ok: #8fc46a;
   --t-security: #ff8a74; --t-fire: #ff9a5c; --t-accident: #e2a347; --t-closure: #c9b37a;
-  --t-infrastructure: #8fbfdc; --t-weather: #9cc2de; --t-hazard: #d3a86e; --t-medical: #f08a9a; --t-earthquake: #c3a0d6; --t-other: #9aa6a3;
+  --t-infrastructure: #8fbfdc; --t-weather: #9cc2de; --t-hazard: #d3a86e; --t-medical: #f08a9a; --t-earthquake: #c3a0d6; --t-cyber: #7fd0de; --t-other: #9aa6a3;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -202,6 +202,7 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .pin.t-medical { --c: var(--t-medical); }
 .pin.t-other { --c: var(--t-other); }
 .pin.t-earthquake { --c: var(--t-earthquake); }
+.pin.t-cyber { --c: var(--t-cyber); }
 
 /* ---------- אזור ---------- */
 .region-btn { background: none; border: 0; padding: 0 0 6px; color: var(--olive); font: inherit; font-size: .9rem;
