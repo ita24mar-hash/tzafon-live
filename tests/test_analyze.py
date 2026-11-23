@@ -141,3 +141,25 @@ def test_same_source_different_towns_are_separate_events(tmp_path, monkeypatch):
         _add(con, s["id"], "2", "2026-11-23T00:05:00+00:00", "טירה שריפת רכב ברחוב הראשי")
         _add(con, s["id"], "3", "2026-11-23T00:09:00+00:00", "נתניה שריפה ברחוב דוד, כוחות כיבוי בדרך")
         assert build_events(con) == 2
+
+
+def test_recap_attaches_to_original_and_does_not_look_new(tmp_path, monkeypatch):
+    monkeypatch.setenv("DATABASE_PATH", str(tmp_path / "t.db"))
+    from app.db import connect, init_db
+    from app.events_builder import build_events
+    from app.seed import run_seed
+    from app import repo
+    init_db(); run_seed()
+    with connect() as con:
+        s = repo.create_source(con, repo.SourceIn(name="כבאות", kind="telegram", address="https://t.me/fire_y", enabled=True), "t")
+        _add(con, s["id"], "1", "2026-11-23T00:01:00+00:00", "נתניה פרישמן שריפת רכב")          # 02:01 בלילה: חי
+        _add(con, s["id"], "2", "2026-11-23T07:20:00+00:00",
+             "עדכוני חדשות נתניה: הלילה ברחוב דוד פרישמן בעיר רכב עלה באש, כוחות הכיבוי פעלו בזירה")  # 09:20: סיכום
+        _add(con, s["id"], "3", "2026-11-23T07:30:00+00:00", "אמש פרצה שריפה בבית בטירה")        # סיכום בלי אירוע מקורי
+        _add(con, s["id"], "4", "2026-11-22T23:30:00+00:00", "הלילה: שריפה בכרמיאל, כוחות בדרך") # 01:30: חי
+        assert build_events(con) == 2
+        evs = {e["title"]: e for e in repo.list_events(con)}
+        n = evs["שריפה בנתניה"]
+        assert n["updated_at"].startswith("2026-11-23T00:01") and n["status"] == "ended"
+        assert [r["relation"] for r in n["reports"]] == ["report", "recap"]
+        assert "שריפה בכרמיאל" in evs

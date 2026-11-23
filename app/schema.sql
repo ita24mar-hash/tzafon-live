@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS event_reports (
     event_id      INTEGER NOT NULL REFERENCES events(id) ON DELETE CASCADE,
     raw_report_id INTEGER NOT NULL UNIQUE REFERENCES raw_reports(id) ON DELETE CASCADE,
     relation      TEXT NOT NULL DEFAULT 'report'
-                  CHECK (relation IN ('report','update','copy','contradiction','official')),
+                  CHECK (relation IN ('report','update','copy','contradiction','official','recap')),
     PRIMARY KEY (event_id, raw_report_id)
 );
 

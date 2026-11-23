@@ -8,7 +8,7 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-3"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום
+VERSION = "rules-4"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -93,6 +93,20 @@ GENRE_NAMES = {"report": "דיווח", "opinion": "מאמר או דעה", "polit
                "guidance": "הנחיות כלליות"}
 
 
+# מילים שמעידות שההודעה מספרת על משהו שכבר קרה ("הלילה רכב עלה באש..."). המילה עצמה נשמרת,
+# ובונה האירועים מחליט לפי שעת הפרסום: "הלילה" שפורסם ב-02:00 הוא דיווח חי, ב-09:20 הוא סיכום.
+RECAP = re.compile(r"(?<![א-ת])(אמש|אתמול|מוקדם יותר היום|בלילה שעבר|הלילה|לפנות בוקר|במהלך הלילה|בשעות הלילה|"
+                   r"בשעות הבוקר המוקדמות|בשעת לילה)(?![א-ת])")
+
+
+def recap_word(text: str) -> str | None:
+    t = re.sub(r"\s+", " ", text or "")
+    if re.search(r"לפני זמן קצר|לפני דקות|ממש עכשיו|כעת|ברגעים אלו|בשעה זו|מבזק|🚨", t):
+        return None
+    m = RECAP.search(t)
+    return m.group(1) if m else None
+
+
 def genre(text: str) -> str:
     """'report' = ידיעה על אירוע שקורה עכשיו או הודעה רשמית לציבור; אחרת: סוג התוכן."""
     t = re.sub(r"\s+", " ", text or "")
@@ -121,6 +135,7 @@ def analyze(text: str) -> dict:
         "severity": severity,
         "ended": bool(ENDED.search(t)),
         "genre": g,
+        "recap": recap_word(t),
         # ההחלטה אם להציג: דיווח (לא רעש, לא מאמר/סיכום) + מקום בישראל + סוג אירוע מזוהה
         "relevant": bool(places) and etype is not None and g == "report",
     }
@@ -135,5 +150,6 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         return old | {"v": VERSION, "regions": regions, "north": bool(set(regions) & NORTH_REGIONS), "genre": g,
+                      "recap": recap_word(excerpt),
                       "relevant": bool(old["places"]) and old["type"] is not None and g == "report"}
     return analyze(excerpt)

@@ -216,3 +216,11 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .rest-title { font-size: 1rem; margin: 26px 0 8px; color: var(--muted); font-weight: 700; }
 
 .sample { margin: 8px 0 0; padding: 6px 10px; border-inline-start: 3px solid var(--line); color: var(--muted); font-size: .88rem; }
+
+/* ---------- זמן: עכשיו מול מוקדם יותר ---------- */
+.ev.earlier .ev-body { opacity: .72; }
+.ev.earlier .ev-dot { filter: grayscale(.6); }
+.ev-time small { display: block; font-size: .72rem; font-weight: 400; color: var(--muted); }
+.ev-ago { font-weight: 600; }
+.map-hours { display: flex; gap: 8px; align-items: center; margin: 0 0 8px; font-size: .9rem; color: var(--muted); }
+.map-hours select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }

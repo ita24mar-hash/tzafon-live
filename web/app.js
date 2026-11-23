@@ -109,6 +109,17 @@ const clock = (iso) => new Date(iso).toLocaleString("he-IL", { day: "numeric", m
 const TRUST = {
   official: "מקור רשמי", multi_source: "כמה מקורות עצמאיים", single_source: "מקור יחיד, לא רשמי", retracted: "הוכחש או תוקן",
 };
+const NOW_MS = 2 * 3600 * 1000;      // "עכשיו" = השעתיים האחרונות
+const isNow = (iso) => Date.now() - new Date(iso).getTime() <= NOW_MS;
+function since(iso) {
+  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return "עכשיו";
+  if (m < 60) return `לפני ${m} דק׳`;
+  const h = Math.round(m / 60);
+  if (h < 24) return h === 1 ? "לפני שעה" : h === 2 ? "לפני שעתיים" : `לפני ${h} שעות`;
+  const d = Math.round(h / 24);
+  return d === 1 ? "לפני יום" : `לפני ${d} ימים`;
+}
 const hhmm = (iso) => new Date(iso).toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
 const dayLabel = (iso) => {
   const d = new Date(iso), t = new Date(); const y = new Date(); y.setDate(t.getDate() - 1);
@@ -125,14 +136,15 @@ function eventCard(e, pos = {}) {
     : "מיקום לא ידוע";
   const reports = e.reports.map((r) => el("li", {},
     r.url ? el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, r.source_name) : r.source_name,
-    ` · ${clock(r.published_at)}`, r.relation === "copy" ? " (העתק)" : r.relation === "update" ? " (עדכון)" : ""));
+    ` · ${clock(r.published_at)}`, r.relation === "copy" ? " (העתק)" : r.relation === "update" ? " (עדכון)" : r.relation === "recap" ? " (סיכום בדיעבד)" : ""));
   const n = e.independent_sources;
-  return el("article", { class: `ev sev-${e.severity}${e.status === "ended" ? " ended" : ""}${pos.first ? " first" : ""}${pos.last ? " last" : ""}`,
+  return el("article", { class: `ev sev-${e.severity}${e.status === "ended" ? " ended" : ""}${isNow(e.updated_at) ? "" : " earlier"}${pos.first ? " first" : ""}${pos.last ? " last" : ""}`,
     style: `--c: var(--t-${e.event_type})` },
-    el("div", { class: "ev-time", title: clock(e.updated_at) }, hhmm(e.updated_at)),
+    el("div", { class: "ev-time", title: clock(e.updated_at) }, hhmm(e.updated_at), el("small", {}, dayLabel(e.updated_at))),
     el("div", { class: "ev-rail" }, el("span", { class: "ev-dot" })),
     el("div", { class: "ev-body" },
-      el("div", { class: "ev-kind" }, label, e.status === "ended" && el("span", { class: "ended" }, " · הסתיים"),
+      el("div", { class: "ev-kind" }, label, el("span", { class: "ev-ago" }, " · " + since(e.updated_at)),
+        e.status === "ended" && el("span", { class: "ended" }, " · הסתיים"),
         e.is_demo && el("span", { class: "tag-demo" }, " נתוני הדגמה ")),
       el("h3", {}, e.title),
       !e.location && el("div", { class: "ev-where" }, "מיקום לא ידוע"),
@@ -147,15 +159,16 @@ function eventCard(e, pos = {}) {
             (e.analyzer && e.analyzer.startsWith("rules") ? "האירוע זוהה אוטומטית לפי כללים, ללא בדיקה אנושית." : ""))))));
 }
 
-function renderTimeline(target, events, { groupByDay = false } = {}) {
+function renderTimeline(target, events, { groupByDay = false, splitNow = false } = {}) {
   const out = [];
   let day = null;
+  const grp = (e) => groupByDay ? dayLabel(e.updated_at) : splitNow ? (isNow(e.updated_at) ? "בשעתיים האחרונות" : "מוקדם יותר") : null;
   events.forEach((e, i) => {
-    const d = dayLabel(e.updated_at);
-    const newDay = groupByDay && d !== day;
+    const d = grp(e);
+    const newDay = d !== null && d !== day;
     if (newDay) { out.push(el("div", { class: "day" }, d)); day = d; }
     const next = events[i + 1];
-    const last = !next || (groupByDay && dayLabel(next.updated_at) !== d);
+    const last = !next || (d !== null && grp(next) !== d);
     out.push(eventCard(e, { first: i === 0 || newDay, last }));
   });
   target.replaceChildren(...out);
@@ -218,7 +231,7 @@ function renderRaw(raw, sources, meta) {
 
 
 function renderFeed(target, events, emptyText) {
-  if (events.length) renderTimeline(target, events);
+  if (events.length) renderTimeline(target, events, { splitNow: true });
   else target.replaceChildren(el("p", { class: "empty-state" }, emptyText));
 }
 
@@ -227,19 +240,23 @@ function renderPulse(recent, filtered, meta, sources, restCount = 0) {
   const n = recent.length, h = $("#pulse-head"), where = regionIn(state.region);
   const scope = filtered ? "לפי הסינון, " : "";
   const t = state.filters.type && TYPES[state.filters.type] ? TYPES[state.filters.type][0] : null;
-  h.textContent = n === 0 ? (t ? `אין אירועים מסוג ${t} ${where} ב-24 השעות האחרונות`
-    : filtered ? `אין אירועים ${where} שתואמים את הסינון ב-24 השעות האחרונות` : `שקט ${where} ב-24 השעות האחרונות`)
-    : n === 1 ? `${scope}אירוע אחד ${where} ב-24 השעות האחרונות` : `${scope}${n} אירועים ${where} ב-24 השעות האחרונות`;
-  h.className = n === 0 && !filtered ? "quiet" : "";
+  // הכותרת מתייחסת לשעתיים האחרונות, כדי שאירוע מהלילה לא ייראה כמו משהו שקורה עכשיו
+  const now = recent.filter((e) => isNow(e.updated_at)).length, earlier = n - now;
+  const what = t ? `אירועים מסוג ${t}` : "אירועים";
+  h.textContent = now === 0 ? (filtered || t ? `אין ${what} ${where} בשעתיים האחרונות` : `שקט ${where} בשעתיים האחרונות`)
+    : now === 1 ? `${scope}אירוע אחד ${where} בשעתיים האחרונות` : `${scope}${now} ${what} ${where} בשעתיים האחרונות`;
+  h.className = now === 0 && !filtered ? "quiet" : "";
+  const lastEv = recent[0];
   const checked = meta.generated_at || meta.server_time;
   const on = sources.filter((x) => x.enabled && !x.is_demo);
   const quiet = on.filter((x) => x.status === "error" || !x.newest_published_at || !isRecent(x.newest_published_at));
   $("#pulse-sub").textContent = checked
-    ? `${n === 0 && !filtered ? "לא זוהו אירועים ב" + on.length + " המקורות שנבדקו. " : ""}` +
+    ? `${earlier ? (earlier === 1 ? "אירוע אחד" : earlier + " אירועים") + " מוקדם יותר ביממה האחרונה" +
+        (now === 0 && lastEv ? `, האחרון ${since(lastEv.updated_at)}. ` : ". ") : ""}` +
       `${restCount ? (restCount === 1 ? "אירוע אחד" : restCount + " אירועים") + " בשאר הארץ. " : ""}נבדק ${ago(checked)}.`
     : "";
   const link = $("#pulse-sources");
-  link.hidden = !quiet.length;
+  link.hidden = true;                 // מקורות שקטים מוצגים רק בלשונית המקורות
   link.textContent = quiet.length === 1 ? "מקור אחד לא פרסם ב-24 השעות האחרונות" : `${quiet.length} מקורות לא פרסמו ב-24 השעות האחרונות`;
   const fresh = STATIC && checked && Date.now() - new Date(checked).getTime() < 3600 * 1000 && meta.run_ok !== false;
   $("#live-dot").classList.toggle("on", !!fresh);
@@ -275,7 +292,7 @@ async function loadEvents() {
     renderFeed($("#feed"), recentEv, filtered ? "אין אירועים שתואמים את הסינון."
       : `כשיזוהה אירוע ${regionIn(state.region)} באחד המקורות, הוא יופיע כאן.`);
     $("#feed-rest-box").hidden = !restEv.length;
-    renderTimeline($("#feed-rest"), restEv);
+    renderTimeline($("#feed-rest"), restEv, { splitNow: true });
     renderTimeline($("#feed-archive"), olderEv, { groupByDay: true });
     $("#feed-archive-box").hidden = !olderEv.length;
     $("#feed-archive-title").textContent = `אירועים קודמים (${olderEv.length})`;
@@ -385,7 +402,9 @@ function drawMap() {
   }
   state.layer.clearLayers();
   let shown = 0;
-  for (const e of state.events) {
+  const hours = Number($("#map-hours").value || 24);
+  const inWindow = state.events.filter((e) => Date.now() - new Date(e.updated_at).getTime() <= hours * 3600 * 1000);
+  for (const e of inWindow) {
     const l = e.location;
     // אירוע מוצג על המפה רק אם יש לו מיקום עם קואורדינטות. לא ממציאים נקודות.
     if (!l || l.lat === null || e.location_precision === "unknown") continue;
@@ -400,11 +419,11 @@ function drawMap() {
   else {
     // המפה מתמקדת באירועים: קודם באזור שנבחר, ואם אין בו – בכל האירועים
     const pts = (ev) => ev.filter((e) => e.location && e.location.lat !== null).map((e) => [e.location.lat, e.location.lon]);
-    const mine = pts(state.events.filter((e) => inRegion(e, state.region))), all = pts(state.events);
+    const mine = pts(inWindow.filter((e) => inRegion(e, state.region))), all = pts(inWindow);
     const use = mine.length ? mine : all;
     if (use.length) state.map.fitBounds(use, { padding: [30, 30], maxZoom: 12 });
   }
-  $("#map-note").textContent = `על המפה ${shown} מתוך ${state.events.length} אירועים. עיגול מקווקו = מיקום משוער. ` +
+  $("#map-note").textContent = `על המפה ${shown} מתוך ${inWindow.length} אירועים ${hours === 24 ? "מהיממה האחרונה" : "מ-48 השעות האחרונות"}. עיגול מקווקו = מיקום משוער. ` +
     "אירועים ללא מיקום מזוהה מופיעים בפיד בלבד.";
   setTimeout(() => state.map.invalidateSize(), 50);
 }
@@ -651,6 +670,7 @@ async function start() {
   try { state.locations = await getData("locations"); } catch { state.locations = []; }
   $("#pulse-sources").addEventListener("click", () => show("admin"));
   setupRegion(); setupFilters(); setupAlerts(); setupAdmin();
+  $("#map-hours").addEventListener("change", () => state.map && drawMap());
   await loadEvents();
   setInterval(() => { if (!document.hidden) loadEvents(); }, 60000);
 }

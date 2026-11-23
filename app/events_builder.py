@@ -9,6 +9,7 @@
   3. הודעת "האירוע הסתיים" מאותו מקור ובאותו סוג, עד שעה אחרי הודעה פתוחה.
 """
 import json
+from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta
 
 from .gazetteer import PLACES
@@ -19,6 +20,7 @@ TITLE = {"security": "אירוע ביטחוני", "accident": "תאונת דרכ
          "infrastructure": "תקלת תשתית", "weather": "מזג אוויר חריג", "hazard": "מפגע", "medical": "אירוע רפואי",
          "other": "אירוע"}
 SAME_PLACE = timedelta(hours=3)
+RECAP_WINDOW = timedelta(hours=24)
 SAME_SOURCE = timedelta(minutes=20)
 ENDED_UPDATE = timedelta(hours=1)
 
@@ -56,6 +58,30 @@ def _matches(cluster, r) -> str | None:
     return None
 
 
+NIGHT_WORDS = {"הלילה", "לפנות בוקר", "במהלך הלילה", "בשעות הלילה", "בשעת לילה", "בשעות הבוקר המוקדמות"}
+IL = ZoneInfo("Asia/Jerusalem")
+
+
+def is_recap(r) -> bool:
+    """הודעה שמספרת בדיעבד על אירוע ("הלילה רכב עלה באש" שפורסם ב-09:20). "הלילה" שפורסם בלילה הוא דיווח חי."""
+    word = r["analysis"].get("recap")
+    if not word:
+        return False
+    if word in NIGHT_WORDS:
+        hour = _ts(r["published_at"]).astimezone(IL).hour
+        return 6 <= hour < 20
+    return True
+
+
+def _recap_target(clusters, r):
+    a = r["analysis"]
+    for c in reversed(clusters):
+        if (c["type"] == a["type"] and a["location"] in c["places"]
+                and _ts(r["published_at"]) - _ts(c["reports"][-1]["published_at"]) <= RECAP_WINDOW):
+            return c
+    return None
+
+
 def build_events(con) -> int:
     con.execute("DELETE FROM events WHERE is_demo = 0")
     rows = con.execute(
@@ -67,6 +93,12 @@ def build_events(con) -> int:
     for row in rows:
         r = dict(row) | {"analysis": json.loads(row["ai_result"])}
         if not r["analysis"].get("relevant"):
+            continue
+        if is_recap(r):
+            # סיכום בדיעבד: מצורף לאירוע המקורי בלי להקפיץ אותו כחדש; בלי אירוע מקורי – לא נוצר אירוע
+            c = _recap_target(clusters, r)
+            if c:
+                c["reports"].append(r | {"relation": "recap"})
             continue
         for c in reversed(clusters):
             rel = _matches(c, r)
@@ -96,7 +128,8 @@ def build_events(con) -> int:
         more = "" if not others else " ועוד מקום אחד" if len(others) == 1 else f" ועוד {len(others)} מקומות"
         title = f"{TITLE[c['type']]} {_in(main_place)}{more}"
         first = next((x for x in reps if x["is_official"]), reps[0])
-        status = "ended" if reps[-1]["analysis"]["ended"] else "unknown"
+        live = [x for x in reps if x["relation"] != "recap"]
+        status = "ended" if live[-1]["analysis"]["ended"] or len(live) < len(reps) else "unknown"
         cur = con.execute(
             "INSERT INTO events(title, summary, event_type, status, verification, severity, location_id,"
             " location_precision, occurred_at, first_reported_at, updated_at, published, places, analyzer)"
@@ -104,7 +137,7 @@ def build_events(con) -> int:
             (title, first["content"], c["type"], status, verification,
              max(x["analysis"]["severity"] for x in reps), loc_ids.get(main_place),
              "approx" if loc_ids.get(main_place) else "unknown",
-             reps[0]["published_at"], reps[-1]["published_at"], json.dumps(c["places"], ensure_ascii=False),
+             reps[0]["published_at"], live[-1]["published_at"], json.dumps(c["places"], ensure_ascii=False),
              a0["v"]))
         for x in reps:
             con.execute("INSERT INTO event_reports(event_id, raw_report_id, relation) VALUES (?,?,?)",
