@@ -599,7 +599,7 @@ async function loadCandidates() {
     el("h3", {}, "מקורות שהסוכן מציע"),
     el("p", { class: "note" }, `הסוכן רץ ${ago(d.generated_at)}: בדק ${d.checked} ערוצי טלגרם` +
       (d.sites_checked ? ` ו-${d.sites_checked} אתרים` : "") + ". " +
-      "הצעות חדשות נשלחות אליך לאישור ב-GitHub (התראה באפליקציית GitHub או במייל). מקור נכנס לאיסוף רק אחרי שתאשר אותו."),
+      "מקור נכנס לאיסוף רק אחרי שתאשר אותו. לאישור: בקש מ-Claude לעבור על ההצעות."),
     ...(good.length ? good.map(candidateCard) : [el("p", { class: "empty" }, "אין כרגע הצעות מתאימות.")]),
     bad.length && el("details", { class: "archive" }, el("summary", {}, `נבדקו ולא מתאימים (${bad.length})`), ...bad.map(candidateCard)));
 }

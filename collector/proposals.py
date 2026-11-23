@@ -51,6 +51,13 @@ def main() -> int:
             "אפשר גם לכתוב תגובה: **אשר הכל** או **דחה הכל**.\n"
             "כשתסגור את ההודעה הזו, מה שלא סומן לא יוצע שוב.\n\n" + "\n".join(line(c) for c in new) +
             "\n\n<sub>כל מקור שמאושר נכנס כ\"לא רשמי\". ההודעות שלו יופיעו רק אם הן דיווחים עם מקום וסוג אירוע.</sub>")
+    if os.environ.get("SCOUT_OPEN_ISSUE") != "1":
+        # האישור נעשה דרך השיחה עם Claude: ההצעות נשמרות כאן, בלי לפתוח הודעה ב-GitHub
+        for c in new:
+            prop[c["key"]] = {"status": "proposed", "issue": None, "candidate": c}
+        save(prop)
+        print(f"נשמרו {len(new)} הצעות חדשות לאישור")
+        return 0
     repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]
     r = requests.post(f"https://api.github.com/repos/{repo}/issues", timeout=30,
                       headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
