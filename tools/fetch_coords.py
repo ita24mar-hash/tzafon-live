@@ -3,8 +3,9 @@ import json, re
 from pathlib import Path
 import requests
 
-Q = """[out:json][timeout:170];
-nwr["place"~"^(city|town|village|hamlet|suburb|isolated_dwelling|locality|neighbourhood)$"]["name:he"](29.45,34.20,33.35,35.92);
+Q = """[out:json][timeout:100];
+(node["place"~"^(city|town|village|hamlet|isolated_dwelling|locality)$"]["name:he"](29.45,34.20,33.35,35.92);
+ way["place"~"^(city|town|village|hamlet|isolated_dwelling)$"]["name:he"](29.45,34.20,33.35,35.92););
 out center tags;"""
 H = {"User-Agent": "TzafonLive/0.1 (coordinates for a civic info app)"}
 for url in ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]:
@@ -30,13 +31,14 @@ for e in els:
                 r_ = rank[t["place"]] + (0 if e["type"] == "node" else 0.5)
                 osm[k] = (round(lat, 5), round(lon, 5), r_)
 recs = json.loads(Path("app/localities.json").read_text(encoding="utf-8"))["records"]
-out, miss = {}, []
+prev = Path("app/locality_coords.json")
+out, miss = (json.loads(prev.read_text(encoding="utf-8"))["coords"] if prev.exists() else {}), []
 for x in recs:
     name = re.sub(r"\s+", " ", re.sub(r"\([^)]*\)", "", x["שם_ישוב"])).strip()
     cands = [name] + [p.strip() for p in name.split(" - ")]
     hit = next((osm[norm(c)] for c in cands if norm(c) in osm), None)
-    if hit: out[name] = hit[:2]
-    else: miss.append(name)
+    if hit: out[name] = list(hit[:2])
+    elif name not in out: miss.append(name)
 print("MATCHED", len(out), "OF", len(recs), "MISSING", len(miss))
 print("MISS_SAMPLE", " | ".join(miss[:80]))
 Path("app/locality_coords.json").write_text(json.dumps(
