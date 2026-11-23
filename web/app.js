@@ -239,6 +239,24 @@ function renderFeed(target, events, emptyText) {
 }
 
 /* ---------- תמונת מצב בראש הפיד ---------- */
+/* ---------- לוח המצב: שעון ומונים לפי חומרה ---------- */
+function renderBoard() {
+  const box = $("#board");
+  if (!box) return;
+  const evs = state.boardEvents || [], now = new Date();
+  const n = (k) => evs.filter((e) => (e.severity || 1) === k).length;
+  const cell = (k, label) => el("button", { type: "button", class: `cell c${k}${n(k) ? "" : " zero"}${state.minSev === k ? " on" : ""}`,
+    "aria-label": `${label}: ${n(k)} אירועים. הצג מחומרה זו ומעלה`,
+    onclick: () => { state.minSev = k; store.set("tl_minsev", k); state.drawSev && state.drawSev(); loadEvents(); } },
+    el("b", {}, String(n(k))), el("span", {}, label));
+  box.replaceChildren(
+    el("div", { class: "board-clock" }, el("b", { id: "clock" }, hhmm(now.toISOString())),
+      el("span", {}, now.toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "numeric" }))),
+    el("div", { class: "board-cells" }, cell(3, "קריטי"), cell(2, "בינוני"), cell(1, "נמוך")),
+    el("p", { class: "board-caption" }, `אירועים ${regionIn(state.region)} ב-24 השעות האחרונות`));
+}
+setInterval(() => { const c = $("#clock"); if (c) c.textContent = hhmm(new Date().toISOString()); }, 20000);
+
 function renderPulse(recent, filtered, meta, sources, restCount = 0) {
   const n = recent.length, h = $("#pulse-head"), where = regionIn(state.region);
   const scope = filtered ? "לפי הסינון, " : "";
@@ -284,6 +302,8 @@ async function loadEvents() {
     // הסינון לפי סוג נעשה כאן, כדי שאפשר יהיה להציג כמה אירועים יש מכל סוג
     // חומרה: ברירת המחדל מסתירה אירועים בחומרה נמוכה (למשל פצוע אחד במצב קל, רכב בוער)
     const bySev = allTypes.filter((e) => (e.severity || 1) >= state.minSev);
+    state.boardEvents = allTypes.filter((e) => isRecent(e.updated_at) && inRegion(e, state.region));
+    renderBoard();
     state.lowHidden = allTypes.filter((e) => (e.severity || 1) < state.minSev && isRecent(e.updated_at)
       && inRegion(e, state.region)).length;
     state.typeCounts = {};
@@ -373,6 +393,7 @@ function setupFilters() {
       el("button", { class: "seg" + (state.minSev === v ? " on" : ""), "aria-pressed": String(state.minSev === v),
         onclick: () => { state.minSev = v; store.set("tl_minsev", v); drawSev(); loadEvents(); } }, t)));
   drawSev();
+  state.drawSev = drawSev;
   const pick = (k) => { state.filters.type = k; draw(); changed(); };
   const changed = () => {
     updateFilterSummary();
@@ -676,7 +697,7 @@ function setupRegion() {
 
 function setupTheme() {
   const apply = (t) => { document.documentElement.dataset.theme = t; };
-  apply(store.get("tl_theme", matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+  apply(store.get("tl_theme", "dark"));       // חדר מצב כהה כברירת מחדל
   $("#theme").addEventListener("click", () => {
     const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     apply(t); store.set("tl_theme", t);
