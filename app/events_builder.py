@@ -17,7 +17,7 @@ from .gazetteer import PLACES
 KINDS = {name: kind for kind, name, *_ in PLACES}
 
 TITLE = {"security": "אירוע ביטחוני", "accident": "תאונת דרכים", "fire": "שריפה", "closure": "חסימה או שיבוש תנועה",
-         "infrastructure": "תקלת תשתית", "weather": "מזג אוויר חריג", "hazard": "מפגע", "medical": "אירוע רפואי",
+         "infrastructure": "תקלת תשתית", "weather": "מזג אוויר חריג", "hazard": "מפגע", "medical": "אירוע רפואי", "earthquake": "רעידת אדמה",
          "other": "אירוע"}
 SAME_PLACE = timedelta(hours=3)
 RECAP_WINDOW = timedelta(hours=24)

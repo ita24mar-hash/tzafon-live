@@ -203,3 +203,9 @@ def test_fire_service_accident_is_accident():
     a = analyze("דוברות כבאות והצלה לישראל | מחוז חוף תאונת דרכים קשה בכביש 6 לכיוון צפון לוחמי האש מתחנת חדרה חילצו לכוד ממשאית")
     assert a["type"] == "accident" and a["severity"] == 2
     assert analyze("אור עקיבא שריפה על גג בניין דוד שמש צוות בדרך")["type"] == "fire"
+
+
+def test_every_type_has_title_and_is_allowed():
+    from app import analyze, events_builder, repo
+    types = {n for n, _ in analyze.TYPE_RULES}
+    assert types <= set(events_builder.TITLE) and types <= set(repo.EVENT_TYPES)
