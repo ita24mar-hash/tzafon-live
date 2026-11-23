@@ -3,7 +3,9 @@ name: איסוף הודעות ועדכון האתר
 on:
   workflow_dispatch:               # הפעלה ידנית מלשונית Actions
   schedule:
-    - cron: "7,22,37,52 * * * *"   # כל 15 דקות (GitHub עשוי לאחר)
+    - cron: "7,22,37,52 * * * *"   # גיבוי: כל 15 דקות (GitHub מאחר לעיתים קרובות)
+# העיקר הוא השרשרת: בסוף כל הרצה היא מפעילה את הבאה, כך שהאתר מתעדכן בערך כל 5 דקות.
+# אם השרשרת נקטעת (כישלון, ביטול), ההרצה המתוזמנת הבאה מחדשת אותה.
 
 # ברירת מחדל: בלי שום הרשאה. כל שלב מקבל רק את מה שהוא צריך.
 permissions: {}
@@ -75,3 +77,22 @@ jobs:
         run: |
           echo "לפחות מקור אחד לא נקרא. הפרטים בסיכום ההרצה ובלשונית 'מקורות' באתר."
           exit 1
+
+  next:
+    # מפעיל את ההרצה הבאה. רץ גם אם מקור אחד נכשל, כדי שהשרשרת לא תיעצר.
+    needs: [collect, deploy]
+    if: always() && needs.collect.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      actions: write               # רק להפעלת ההרצה הבאה של אותו תהליך
+    steps:
+      - name: המתנה עד 5 דקות מתחילת ההרצה, והפעלת ההרצה הבאה
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STARTED: ${{ github.run_started_at }}
+        run: |
+          started=$(date -d "${STARTED:-now}" +%s 2>/dev/null || date +%s)
+          wait=$(( started + 300 - $(date +%s) ))
+          if [ "$wait" -gt 0 ]; then echo "ממתין $wait שניות"; sleep "$wait"; fi
+          gh workflow run collect.yml --repo "$GITHUB_REPOSITORY" --ref main

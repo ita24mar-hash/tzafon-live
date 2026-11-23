@@ -8,7 +8,7 @@ on:
 permissions: {}
 
 concurrency:
-  group: collect               # לא לרוץ במקביל לאיסוף, כדי שה-push לא יתנגש
+  group: scout                 # האיסוף רץ כמעט ברציפות; התנגשות ב-push נפתרת בניסיון חוזר
   cancel-in-progress: false
 
 jobs:
