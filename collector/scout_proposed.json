@@ -328,5 +328,379 @@
    ],
    "mentions": 0
   }
+ },
+ "tg:jerusalemtelgram": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית ירושלים",
+   "description": "עיריית ירושלים - הערוץ הרישמי",
+   "verified": false,
+   "subscribers": "2.75K",
+   "messages": 20,
+   "newest": "2026-11-23T11:09:29+00:00",
+   "age_hours": 18.4,
+   "noise_share": 0.05,
+   "report_share": 0.35,
+   "north_share": 0.05,
+   "regions": {
+    "jerusalem": 3,
+    "shfela": 2,
+    "galil-elyon": 1,
+    "yosh": 4,
+    "south": 2
+   },
+   "samples": [
+    "🚧 עבודות ברחוב קרן היסוד בירושלים בין כיכר צרפת לרחוב שמואל הנגיד יבוצעו עבודות להקמת הסדר תנועה חדש, בשעות היום והלילה. 7–12.11.26 במהלך העבודות…",
+    "הסדרי תנועה ושינויים בתחבורה הציבורית לרגל חג הסיגד ביום שני, 9.11.26, בין השעות 07:30–16:00, ייחסם רחוב ינובסקי בשני הכיוונים, בין הרחובות בית\"ר…"
+   ],
+   "verdict": "recommended",
+   "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:jerusalemtelgram",
+   "username": "jerusalemtelgram",
+   "url": "https://t.me/jerusalemtelgram",
+   "address": "https://t.me/jerusalemtelgram",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 4
+  }
+ },
+ "tg:telavivmuni": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית תל אביב-יפו",
+   "description": "הערוץ הרשמי של עיריית תל-אביב-יפו",
+   "verified": true,
+   "subscribers": "3.04K",
+   "messages": 16,
+   "newest": "2026-11-18T14:16:31+00:00",
+   "age_hours": 135.3,
+   "noise_share": 0.19,
+   "report_share": 0.12,
+   "north_share": 0.06,
+   "regions": {
+    "galil-maaravi": 1,
+    "jerusalem": 1,
+    "dan": 1
+   },
+   "samples": [
+    "נערכים ונערכות לחורף🏙️☔ תושבות ותושבים יקרים, כמו בכל שנה, העירייה נערכה לקראת החורף ופועלת בהתאם לתחזיות מזג האוויר. בשנים האחרונות הפרדנו את מערכת…",
+    "תושבות ותושבים יקרים, על פי התחזית, *סוף שבוע גשום וסוער בפתח*, עם כמויות משקעים חריגות שצפויות להגיע לתל אביב-יפו. *אנחנו ערוכים למערכת הגשם ולמתן…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:telavivmuni",
+   "username": "telavivmuni",
+   "url": "https://t.me/telavivmuni",
+   "address": "https://t.me/telavivmuni",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 2
+  }
+ },
+ "tg:haifamuni": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית חיפה",
+   "description": "ברוכים הבאים לערוץ הטלגרם הרשמי של עיריית חיפה",
+   "verified": false,
+   "subscribers": "4.83K",
+   "messages": 20,
+   "newest": "2026-11-23T13:16:25+00:00",
+   "age_hours": 16.2,
+   "noise_share": 0.05,
+   "report_share": 0.1,
+   "north_share": 0.1,
+   "regions": {
+    "haifa": 2,
+    "shfela": 1
+   },
+   "samples": [
+    "🏃‍♀️🏃‍♂️ עושים היסטוריה בחיפה! המרתון הראשון של העיר – SOLD OUT! 🔥 10,000 רצות ורצים כבר הבטיחו את מקומם במרתון חיפה הבינלאומי הראשון, וההרשמה…",
+    "הופכים את דניה לשכונה בטוחה יותר! עיריית חיפה יוצאת במהלך לשדרוג תשתיות הבטיחות בשכונת דניה, במטרה לשפר את בטיחות הולכי הרגל והנהגים ולמנוע תאונות…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:haifamuni",
+   "username": "haifamuni",
+   "url": "https://t.me/haifamuni",
+   "address": "https://t.me/haifamuni",
+   "mentioned_by": [
+    "רשימת בדיקה ידנית"
+   ],
+   "mentions": 5
+  }
+ },
+ "tg:danielamram3": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "דניאל עמרם ללא צנזורה",
+   "description": "דניאל עמרם ללא צנזורה בטלגרם\nדניאל עמרם ללא צנזורה\n\nלפניות\nוואצפ: wa.me/12017438674\nטלגרם: @danielamram1\n\n\nטוויטר: twitter.com/danielamram3\nאינסטגרם: instagram.",
+   "verified": true,
+   "subscribers": "651K",
+   "messages": 18,
+   "newest": "2026-11-23T22:52:25+00:00",
+   "age_hours": 6.6,
+   "noise_share": 0.06,
+   "report_share": 0.06,
+   "north_share": 0.0,
+   "regions": {
+    "shfela": 1
+   },
+   "samples": [
+    "\"במקום לצעוק על הילד, נתן לו שיעור״: אבא בשם אליחי פינקו מרחובות, העלה תיעוד של - כמעט תאונה, שהסתיימה בשיעור לחיים לילד t.me/danielamram3"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:danielamram3",
+   "username": "danielamram3",
+   "url": "https://t.me/danielamram3",
+   "address": "https://t.me/danielamram3",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 7
+  }
+ },
+ "tg:yediotnews25": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "חדשות 100שטח",
+   "description": "חדשות מהשטח בטלגרם | קבוצת החדשות בטלגרם הגדולה בישראל",
+   "verified": false,
+   "subscribers": "601K",
+   "messages": 18,
+   "newest": "2026-11-23T20:00:18+00:00",
+   "age_hours": 9.5,
+   "noise_share": 0.06,
+   "report_share": 0.06,
+   "north_share": 0.0,
+   "regions": {
+    "shfela": 1
+   },
+   "samples": [
+    "ההרוג בתאונת האופנוע בצומת גינתון: לוחם מג\"ב רב-סמל ברק אסולין משטרת ישראל ומשמר הגבול מודיעים בצער וביגון רב על מותו של לוחם מג״ב, רב-סמל בכיר ברק…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:yediotnews25",
+   "username": "yediotnews25",
+   "url": "https://t.me/yediotnews25",
+   "address": "https://t.me/yediotnews25",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 4
+  }
+ },
+ "tg:pt_telegram": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית פתח תקווה",
+   "description": "הערוץ הרשמי של עיריית פתח תקווה",
+   "verified": false,
+   "subscribers": "2.64K",
+   "messages": 20,
+   "newest": "2026-11-23T12:37:20+00:00",
+   "age_hours": 16.9,
+   "noise_share": 0.0,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 1
+   },
+   "samples": [
+    "חדש בעיר! שירות אופניים חשמליים שיתופיים יוצא לדרך, ומביא איתו עוד דרך נוחה, מהירה וירוקה להתנייד ברחבי פתח תקווה! 🚲 💚 בשלב הראשון ייפרסו אופניים…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:pt_telegram",
+   "username": "pt_telegram",
+   "url": "https://t.me/pt_telegram",
+   "address": "https://t.me/pt_telegram",
+   "mentioned_by": [
+    "מדריך aezor",
+    "רשימת בדיקה ידנית"
+   ],
+   "mentions": 7
+  }
+ },
+ "tg:thebigbadshadow": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "הימין הלא מתנצל של הצל",
+   "description": "הצל בלי צנזורה",
+   "verified": true,
+   "subscribers": "289K",
+   "messages": 20,
+   "newest": "2026-11-23T21:37:30+00:00",
+   "age_hours": 7.9,
+   "noise_share": 0.15,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "yosh": 1
+   },
+   "samples": [
+    "הלל ביטון רוזן בפרסום ראשון: במערכת הביטחון מזהים עלייה משמעותית בהתרעות לפיגועים האיו\"ש"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:thebigbadshadow",
+   "username": "TheBigBadShadow",
+   "url": "https://t.me/TheBigBadShadow",
+   "address": "https://t.me/TheBigBadShadow",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 6
+  }
+ },
+ "tg:salehdesk1": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "אבו צאלח הדסק הערבי",
+   "description": "",
+   "verified": false,
+   "subscribers": "188K",
+   "messages": 20,
+   "newest": "2026-11-22T18:23:38+00:00",
+   "age_hours": 35.1,
+   "noise_share": 0.05,
+   "report_share": 0.05,
+   "north_share": 0.05,
+   "regions": {
+    "galil-maaravi": 1
+   },
+   "samples": [
+    "לא רק בישראל מתרגלים בתי ספר בפרברי דרום ביירות, מכינים תוכניות חירום לפינוי תלמידים, לקראת אפשרות של הסלמה צבאית מחודשת וחזרה למלחמה. בתי הספר…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:salehdesk1",
+   "username": "salehdesk1",
+   "url": "https://t.me/salehdesk1",
+   "address": "https://t.me/salehdesk1",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 6
+  }
+ },
+ "tg:tzenora": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "חדשות ללא צנזורה",
+   "description": "הערוץ הרשמי☑️Official Channel \n\nברוכים הבאים כאן תקבלו את כל מה שקורה בארץ ובעולם ללא צנזורה - מיטב התיעודים הכי מטורפים שיש ברשת⚡",
+   "verified": false,
+   "subscribers": "179K",
+   "messages": 19,
+   "newest": "2026-11-23T21:37:38+00:00",
+   "age_hours": 7.9,
+   "noise_share": 0.0,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 1
+   },
+   "samples": [
+    "🚨 גבר בשנות ה-30 לחייו נהרג בשריפה שפרצה הבוקר בבניין מגורים בחולון ‎חדשות ללא צנזורה https://t.me/tzenora"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:tzenora",
+   "username": "tzenora",
+   "url": "https://t.me/tzenora",
+   "address": "https://t.me/tzenora",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 4
+  }
+ },
+ "tg:kaduregeland": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "כדורגלנד",
+   "description": "ברוכים הבאים לערוץ עם כל הסיפורים, הרגעים והעדכונים מעולם הכדורגל ⚽️\n\n✦ סיקור מיוחד למונדיאל 2026\n✦ חדשות ועדכונים\n✦ עדכוני העברות\n✦ סטטיסטיקות ונתונים\n✦ סיפורי",
+   "verified": false,
+   "subscribers": "5.77K",
+   "messages": 19,
+   "newest": "2026-11-23T23:15:16+00:00",
+   "age_hours": 6.3,
+   "noise_share": 0.05,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "south": 1
+   },
+   "samples": [
+    "🔴 ארבע שנים אחרי, מי היה בצד הצודק? בנובמבר 2022, בראיון סוער לפירס מורגן רונאלדו יצא נגד מנצ’סטר יונייטד: ״אני מרגיש נבגד על ידי המועדון. אין לי…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:kaduregeland",
+   "username": "Kaduregeland",
+   "url": "https://t.me/Kaduregeland",
+   "address": "https://t.me/Kaduregeland",
+   "mentioned_by": [
+    "מדריך Recommended_channels"
+   ],
+   "mentions": 2
+  }
+ },
+ "tg:nesszionamuni": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית נס ציונה - עדכונים לתושבים",
+   "description": "מידע רשמי ומתעדכן של עיריית נס ציונה לתושבי העיר",
+   "verified": false,
+   "subscribers": "1.64K",
+   "messages": 20,
+   "newest": "2026-11-23T11:09:05+00:00",
+   "age_hours": 18.4,
+   "noise_share": 0.05,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "shfela": 1
+   },
+   "samples": [
+    "שבט צופי סהר חוזר הביתה! לאחר שנפגע במהלך מבצע ״עם כלביא״, עיריית נס ציונה עבדה במרץ כדי להקים את המבנה החדש של שבט צופי סהר. אנו מתרגשים להזמין…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:nesszionamuni",
+   "username": "nesszionamuni",
+   "url": "https://t.me/nesszionamuni",
+   "address": "https://t.me/nesszionamuni",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 2
+  }
  }
 }
