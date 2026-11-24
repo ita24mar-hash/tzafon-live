@@ -789,6 +789,25 @@ function setupRegion() {
   if (state.region === null && dlg.showModal) dlg.showModal();   // ביקור ראשון
 }
 
+/* ---------- התקנה כאפליקציה ---------- */
+function setupInstall() {
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+  const btn = $("#install-btn");
+  if (!btn) return;
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  if (standalone) return;                                   // כבר מותקן
+  let prompt = null;
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); prompt = e; btn.hidden = false; });
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (ios) btn.hidden = false;                              // באייפון אין חלון התקנה – מציגים הסבר
+  btn.addEventListener("click", async () => {
+    if (prompt) { prompt.prompt(); await prompt.userChoice; prompt = null; btn.hidden = true; return; }
+    $("#install-help").hidden = !$("#install-help").hidden;
+  });
+}
+
 function setupTheme() {
   const apply = (t) => { document.documentElement.dataset.theme = t; };
   apply(store.get("tl_theme", "dark"));       // חדר מצב כהה כברירת מחדל
@@ -803,7 +822,7 @@ async function start() {
   document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.view)));
   try { state.locations = await getData("locations"); } catch { state.locations = []; }
   $("#pulse-sources").addEventListener("click", () => show("admin"));
-  setupRegion(); setupFilters(); setupAlerts(); setupAdmin();
+  setupRegion(); setupFilters(); setupAlerts(); setupAdmin(); setupInstall();
   // טווח הזמן על המפה: כפתורים שצפים על המפה עצמה, כך שהם תמיד גלויים
   state.mapHours = Number(store.get("tl_maphours", 24));
   const hb = document.querySelectorAll("#map-hours-box button");

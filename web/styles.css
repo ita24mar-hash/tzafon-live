@@ -356,3 +356,11 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .near-state { flex-basis: 100%; color: var(--muted); font-size: .78rem; }
 .near-row .seg { padding: 4px 9px; font-size: .8rem; }
 .near-row { gap: 4px; }
+
+/* ---------- התקנה ---------- */
+.install-bar { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+.install-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font: inherit; font-size: .84rem;
+  font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--olive); color: var(--olive);
+  background: transparent; cursor: pointer; min-height: 34px; }
+.install-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+.install-help { margin: 8px 0 0; font-size: .84rem; color: var(--muted); line-height: 1.5; }
