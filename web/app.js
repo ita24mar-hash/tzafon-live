@@ -741,7 +741,7 @@ function setupAdmin() {
 
 /* ---------- ניווט ועיצוב ---------- */
 function show(view) {
-  for (const v of ["feed", "map", "alerts", "admin"]) $("#view-" + v).hidden = v !== view;
+  for (const v of ["feed", "summary", "map", "alerts", "admin"]) $("#view-" + v).hidden = v !== view;
   if (view !== "feed") window.scrollTo(0, 0);      // לא להשאיר את המסך החדש גלול למטה
   document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.view === view));
   if (view === "map") drawMap();

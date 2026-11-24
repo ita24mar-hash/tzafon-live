@@ -29,7 +29,6 @@
     <section class="pulse" aria-live="polite">
       <button class="region-btn" id="region-btn" type="button">בחירת אזור</button>
       <div class="board" id="board" aria-label="לוח מצב: אירועים ביממה האחרונה לפי חומרה"></div>
-      <section class="brief" id="brief" aria-label="תקציר: מה קורה בכל תחום" hidden></section>
       <h1 id="pulse-head">בודק מה קורה…</h1>
       <p class="pulse-sub" id="pulse-sub"></p>
       <button class="pulse-link" id="pulse-sources" hidden></button>
@@ -71,6 +70,11 @@
     </div>
   </section>
 
+  <section id="view-summary" class="view" hidden>
+    <h2 class="view-title">תקציר</h2>
+    <p class="note">מה קורה בכל תחום, לפי האירועים שזוהו. נבנה אוטומטית מהדיווחים עצמם.</p>
+    <section class="brief" id="brief" aria-label="תקציר: מה קורה בכל תחום"></section>
+  </section>
   <section id="view-map" class="view" hidden>
     <div class="map-wrap">
       <div id="map"></div>
@@ -156,6 +160,7 @@
 
 <nav class="tabs" aria-label="ניווט ראשי">
   <button data-view="feed" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>פיד</span></button>
+  <button data-view="summary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg><span>תקציר</span></button>
   <button data-view="map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg><span>מפה</span></button>
   <button data-view="alerts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4l2-2zM10 20a2 2 0 0 0 4 0"/></svg><span>התראות</span></button>
   <button data-view="admin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v4H5zM5 11h14v4H5zM5 17h9v3H5z"/></svg><span>מקורות</span></button>

@@ -186,7 +186,7 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .leaflet-popup-content .ev-body { border: 0; padding: 0; }
 
 /* ---------- ניווט תחתון ---------- */
-.tabs { position: fixed; bottom: 0; inset-inline: 0; z-index: 1000; display: grid; grid-template-columns: repeat(4, 1fr);
+.tabs { position: fixed; bottom: 0; inset-inline: 0; z-index: 1000; display: grid; grid-template-columns: repeat(5, 1fr);
   background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
 .tabs button { background: none; border: none; color: var(--muted); font-size: .74rem; padding: 8px 0 6px; display: flex;
   flex-direction: column; align-items: center; gap: 3px; min-height: 58px; }
@@ -338,3 +338,6 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .b-ico svg { width: 17px; height: 17px; stroke-width: 2; }
 .b-nat, .b-else { border-top: 1px solid var(--line); padding-top: 7px; }
 .b-foot { margin: 8px 0 0; font-size: .8rem; color: var(--muted); }
+
+.view-title { font-size: 1.35rem; margin: 16px 0 4px; }
+#view-summary .brief { margin-top: 10px; }
