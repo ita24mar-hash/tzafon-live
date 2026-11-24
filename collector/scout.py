@@ -25,7 +25,8 @@ from collector import sources_edit as se
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "candidates.json"
 SEEDS = ROOT / "collector" / "site_seeds.json"
-MAX_PROBE = 30            # ערוצים בשלב הראשון
+MAX_PROBE = 40            # ערוצים בשלב הראשון
+TG_SEEDS = ROOT / "collector" / "scout_seeds.json"
 MAX_PROBE_2 = 15          # ערוצים בשלב השני
 NAME = r"[A-Za-z][A-Za-z0-9_]{4,31}"
 LINK = re.compile(rf"(?:https?://)?(?:t\.me|telegram\.me)/(?:s/)?({NAME})(?![A-Za-z0-9_])", re.I)
@@ -167,8 +168,16 @@ def main(argv=None, fetch=None) -> dict:
         count[low] += 1
         spelled.setdefault(low, name)
 
+    seeds = json.loads(TG_SEEDS.read_text(encoding="utf-8")) if TG_SEEDS.exists() else {}
+    # ערוצי מדריך (רשימות של ערוצים) נסרקים כמו המקורות הפעילים, אבל לא מוצעים בעצמם
+    scan_only = [{"name": f"מדריך {u}", "address": u} for u in seeds.get("scan", [])]
+    for u in seeds.get("evaluate", []):             # ערוצים שהוכנסו ידנית לבדיקה
+        if "tg:" + u.lower() not in known:
+            seen_by[u.lower()].add("רשימת בדיקה ידנית")
+            count[u.lower()] += 5
+            spelled.setdefault(u.lower(), u)
     scanned = 0
-    for s in active:
+    for s in active + scan_only:
         try:
             code, body = fetch(f"https://t.me/s/{address(s)}")
             scanned += 1

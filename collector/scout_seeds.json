@@ -1,0 +1,5 @@
+{
+  "_note": "evaluate = ערוצים לבדיקה ישירה; scan = ערוצי מדריך/רשימות שהסוכן סורק כדי למצוא בהם ערוצים (הם עצמם לא מוצעים)",
+  "evaluate": ["haifakrayotcom", "haifamuni", "newsil360", "pt_telegram"],
+  "scan": ["Hebrew_Channels", "Recommended_channels", "aezor"]
+}
