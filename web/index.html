@@ -27,7 +27,21 @@
 <main>
   <section id="view-feed" class="view">
     <section class="pulse" aria-live="polite">
-      <button class="region-btn" id="region-btn" type="button">בחירת אזור</button>
+      <div class="place-bar">
+        <button class="region-btn" id="region-btn" type="button">בחירת אזור</button>
+        <button class="near-btn" id="near-btn" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z M12 10h.01"/></svg>
+          <span>קרוב אליי</span></button>
+      </div>
+      <div class="near-row" id="near-row" hidden>
+        <span class="near-label">טווח:</span>
+        <button type="button" class="seg" data-km="2">2 ק"מ</button>
+        <button type="button" class="seg" data-km="5">5 ק"מ</button>
+        <button type="button" class="seg" data-km="10">10 ק"מ</button>
+        <button type="button" class="seg" data-km="25">25 ק"מ</button>
+        <button type="button" class="seg" data-km="50">50 ק"מ</button>
+        <span class="near-state" id="near-state"></span>
+      </div>
       <div class="board" id="board" aria-label="לוח מצב: אירועים ביממה האחרונה לפי חומרה"></div>
       <h1 id="pulse-head">בודק מה קורה…</h1>
       <p class="pulse-sub" id="pulse-sub"></p>
@@ -50,10 +64,6 @@
         <option value="">הכול</option><option value="official">רשמי</option>
         <option value="multi_source">כמה מקורות</option><option value="single_source">מקור אחד</option>
         <option value="retracted">הוכחש</option></select></label>
-    </div>
-    <div class="gps-row">
-      <button id="gps" class="link-btn">השתמש במיקום משוער שלי (לא חובה)</button>
-      <span id="gps-state"></span>
     </div>
     </details>
     <div id="feed" class="timeline"></div>

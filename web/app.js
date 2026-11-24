@@ -59,8 +59,11 @@ const REGIONS = [
 const REGION_NAME = Object.fromEntries(REGIONS);
 const GENRE_NAME = { opinion: "מאמר או דעה", politics: "פוליטיקה או הצהרה", followup: "סיכום, מעצר או המשך",
   guidance: "הנחיות כלליות", abroad: "ידיעה מחו״ל", article: "כתבה ארוכה" };
-const inRegion = (e, r) => !r || (e.regions || []).includes(r);
-const regionIn = (r) => r ? "ב" + REGION_NAME[r].replace(/^ה/, "") : "בכל הארץ";
+// "קרוב אליי": כשהוא פעיל, הסינון לפי מרחק מחליף את הסינון לפי אזור
+const nearOn = () => state.filters.location_id === "gps" && !!state.gps;
+const inRegion = (e, r) => nearOn() || !r || (e.regions || []).includes(r);
+const regionIn = (r) => nearOn() ? `עד ${state.filters.radius_km || 10} ק"מ ממך`
+  : r ? "ב" + REGION_NAME[r].replace(/^ה/, "") : "בכל הארץ";
 
 const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
@@ -482,21 +485,41 @@ function setupFilters() {
   };
   bind("#f-loc", "location_id"); bind("#f-radius", "radius_km"); bind("#f-hours", "hours"); bind("#f-verif", "verification");
 
-  $("#gps").addEventListener("click", () => {
-    const s = $("#gps-state");
-    if (!navigator.geolocation) { s.textContent = "המכשיר לא תומך במיקום."; return; }
-    s.textContent = "מבקש הרשאה…";
+  // ---- "קרוב אליי": כפתור בולט בראש המסך + בחירת טווח ----
+  const nb = $("#near-btn"), row = $("#near-row"), st = $("#near-state");
+  const kmBtns = row.querySelectorAll("button[data-km]");
+  const paint = () => {
+    const on = nearOn();
+    nb.classList.toggle("on", on); nb.setAttribute("aria-pressed", String(on));
+    nb.querySelector("span").textContent = on ? "קרוב אליי · ביטול" : "קרוב אליי";
+    row.hidden = !on;
+    kmBtns.forEach((b) => { const sel = b.dataset.km === String(state.filters.radius_km); b.classList.toggle("on", sel);
+      b.setAttribute("aria-pressed", String(sel)); });
+  };
+  const stop = () => {
+    state.gps = null; state.filters.location_id = ""; state.filters.radius_km = "";
+    $("#f-loc").value = ""; $("#f-radius").value = ""; st.textContent = ""; paint(); loadEvents();
+  };
+  nb.addEventListener("click", () => {
+    if (nearOn()) { stop(); return; }
+    if (!navigator.geolocation) { row.hidden = false; st.textContent = "המכשיר לא תומך בזיהוי מיקום."; return; }
+    row.hidden = false; st.textContent = "מבקש הרשאה למיקום…";
     navigator.geolocation.getCurrentPosition((p) => {
-      // עיגול ל-2 ספרות (~1 ק"מ): השרת מקבל מיקום משוער בלבד, ושום דבר לא נשמר
+      // עיגול ל-2 ספרות (~1 ק"מ): מיקום משוער בלבד, בזיכרון, לא נשמר ולא נשלח
       state.gps = { lat: p.coords.latitude.toFixed(2), lon: p.coords.longitude.toFixed(2) };
       if (!$("#f-loc option[value=gps]")) $("#f-loc").append(el("option", { value: "gps" }, "סביב המיקום שלי"));
       $("#f-loc").value = "gps"; state.filters.location_id = "gps";
       if (!state.filters.radius_km) { state.filters.radius_km = "10"; $("#f-radius").value = "10"; }
-      s.textContent = "מוצגים אירועים סביבך (מיקום משוער, לא נשמר).";
-      loadEvents();
-    }, () => { s.textContent = "לא התקבלה הרשאה – אפשר לבחור אזור ידנית."; },
+      st.textContent = "מיקום משוער, לא נשמר.";
+      paint(); loadEvents();
+    }, () => { st.textContent = "לא התקבלה הרשאה למיקום. אפשר לבחור אזור במקום."; },
     { enableHighAccuracy: false, maximumAge: 600000, timeout: 10000 });
   });
+  kmBtns.forEach((b) => b.addEventListener("click", () => {
+    state.filters.radius_km = b.dataset.km; $("#f-radius").value = b.dataset.km; paint(); loadEvents(); }));
+  state.paintNear = paint;
+  $("#f-loc").addEventListener("change", () => paint());
+  paint();
 }
 
 /* ---------- מפה ---------- */

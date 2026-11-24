@@ -341,3 +341,18 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 
 .view-title { font-size: 1.35rem; margin: 16px 0 4px; }
 #view-summary .brief { margin-top: 10px; }
+
+/* ---------- מיקום: אזור / קרוב אליי ---------- */
+.place-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 10px; }
+.place-bar .region-btn { padding-bottom: 0; }
+.near-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: .86rem; font-weight: 600;
+  padding: 6px 12px; border-radius: 999px; border: 1px solid var(--slate); color: var(--slate); background: transparent;
+  cursor: pointer; min-height: 34px; }
+.near-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+.near-btn.on { background: var(--slate); color: var(--bg); }
+.near-btn:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+.near-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -2px 0 12px; font-size: .84rem; }
+.near-label { color: var(--muted); }
+.near-state { flex-basis: 100%; color: var(--muted); font-size: .78rem; }
+.near-row .seg { padding: 4px 9px; font-size: .8rem; }
+.near-row { gap: 4px; }
