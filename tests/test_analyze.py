@@ -233,3 +233,12 @@ def test_no_false_weather_or_national():
     assert a["type"] != "weather" and not a["relevant"]
     assert analyze("כתבה: מה קרה בסערה של 1992 ולמה זה לא יחזור")["places"] == []
     assert analyze("שלג ירד הבוקר בחרמון")["type"] == "weather"
+
+
+def test_obituary_is_not_an_event():
+    from app.analyze import genre
+    a = analyze("הלך לעולמו הרב יצחק לוי בגיל 79, לשעבר ראש המפד״ל, שנים אחרי ששכל את בתו איילת השחר בפיגוע")
+    assert (a["genre"], a["relevant"]) == ("obituary", False)
+    assert genre("ברוך דיין האמת. בצער רב אנו מודיעים על פטירתו של חבר הקיבוץ. ההלוויה תתקיים מחר בכפר בלום") == "obituary"
+    # דיווח על הרוג באירוע עדיין דיווח
+    assert genre("גבר כבן 40 נהרג באירוע אלימות בנתיבות, פראמדיקים של מד\"א קבעו את מותו במקום") == "report"

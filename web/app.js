@@ -58,7 +58,7 @@ const REGIONS = [
 ];
 const REGION_NAME = Object.fromEntries(REGIONS);
 const GENRE_NAME = { opinion: "מאמר או דעה", politics: "פוליטיקה או הצהרה", followup: "סיכום, מעצר או המשך",
-  guidance: "הנחיות כלליות", abroad: "ידיעה מחו״ל", article: "כתבה ארוכה" };
+  guidance: "הנחיות כלליות", abroad: "ידיעה מחו״ל", article: "כתבה ארוכה", obituary: "הודעת אבל" };
 // "קרוב אליי": כשהוא פעיל, הסינון לפי מרחק מחליף את הסינון לפי אזור
 const nearOn = () => state.filters.location_id === "gps" && !!state.gps;
 const inRegion = (e, r) => nearOn() || !r || (e.regions || []).includes(r);

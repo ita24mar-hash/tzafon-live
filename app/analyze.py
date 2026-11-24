@@ -8,7 +8,7 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-7"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית
+VERSION = "rules-8"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -154,7 +154,7 @@ GENRES = [
 GENRE_RX = [(g, re.compile(rx)) for g, rx in GENRES]
 GENRE_NAMES = {"report": "דיווח", "opinion": "מאמר או דעה", "politics": "פוליטיקה או הצהרה",
                "followup": "סיכום, מעצר או המשך", "guidance": "הנחיות כלליות", "abroad": "ידיעה מחו\"ל",
-               "article": "כתבה ארוכה"}
+               "article": "כתבה ארוכה", "obituary": "הודעת אבל"}
 
 
 # מילים שמעידות שההודעה מספרת על משהו שכבר קרה ("הלילה רכב עלה באש..."). המילה עצמה נשמרת,
@@ -182,6 +182,10 @@ FOREIGN_HEAD = re.compile(r"^\W*(?:לבנון|סוריה|איראן|עזה|רצ�
                           r"דיווחים ערביים|דיווח ערבי|תקשורת ערבית|עולמי)\s*[:|\-–]")
 # התרעה רשמית: דיווח חי גם אם יש בה מילים אחרות
 ALERT = re.compile(r"היכנסו למרחב|למרחב המוגן|צבע אדום|ירי רקטות וטילים|חדירת כלי טיס|יכולים לצאת|האירוע הסתיים")
+# הודעת אבל / פטירה בפתיחה: לא אירוע, גם אם בהמשך מוזכר פיגוע או מלחמה מהעבר
+OBITUARY = re.compile(r"הלך לעולמו|הלכה לעולמה|הלכו לעולמם|נפטר בשיבה|נפטרה בשיבה|נפטר בגיל|נפטרה בגיל|"
+                      r"ברוך דיין האמת|בצער רב|בצער ובכאב|הלווייתו|הלוויתו|הלווייתה|הלוויתה|יובא למנוחות|"
+                      r"תובא למנוחות|ניחום אבלים|יושבים שבעה|תנחומינו|משתתפים בצער|יהי זכרו|יהי זכרה|ז[\"״]ל נפטר")
 HEAD = 300            # סימני דיווח חי נבדקים רק בפתיחה: בטקסט ארוך הם מופיעים גם במאמרים ("בזירה הבינלאומית")
 LONG_WORDS = 140      # טקסט ארוך בלי סימן חי בפתיחה = כתבה או מאמר, לא דיווח מהשטח
 
@@ -194,6 +198,8 @@ def genre(text: str) -> str:
     head = t[:HEAD]
     if ALERT.search(head):
         return "report"
+    if OBITUARY.search(head[:160]):
+        return "obituary"
     if dict(GENRE_RX)["opinion"].search(t):
         return "opinion"
     if FOREIGN_HEAD.search(t):
@@ -248,7 +254,7 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
         return old
     if old and "כל הארץ" in (old.get("places") or []):
         return analyze(excerpt)          # "כל הארץ" נקבע בכללים ישנים ורופפים – מחשבים מחדש
-    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6")):
+    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7")):
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         if g == "report" and old.get("genre") not in (None, "report"):
