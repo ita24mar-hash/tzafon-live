@@ -8,7 +8,7 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-6"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה
+VERSION = "rules-7"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -246,7 +246,9 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
     את המקומות והסוג שלה ורק מוסיפים אזורים. כל השאר מנותח מחדש מהקטע השמור."""
     if old and old.get("v") == VERSION:
         return old
-    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5")):
+    if old and "כל הארץ" in (old.get("places") or []):
+        return analyze(excerpt)          # "כל הארץ" נקבע בכללים ישנים ורופפים – מחשבים מחדש
+    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6")):
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         if g == "report" and old.get("genre") not in (None, "report"):
