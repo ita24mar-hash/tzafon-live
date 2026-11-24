@@ -25,7 +25,7 @@ from collector import sources_edit as se
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "candidates.json"
 SEEDS = ROOT / "collector" / "site_seeds.json"
-MAX_PROBE = 90            # ערוצים בשלב הראשון
+MAX_PROBE = 40            # ערוצים בשלב הראשון
 TG_SEEDS = ROOT / "collector" / "scout_seeds.json"
 MAX_PROBE_2 = 15          # ערוצים בשלב השני
 NAME = r"[A-Za-z][A-Za-z0-9_]{4,31}"
