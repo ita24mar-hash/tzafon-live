@@ -242,5 +242,91 @@
    ],
    "mentions": 0
   }
+ },
+ "rss:https://www.israelhayom.co.il/rss": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "ישראל היום",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 100,
+   "newest": "2026-11-24T03:02:53+00:00",
+   "age_hours": 0.5,
+   "noise_share": 0.02,
+   "report_share": 0.09,
+   "north_share": 0.06,
+   "regions": {
+    "dan": 7,
+    "galil-elyon": 6,
+    "galil-maaravi": 6,
+    "haifa": 6,
+    "jerusalem": 6,
+    "kineret-amakim": 6,
+    "sharon": 6,
+    "shfela": 7,
+    "south": 6,
+    "yosh": 7
+   },
+   "samples": [
+    "ב-FBI חושדים: איראן איימה לפוצץ ספינות בחופי ארה\"ב. ארצות הברית חוקרת את מעורבותה האפשרית של איראן בעשרות מתקפות סייבר נגד עד 50 מכליות המובילות…",
+    "לבקשת יוצרת תוכן: נהג אוטובוס ביפן תועד מלקק את הרכב - והודח מתפקידו. נהג של חברת התחבורה היפנית Keikyu Bus תועד מלקק את מעקה הבטיחות ואת רצועת…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.israelhayom.co.il/rss",
+   "username": "www.israelhayom.co.il",
+   "url": "https://www.israelhayom.co.il/",
+   "address": "https://www.israelhayom.co.il/rss",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
+ },
+ "rss:https://www.srugim.co.il/feed": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "סרוגים",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 50,
+   "newest": "2026-11-23T20:26:05+00:00",
+   "age_hours": 7.2,
+   "noise_share": 0.0,
+   "report_share": 0.08,
+   "north_share": 0.08,
+   "regions": {
+    "dan": 4,
+    "galil-elyon": 3,
+    "galil-maaravi": 4,
+    "haifa": 4,
+    "jerusalem": 3,
+    "kineret-amakim": 3,
+    "sharon": 4,
+    "shfela": 4,
+    "south": 4,
+    "yosh": 3
+   },
+   "samples": [
+    "גיא הוכמן בתגובה ראשונה לתקרית עם אחמד טיבי. הקומיקאי גיא הוכמן מספר מה קרה כשניגש לטיבי עם בקשה אחת פשוטה, ומבהיר שהוא לא מתכוון לעבור על זה בשקט…",
+    "הטמפ' צונחות; גשם ורוחות: תחזית מזג אוויר. מזג אוויר בימים הקרובים יהיה רגיל לעונה. תחול ירידה בטמפ' ויירדו גשמים מקומיים מלווים ברוחות חזקות. תחזית…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.srugim.co.il/feed",
+   "username": "www.srugim.co.il",
+   "url": "https://www.srugim.co.il/",
+   "address": "https://www.srugim.co.il/feed",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
  }
 }
