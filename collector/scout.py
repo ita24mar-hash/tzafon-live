@@ -36,6 +36,15 @@ FEED_PATHS = ["/feed", "/rss", "/rss.xml", "/feed.xml", "/rss/", "/feed/"]
 PREFER = re.compile(r"מבזק|חדשות|news|flash|breaking|ראשי|כל הכתבות|all", re.I)
 
 
+EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
+
+
+def mask(text: str) -> str:
+    """בלי כתובות מייל ומספרי טלפון בקובץ ההצעות (הוא נשמר במאגר ציבורי)."""
+    from app import ingest
+    return ingest.mask_phones(EMAIL.sub("[מייל הוסתר]", text or ""))
+
+
 def address(s: dict) -> str:
     return s["address"].rstrip("/").split("/")[-1].lstrip("@").lower()
 
@@ -65,7 +74,7 @@ def score(out: dict, msgs: list[dict]) -> dict:
             for r in a["regions"]:
                 regions[r] += 1
             if len(out["samples"]) < 2:
-                out["samples"].append(ingest.excerpt(ingest.mask_phones(text)))
+                out["samples"].append(ingest.excerpt(mask(text)))
     out.update({"messages": n, "newest": newest, "age_hours": round(age, 1), "noise_share": round(noise / n, 2),
                 "report_share": round(reports / n, 2), "north_share": round(north / n, 2), "regions": dict(regions)})
     if age > 24 * 7:
@@ -96,7 +105,7 @@ def evaluate(username: str, fetch) -> dict:
         html = body.decode("utf-8", "replace")
         info = telegram_web.parse_channel_info(html)
         out.update({k: info.get(k, out[k]) for k in ("title", "description", "verified", "subscribers")})
-        out["description"] = (out["description"] or "")[:160]
+        out["description"] = mask((out["description"] or "")[:160])
         out["links"] = mentions(html)
         msgs = telegram_web.parse_preview(html, username)
     except Exception as e:

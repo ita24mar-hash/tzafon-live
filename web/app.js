@@ -261,6 +261,53 @@ function renderFeed(target, events, emptyText) {
 }
 
 /* ---------- תמונת מצב בראש הפיד ---------- */
+/* ---------- תקציר: מה קורה בכל תחום, נבנה מהאירועים עצמם (בלי AI – לא ממציא כלום) ---------- */
+const BRIEF_ORDER = ["security", "earthquake", "fire", "accident", "medical", "closure", "infrastructure", "weather",
+  "cyber", "hazard", "other"];
+const NATIONAL = "כל הארץ";
+const placeOf = (e) => (e.places || [])[0] || (e.location && e.location.name_he) || "";
+const isNational = (e) => (e.places || []).includes(NATIONAL) || (e.regions || []).length >= REGIONS.length;
+function briefItem(e) {
+  const bits = [hhmm(e.updated_at)];
+  if (e.status === "ended") bits.push("הסתיים");
+  return `${placeOf(e)} (${bits.join(", ")})`;
+}
+// אזהרה ארצית: מה קרה, במילים של ההודעה – עד הפסיק/הנקודה הראשונים
+function nationalItem(e) {
+  const r = (e.reports || [])[0], text = (r && r.content) || e.summary || e.title || "";
+  let short = text.replace(/^[^:]{0,40}:\s*/, "").split(/[.,!]/)[0].trim();
+  if (short.length > 60) short = short.slice(0, 58) + "…";
+  return `${short || TYPES[e.event_type][0]} (${hhmm(e.updated_at)})`;
+}
+function renderBrief(recent) {
+  const box = $("#brief");
+  if (!box) return;
+  const bySevTime = (a, b) => (b.severity || 1) - (a.severity || 1) || new Date(b.updated_at) - new Date(a.updated_at);
+  const local = recent.filter((e) => !isNational(e) && inRegion(e, state.region));
+  const national = recent.filter((e) => isNational(e) && (e.severity || 1) >= 1).sort(bySevTime);
+  const elsewhere = state.region ? recent.filter((e) => !isNational(e) && !inRegion(e, state.region)
+    && (e.severity || 1) === 3).sort(bySevTime) : [];
+  const rows = [];
+  for (const k of BRIEF_ORDER) {
+    const evs = local.filter((e) => e.event_type === k && (e.severity || 1) >= 2).sort(bySevTime);
+    if (!evs.length) continue;
+    const top = evs.slice(0, 2).map(briefItem).join(" · ");
+    rows.push(el("li", { class: `b-row t-${k}`, style: `--c: var(--t-${k})` }, icon(k, "b-ico"),
+      el("span", {}, el("b", {}, TYPES[k][0] + ": "), top + (evs.length > 2 ? ` ועוד ${evs.length - 2}` : ""))));
+  }
+  const low = local.filter((e) => (e.severity || 1) < 2).length;
+  const head = rows.length ? `${regionIn(state.region)}, ב-24 השעות האחרונות:` : `${regionIn(state.region)}: אין אירועים בחומרה בינונית ומעלה ב-24 השעות האחרונות.`;
+  const extra = [];
+  if (national.length) extra.push(el("li", { class: "b-row b-nat" }, icon(national[0].event_type, "b-ico"),
+    el("span", {}, el("b", {}, "בכל הארץ: "), national.slice(0, 2).map(nationalItem).join(" · "))));
+  if (elsewhere.length) extra.push(el("li", { class: "b-row b-else" }, icon(elsewhere[0].event_type, "b-ico"),
+    el("span", {}, el("b", {}, "קריטי בשאר הארץ: "), elsewhere.slice(0, 3).map((e) => `${TYPES[e.event_type][0]} ב${placeOf(e)} (${hhmm(e.updated_at)})`).join(" · "))));
+  const parts = [el("p", { class: "b-head" }, head), el("ul", {}, ...rows, ...extra)];
+  if (low) parts.push(el("p", { class: "b-foot" }, `ועוד ${low === 1 ? "אירוע אחד" : low + " אירועים"} בחומרה נמוכה באזור.`));
+  box.replaceChildren(...parts);
+  box.hidden = false;
+}
+
 /* ---------- לוח המצב: שעון ומונים לפי חומרה ---------- */
 function renderBoard() {
   const box = $("#board");
@@ -326,6 +373,7 @@ async function loadEvents() {
     const bySev = allTypes.filter((e) => (e.severity || 1) >= state.minSev);
     state.boardEvents = allTypes.filter((e) => isRecent(e.updated_at) && inRegion(e, state.region));
     renderBoard();
+    renderBrief(allTypes.filter((e) => isRecent(e.updated_at)));
     state.lowHidden = allTypes.filter((e) => (e.severity || 1) < state.minSev && isRecent(e.updated_at)
       && inRegion(e, state.region)).length;
     state.typeCounts = {};

@@ -226,3 +226,10 @@ def test_ims_weather_warnings():
     assert (a["type"], a["severity"]) == ("weather", 2)
     a = analyze("אזהרה אדומה: עומס חום כבד ביותר")
     assert (a["type"], a["location"], a["severity"]) == ("weather", "כל הארץ", 3)
+
+
+def test_no_false_weather_or_national():
+    a = analyze('כוכבת "הלוטוס הלבן" ביקרה את ישראל - ומגלמת ניצולת שואה')
+    assert a["type"] != "weather" and not a["relevant"]
+    assert analyze("כתבה: מה קרה בסערה של 1992 ולמה זה לא יחזור")["places"] == []
+    assert analyze("שלג ירד הבוקר בחרמון")["type"] == "weather"
