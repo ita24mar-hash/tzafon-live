@@ -330,7 +330,7 @@
   }
  },
  "tg:jerusalemtelgram": {
-  "status": "proposed",
+  "status": "approved",
   "issue": null,
   "candidate": {
    "title": "עיריית ירושלים",
@@ -368,7 +368,7 @@
   }
  },
  "tg:telavivmuni": {
-  "status": "proposed",
+  "status": "approved",
   "issue": null,
   "candidate": {
    "title": "עיריית תל אביב-יפו",
@@ -404,7 +404,7 @@
   }
  },
  "tg:haifamuni": {
-  "status": "proposed",
+  "status": "approved",
   "issue": null,
   "candidate": {
    "title": "עיריית חיפה",
@@ -439,7 +439,7 @@
   }
  },
  "tg:danielamram3": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": null,
   "candidate": {
    "title": "דניאל עמרם ללא צנזורה",
@@ -472,7 +472,7 @@
   }
  },
  "tg:yediotnews25": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": null,
   "candidate": {
    "title": "חדשות 100שטח",
@@ -505,7 +505,7 @@
   }
  },
  "tg:pt_telegram": {
-  "status": "proposed",
+  "status": "approved",
   "issue": null,
   "candidate": {
    "title": "עיריית פתח תקווה",
@@ -539,7 +539,7 @@
   }
  },
  "tg:thebigbadshadow": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": null,
   "candidate": {
    "title": "הימין הלא מתנצל של הצל",
@@ -572,7 +572,7 @@
   }
  },
  "tg:salehdesk1": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": null,
   "candidate": {
    "title": "אבו צאלח הדסק הערבי",
@@ -605,7 +605,7 @@
   }
  },
  "tg:tzenora": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": null,
   "candidate": {
    "title": "חדשות ללא צנזורה",
@@ -638,7 +638,7 @@
   }
  },
  "tg:kaduregeland": {
-  "status": "proposed",
+  "status": "rejected",
   "issue": null,
   "candidate": {
    "title": "כדורגלנד",
@@ -671,7 +671,7 @@
   }
  },
  "tg:nesszionamuni": {
-  "status": "proposed",
+  "status": "approved",
   "issue": null,
   "candidate": {
    "title": "עיריית נס ציונה - עדכונים לתושבים",
