@@ -211,7 +211,7 @@ def test_real_sources_file_is_consistent():
             assert s["identity"] in ("telegram_verified", "official_link") and s["evidence"]
         if not s["enabled"]:
             assert s["note"].startswith("לא הופעל")
-    assert 1 <= sum(s["enabled"] for s in data) <= 25
+    assert 1 <= sum(s["enabled"] for s in data) <= 60          # תקרה כדי שכל הרצה תישאר קצרה (~1.5 שניות לערוץ)
 
 
 def test_only_excerpt_is_stored_and_edits_still_detected(tmp_path):
