@@ -1,9 +1,16 @@
 [
  {
-  "username": "NeWSnOw247",
-  "claimed": "ביטחון שוטף",
-  "category": "ביטחון (לא רשמי)",
-  "claims_official": false,
-  "evidence": "נשלח על ידי מנהל המערכת"
+  "username": "MOHreport",
+  "claimed": "משרד הבריאות",
+  "category": "משרד ממשלתי",
+  "claims_official": true,
+  "evidence": "ynet והחשבון הרשמי של משרד הבריאות ב-X מפנים לערוץ"
+ },
+ {
+  "username": "pibaisrael",
+  "claimed": "רשות האוכלוסין וההגירה",
+  "category": "משרד ממשלתי",
+  "claims_official": true,
+  "evidence": "נמצא בחיפוש; לא נבדק מול אתר הרשות"
  }
 ]
