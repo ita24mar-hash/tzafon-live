@@ -203,50 +203,15 @@ function renderTimeline(target, events, { groupByDay = false, splitNow = false }
   target.replaceChildren(...out);
 }
 
-/* ---------- הודעה גולמית ממקור ---------- */
+/* ---------- זמנים ---------- */
 const FRESH_MS = 24 * 3600 * 1000;   // רק הודעה מ-24 השעות האחרונות נחשבת עדכנית
 const isRecent = (iso) => Date.now() - new Date(iso).getTime() <= FRESH_MS;
 // חלון הזמן של הפיד והכותרת: שעתיים / 6 שעות / 24 שעות (ברירת מחדל 24, נשמר במכשיר)
 const WIN_TXT = { 2: "בשעתיים האחרונות", 6: "ב-6 השעות האחרונות", 24: "ב-24 השעות האחרונות" };
 const inWindow = (iso) => Date.now() - new Date(iso).getTime() <= (state.windowH || 24) * 3600 * 1000;
 
-function rawCard(r) {
-  const recent = isRecent(r.published_at);
-  return el("article", { class: "card raw" + (recent ? "" : " old") },
-    el("div", { class: "card-head" },
-      el("span", { class: "tag" }, r.source_name),
-      r.is_official ? el("span", { class: "tag official" }, "מקור רשמי")
-        : el("span", { class: "tag single_source" }, "מקור לא רשמי · לא מאומת"),
-      r.historical && el("span", { class: "tag historical" }, "היסטורית · נקלטה באיחור, אינה דיווח חדש"),
-      !recent && !r.historical && el("span", { class: "tag historical" }, "ישנה מ-24 שעות"),
-      r.edited_at && el("span", { class: "tag" }, "נערכה"),
-      r.noise && el("span", { class: "tag st-error" }, "סונן: " + r.noise),
-      !r.noise && r.analysis && (r.analysis.relevant
-        ? el("span", { class: "tag st-ingesting" }, `נכלל באירוע · ${TYPES[r.analysis.type][0]} · ${r.analysis.location}`)
-        : el("span", { class: "tag" }, r.analysis.genre && r.analysis.genre !== "report" ? "לא נכלל: " + (GENRE_NAME[r.analysis.genre] || "לא דיווח")
-          : (r.analysis.places || []).length ? "לא נכלל: לא זוהה סוג אירוע" : "לא נכלל: לא זוהה מקום בישראל"))),
-    el("p", { class: "raw-text", dir: "auto" }, r.content || "(הודעה ללא טקסט – תמונה או סרטון בלבד)"),
-    r.content && r.content.endsWith("…") && el("p", { class: "note" }, "פתיח בלבד. הטקסט המלא נמצא בהודעה המקורית."),
-    el("dl", { class: "times" },
-      el("dt", {}, "פורסם בטלגרם"), el("dd", {}, clock(r.published_at) + " (" + ago(r.published_at) + ")"),
-      el("dt", {}, "נקלט במערכת"), el("dd", {}, clock(r.ingested_at) + " (" + ago(r.ingested_at) + ")")),
-    el("div", { class: "srcs" }, r.url
-      ? el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, "להודעה המקורית בטלגרם")
-      : "אין קישור למקור"));
-}
-
-function renderRaw(raw, sources, meta) {
-  const noise = raw.filter((r) => r.noise), reports = raw.filter((r) => !r.noise);
-  const recent = reports.filter((r) => isRecent(r.published_at)), old = reports.filter((r) => !isRecent(r.published_at));
-  $("#raw-noise").replaceChildren(...noise.map(rawCard));
-  $("#noise").hidden = !noise.length;
-  $("#noise-title").textContent = `סוננו · ${noise.length} הודעות שאינן דיווח`;
-  $("#raw").replaceChildren(...(recent.length ? recent.map(rawCard) : [el("p", { class: "empty" },
-    raw.length ? "אין דיווחים מ-24 השעות האחרונות. המקורות לא פרסמו הודעות חדשות בפרק הזמן הזה."
-               : "עדיין לא נקלטו הודעות ממקור אמיתי.")]));
-  $("#raw-archive").replaceChildren(...old.map(rawCard));
-  $("#archive").hidden = !old.length;
-  $("#archive-title").textContent = `ארכיון · ${old.length} הודעות ישנות מ-24 שעות`;
+/* אזהרות על מקורות שלא פרסמו לאחרונה או שהקריאה מהם נכשלה */
+function renderSourceWarnings(sources, meta) {
   // אזהרה לכל מקור פעיל שלא פרסם ב-24 השעות האחרונות: קריאה מוצלחת ≠ מקור עדכני
   const warn = [];
   for (const s of sources.filter((x) => x.enabled && !x.is_demo)) {
@@ -374,7 +339,7 @@ async function loadEvents() {
     if (f.radius_km) q.radius_km = f.radius_km;
   }
   try {
-    const [allTypes, meta, raw, sources] = await Promise.all([fetchEvents(q), getData("meta"), getData("raw"),
+    const [allTypes, meta, sources] = await Promise.all([fetchEvents(q), getData("meta"),
       getData("sources").catch(() => [])]);
     // הסינון לפי סוג נעשה כאן, כדי שאפשר יהיה להציג כמה אירועים יש מכל סוג
     // חומרה: ברירת המחדל מסתירה אירועים בחומרה נמוכה (למשל פצוע אחד במצב קל, רכב בוער)
@@ -406,7 +371,7 @@ async function loadEvents() {
     $("#feed-archive-box").hidden = !olderEv.length;
     $("#feed-archive-title").textContent = `אירועים קודמים (${olderEv.length})`;
     renderPulse(recentEv, filtered, meta, sources, restEv.length);
-    renderRaw(raw, sources, meta);
+    renderSourceWarnings(sources, meta);
     const checked = meta.generated_at || meta.server_time;
     $("#updated").textContent = STATIC ? "עודכן " + ago(checked)
       : meta.last_updated ? "עדכון אחרון: " + ago(meta.last_updated) : "אין נתונים";
