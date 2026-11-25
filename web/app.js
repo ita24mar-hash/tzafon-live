@@ -386,7 +386,9 @@ async function loadEvents() {
     const events = f.type ? bySev.filter((e) => e.event_type === f.type) : bySev;
     if (state.drawChips) state.drawChips();
     state.events = events;
-    const filtered = Object.keys(q).length > 0 || !!f.type;
+    // "לפי הסינון" רק כשיש סינון שהמשתמש בחר ושלא כבר מופיע בכותרת ("קרוב אליי" מופיע בה כ"עד X ק"מ ממך")
+    const filtered = !!(f.type || f.hours || f.verification || (f.location_id && f.location_id !== "gps"));
+    renderActiveFilters();
     const recentAll = events.filter((e) => isRecent(e.updated_at)), olderEv = events.filter((e) => !isRecent(e.updated_at));
     // האזור שנבחר קודם, ומתחתיו שאר הארץ
     const recentEv = recentAll.filter((e) => inRegion(e, state.region));
@@ -434,6 +436,35 @@ function locationOptions(select, first) {
     const items = state.locations.filter((l) => l.kind === kind);
     if (items.length) select.append(el("optgroup", { label: title }, items.map((l) => el("option", { value: l.id }, l.name_he))));
   }
+}
+
+// שורה גלויה מעל הפיד עם הסינונים שפעילים (נשמרים בין ביקורים), וכפתור לניקוי
+const HOURS_TXT = { 3: "3 שעות אחרונות", 12: "12 שעות אחרונות", 24: "24 שעות אחרונות", 168: "שבוע אחרון" };
+const VERIF_TXT = { official: "רק רשמי", multi_source: "רק מכמה מקורות", single_source: "רק ממקור אחד", retracted: "רק מה שהוכחש" };
+function renderActiveFilters() {
+  const box = $("#active-filters"), f = state.filters;
+  if (!box) return;
+  const parts = [];
+  if (f.type) parts.push(TYPES[f.type] ? TYPES[f.type][0] : f.type);
+  if (f.location_id && f.location_id !== "gps") {
+    const l = state.locations.find((x) => String(x.id) === String(f.location_id));
+    parts.push((l ? l.name_he : "מקום") + (f.radius_km ? ` + ${f.radius_km} ק"מ` : ""));
+  }
+  if (f.hours) parts.push(HOURS_TXT[f.hours] || f.hours + " שעות");
+  if (f.verification) parts.push(VERIF_TXT[f.verification] || f.verification);
+  box.hidden = !parts.length;
+  if (!parts.length) return;
+  box.replaceChildren(el("span", {}, "מסונן: " + parts.join(" · ")),
+    el("button", { type: "button", class: "link-btn", onclick: () => {
+      Object.assign(state.filters, { type: "", hours: "", verification: "" });
+      if (state.filters.location_id !== "gps") { state.filters.location_id = ""; state.filters.radius_km = ""; }
+      const keep = { ...state.filters };
+      if (keep.location_id === "gps") { keep.location_id = ""; keep.radius_km = ""; }   // מיקום GPS לא נשמר
+      store.set("tl_filters", keep);
+      for (const [id, k] of [["#f-loc", "location_id"], ["#f-radius", "radius_km"], ["#f-hours", "hours"], ["#f-verif", "verification"]])
+        if ($(id)) $(id).value = state.filters[k] || "";
+      updateFilterSummary(); loadEvents();
+    } }, "ניקוי הסינון"));
 }
 
 function updateFilterSummary() {
