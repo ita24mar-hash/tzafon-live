@@ -206,6 +206,9 @@ function renderTimeline(target, events, { groupByDay = false, splitNow = false }
 /* ---------- הודעה גולמית ממקור ---------- */
 const FRESH_MS = 24 * 3600 * 1000;   // רק הודעה מ-24 השעות האחרונות נחשבת עדכנית
 const isRecent = (iso) => Date.now() - new Date(iso).getTime() <= FRESH_MS;
+// חלון הזמן של הפיד והכותרת: שעתיים / 6 שעות / 24 שעות (ברירת מחדל 24, נשמר במכשיר)
+const WIN_TXT = { 2: "בשעתיים האחרונות", 6: "ב-6 השעות האחרונות", 24: "ב-24 השעות האחרונות" };
+const inWindow = (iso) => Date.now() - new Date(iso).getTime() <= (state.windowH || 24) * 3600 * 1000;
 
 function rawCard(r) {
   const recent = isRecent(r.published_at);
@@ -326,7 +329,7 @@ function renderBoard() {
     el("div", { class: "board-clock" }, el("b", { id: "clock" }, hhmm(now.toISOString())),
       el("span", {}, now.toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "numeric" }))),
     el("div", { class: "board-cells" }, cell(3, "קריטי"), cell(2, "בינוני"), cell(1, "נמוך")),
-    el("p", { class: "board-caption" }, `אירועים ${regionIn(state.region)} ב-24 השעות האחרונות`));
+    el("p", { class: "board-caption" }, `אירועים ${regionIn(state.region)} ${WIN_TXT[state.windowH || 24]}`));
 }
 setInterval(() => { const c = $("#clock"); if (c) c.textContent = hhmm(new Date().toISOString()); }, 20000);
 
@@ -334,19 +337,20 @@ function renderPulse(recent, filtered, meta, sources, restCount = 0) {
   const n = recent.length, h = $("#pulse-head"), where = regionIn(state.region);
   const scope = filtered ? "לפי הסינון, " : "";
   const t = state.filters.type && TYPES[state.filters.type] ? TYPES[state.filters.type][0] : null;
-  // הכותרת מתייחסת לשעתיים האחרונות, כדי שאירוע מהלילה לא ייראה כמו משהו שקורה עכשיו
-  const now = recent.filter((e) => isNow(e.updated_at)).length, earlier = n - now;
+  // הכותרת לפי חלון הזמן שנבחר; כמה מהם "עכשיו" (שעתיים) מופיע בשורה שמתחת
+  const win = WIN_TXT[state.windowH || 24];
+  const now = recent.filter((e) => isNow(e.updated_at)).length;
   const what = t ? `אירועים מסוג ${t}` : "אירועים";
-  h.textContent = now === 0 ? (filtered || t ? `אין ${what} ${where} בשעתיים האחרונות` : `שקט ${where} בשעתיים האחרונות`)
-    : now === 1 ? `${scope}אירוע אחד ${where} בשעתיים האחרונות` : `${scope}${now} ${what} ${where} בשעתיים האחרונות`;
-  h.className = now === 0 && !filtered ? "quiet" : "";
+  h.textContent = n === 0 ? (filtered || t ? `אין ${what} ${where} ${win}` : `שקט ${where} ${win}`)
+    : n === 1 ? `${scope}אירוע אחד ${where} ${win}` : `${scope}${n} ${what} ${where} ${win}`;
+  h.className = n === 0 && !filtered ? "quiet" : "";
   const lastEv = recent[0];
   const checked = meta.generated_at || meta.server_time;
   const on = sources.filter((x) => x.enabled && !x.is_demo);
   const quiet = on.filter((x) => x.status === "error" || !x.newest_published_at || !isRecent(x.newest_published_at));
   $("#pulse-sub").textContent = checked
-    ? `${earlier ? (earlier === 1 ? "אירוע אחד" : earlier + " אירועים") + " מוקדם יותר ביממה האחרונה" +
-        (now === 0 && lastEv ? `, האחרון ${since(lastEv.updated_at)}. ` : ". ") : ""}` +
+    ? `${n && (state.windowH || 24) > 2 ? (now === 0 ? "אין חדש בשעתיים האחרונות" : now === 1 ? "אחד מהם בשעתיים האחרונות"
+        : `${now} מהם בשעתיים האחרונות`) + (lastEv ? `, האחרון ${since(lastEv.updated_at)}. ` : ". ") : ""}` +
       `${restCount ? (restCount === 1 ? "אירוע אחד" : restCount + " אירועים") + " בשאר הארץ. " : ""}` +
       `${state.lowHidden ? (state.lowHidden === 1 ? "אירוע אחד בחומרה נמוכה מוסתר" : state.lowHidden + " אירועים בחומרה נמוכה מוסתרים") + ". " : ""}` +
       `נבדק ${ago(checked)}.`
@@ -375,10 +379,10 @@ async function loadEvents() {
     // הסינון לפי סוג נעשה כאן, כדי שאפשר יהיה להציג כמה אירועים יש מכל סוג
     // חומרה: ברירת המחדל מסתירה אירועים בחומרה נמוכה (למשל פצוע אחד במצב קל, רכב בוער)
     const bySev = allTypes.filter((e) => (e.severity || 1) >= state.minSev);
-    state.boardEvents = allTypes.filter((e) => isRecent(e.updated_at) && inRegion(e, state.region));
+    state.boardEvents = allTypes.filter((e) => inWindow(e.updated_at) && inRegion(e, state.region));
     renderBoard();
     renderBrief(allTypes.filter((e) => isRecent(e.updated_at)));
-    state.lowHidden = allTypes.filter((e) => (e.severity || 1) < state.minSev && isRecent(e.updated_at)
+    state.lowHidden = allTypes.filter((e) => (e.severity || 1) < state.minSev && inWindow(e.updated_at)
       && inRegion(e, state.region)).length;
     state.typeCounts = {};
     for (const e of bySev) state.typeCounts[e.event_type] = (state.typeCounts[e.event_type] || 0) + 1;
@@ -389,7 +393,7 @@ async function loadEvents() {
     // "לפי הסינון" רק כשיש סינון שהמשתמש בחר ושלא כבר מופיע בכותרת ("קרוב אליי" מופיע בה כ"עד X ק"מ ממך")
     const filtered = !!(f.type || f.hours || f.verification || (f.location_id && f.location_id !== "gps"));
     renderActiveFilters();
-    const recentAll = events.filter((e) => isRecent(e.updated_at)), olderEv = events.filter((e) => !isRecent(e.updated_at));
+    const recentAll = events.filter((e) => inWindow(e.updated_at)), olderEv = events.filter((e) => !inWindow(e.updated_at));
     // האזור שנבחר קודם, ומתחתיו שאר הארץ
     const recentEv = recentAll.filter((e) => inRegion(e, state.region));
     const restEv = state.region ? recentAll.filter((e) => !inRegion(e, state.region)) : [];
@@ -499,6 +503,13 @@ function setupFilters() {
         onclick: () => { state.minSev = v; store.set("tl_minsev", v); drawSev(); loadEvents(); } }, t)));
   drawSev();
   state.drawSev = drawSev;
+  state.windowH = Number(store.get("tl_window", 24));
+  const winRow = $("#win-row");
+  const drawWin = () => winRow.replaceChildren(el("span", { class: "sev-label" }, "זמן:"),
+    ...[[2, "שעתיים"], [6, "6 שעות"], [24, "24 שעות"]].map(([v, t]) =>
+      el("button", { class: "seg" + (state.windowH === v ? " on" : ""), "aria-pressed": String(state.windowH === v),
+        onclick: () => { state.windowH = v; store.set("tl_window", v); drawWin(); loadEvents(); } }, t)));
+  drawWin();
   const pick = (k) => { state.filters.type = k; draw(); changed(); };
   const changed = () => {
     updateFilterSummary();
