@@ -4,7 +4,7 @@
 const TYPES = {
   security: ["ביטחון", "🛡️"], accident: ["תאונה", "🚗"], fire: ["שריפה", "🔥"], closure: ["חסימה", "🚧"],
   infrastructure: ["תשתיות", "⚡"], weather: ["מזג אוויר", "🌧️"], hazard: ["מפגע", "⚠️"], medical: ["רפואי", "🚑"],
-  earthquake: ["רעידת אדמה", "〰️"], cyber: ["סייבר", "🔒"],
+  earthquake: ["רעידת אדמה", "〰️"], cyber: ["סייבר", "🔒"], health: ["בריאות הציבור", "⚕️"],
   other: ["אחר", "📌"],
 };
 // סמל קטן לכל סוג אירוע (קו, 24x24) – כדי שיבינו במבט מה קרה
@@ -18,6 +18,7 @@ const ICONS = {
   hazard: "M12 3l9 17H3z M12 10v4 M12 17h.01",
   medical: "M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z",
   earthquake: "M2 12h4l2-5 3 11 3-14 3 10 2-2h3",
+  health: "M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z M9 12h6 M12 9v6",
   cyber: "M7 11V8a5 5 0 0 1 10 0v3 M5 11h14v10H5z M12 15v2",
   other: "M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z M12 10h.01",
 };
@@ -265,7 +266,7 @@ function renderFeed(target, events, emptyText) {
 
 /* ---------- תמונת מצב בראש הפיד ---------- */
 /* ---------- תקציר: מה קורה בכל תחום, נבנה מהאירועים עצמם (בלי AI – לא ממציא כלום) ---------- */
-const BRIEF_ORDER = ["security", "earthquake", "fire", "accident", "medical", "closure", "infrastructure", "weather",
+const BRIEF_ORDER = ["security", "earthquake", "health", "fire", "accident", "medical", "closure", "infrastructure", "weather",
   "cyber", "hazard", "other"];
 const NATIONAL = "כל הארץ";
 const placeOf = (e) => (e.places || [])[0] || (e.location && e.location.name_he) || "";

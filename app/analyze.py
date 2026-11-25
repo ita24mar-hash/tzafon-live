@@ -8,10 +8,12 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-8"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל
+VERSION = "rules-9"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל; rules-9: בריאות הציבור
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
+    # בריאות הציבור לפני תשתיות: 'להרתיח את מי השתייה' היא הודעת בריאות
+    ("health", r"להרתיח|ריקול|קריאה להחזרת|קוראת להחזרת|החזרת מוצר|נאספים מהשיווק|הורדו מהמדפים|ליסטריה|סלמונלה|בוטוליזם|חצבת|התפרצות של|התפרצות מחלת|הרתיחו|הרתחת מים|זיהום מי השתייה|מי שתייה מזוהמים|זיהום מים|נסגר לרחצה|סגירת חופי|איסור רחצה|תחלואה|קדחת הנילוס|כלבת|שפעת העופות"),
     ("cyber", r"פישינג|דיוג|הונאה|הודעה מתחזה|הודעות מתחזות|הודעות SMS המתחזות|הודעות המתחזות|אתר מתחזה|אתרים מתחזים|מתחזה ל(?:פיקוד|דואר|משטרת|בנק|רשות|עיריית|מועצה|משרד|ביטוח|חברת|אל על)|מתחזות ל|קישור זדוני|קובץ זדוני|מתקפת סייבר|מתקפות סייבר|מערך הסייבר|דלף מידע|הדלפת מידע|כופרה|השבתת אתר|תקיפת סייבר"),
     ("earthquake", r"רעידת אדמה|רעידות אדמה|רעש אדמה"),
     ("security", r"צבע אדום|ירי רקטות|רקטות|טילים|טיל |כטב\"ם|כלי טיס עוין|חדירת מחבלים|חשש לחדירת|מחבל(?:ים)?(?![א-ת])|פיגוע|"
@@ -56,6 +58,8 @@ def severity_of(etype: str | None, text: str) -> int:
             return 2
         if re.search(r"אזהרה צהובה|אזהרת צהוב", t):
             return 1
+    if etype == "health":       # בריאות הציבור: מי שתייה ומגפה = קריטי; ריקול ואזהרה = בינוני
+        return 3 if re.search(r"להרתיח|הרתיחו|הרתחת מים|זיהום מי השתייה|מי שתייה מזוהמים|התפרצות|שפעת העופות|כלבת", t) else 2
     if etype == "cyber":        # התחזות לפיקוד העורף או השבתה של תשתית = קריטי; אזהרת הונאה רגילה = בינוני
         return 3 if re.search(r"פיקוד העורף|תשתית|השבתת|קריסת מערכות|בתי חולים", t) else 2
     m = re.search(r"רעידת אדמה בעוצמה (\d+(?:\.\d)?)", t)
@@ -223,7 +227,8 @@ def analyze(text: str) -> dict:
         places = []   # למשל "פיצוצים בכפר בלבנון ... ליד גבול הצפון": האירוע בלבנון, לא בצפון
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
     # בלי מקום: רק אזהרה רשמית לציבור נחשבת "כל הארץ" (לא כתבה שמזכירה סערה או פריצה)
-    national = (etype == "weather" and re.search(r"אזהרה (?:צהובה|כתומה|אדומה)|השירות המטאורולוגי", t)) or \
+    national = (etype == "health" and re.search(r"משרד הבריאות|שירות המזון|ריקול|קריאה להחזרת|קוראת להחזרת", t)) or \
+               (etype == "weather" and re.search(r"אזהרה (?:צהובה|כתומה|אדומה)|השירות המטאורולוגי", t)) or \
                (etype == "cyber" and re.search(r"מערך הסייבר|אזהרה|מזהיר|הונאה|פישינג|מתחזות|מתחזה|אל תלחצו", t))
     if national and not places and not ABROAD.search(t):
         places = find_places("כל הארץ")   # אזהרת הונאה או סייבר בלי מקום – רלוונטית לכולם
@@ -254,7 +259,13 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
         return old
     if old and "כל הארץ" in (old.get("places") or []):
         return analyze(excerpt)          # "כל הארץ" נקבע בכללים ישנים ורופפים – מחשבים מחדש
-    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7")):
+    if old and not old.get("relevant"):
+        # הודעה שלא הייתה אירוע: בודקים רק אם היא שייכת לסוג שנוסף מאז (בריאות, סייבר, מזג אוויר, רעידת אדמה).
+        # אחרת שומרים את ההחלטה הקודמת, שהתקבלה מהטקסט המלא
+        new = analyze(excerpt)
+        if new["relevant"] and new["type"] in ("health", "cyber", "weather", "earthquake"):
+            return new
+    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7", "rules-8")):
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         if g == "report" and old.get("genre") not in (None, "report"):

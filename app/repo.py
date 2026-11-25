@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from .db import audit, now_iso
 from .gazetteer import regions_for
 
-EVENT_TYPES = ("security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "medical", "earthquake", "cyber", "other")
+EVENT_TYPES = ("security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "medical", "earthquake", "cyber", "health", "other")
 EventType = Literal["security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "medical", "other"]
 SourceKind = Literal["telegram", "rss", "api", "website", "other"]
 TG_USER = re.compile(r"^[A-Za-z][A-Za-z0-9_]{3,31}$")

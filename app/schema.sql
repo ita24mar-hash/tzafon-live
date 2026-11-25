@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS events (
     title              TEXT NOT NULL,
     summary            TEXT NOT NULL DEFAULT '',
     event_type         TEXT NOT NULL CHECK (event_type IN
-                       ('security','accident','fire','closure','infrastructure','weather','hazard','medical','earthquake','cyber','other')),
+                       ('security','accident','fire','closure','infrastructure','weather','hazard','medical','earthquake','cyber','health','other')),
     status             TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new','ongoing','ended','unknown')),
     verification       TEXT NOT NULL DEFAULT 'single_source'
                        CHECK (verification IN ('single_source','multi_source','official','retracted')),
