@@ -702,5 +702,316 @@
    ],
    "mentions": 2
   }
+ },
+ "tg:rehovotnews": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "רחובות ניוז - News rehovot",
+   "description": "#חדשות_רחובות כל מה שחם בעיר #רחובות 24/7.\n\nhttps://instabio.cc/rehovotnewsp\n\nלחדשות רחובות בגוגל\n\nhttps://bit.ly/3DMU8T3\n\n\nלקחתם סרטון או תמונה ממערכת חדשות רח",
+   "verified": false,
+   "subscribers": "4.63K",
+   "messages": 20,
+   "newest": "2026-11-24T11:08:38+00:00",
+   "age_hours": 16.6,
+   "noise_share": 0.0,
+   "report_share": 0.3,
+   "north_share": 0.0,
+   "regions": {
+    "shfela": 6
+   },
+   "samples": [
+    "״אנחנו שבורים לרסיסים״ – חבריו נפרדים מאושר אברהם, לוחם מרחובות שנמצא ללא רוח חיים 💔 אושר אברהם בן 19 מרחובות, לוחם בגדוד 605 של חיל ההנדסה הקרבית…",
+    "*רחובות: רוכב אופנוע כבן 24 נפצע בינוני עד קשה* https://rehovot.news/רחובות-רוכב-אופנוע-בן-24-נפצע-בינוני-עד-ק/"
+   ],
+   "verdict": "recommended",
+   "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:rehovotnews",
+   "username": "RehovotNews",
+   "url": "https://t.me/RehovotNews",
+   "address": "https://t.me/RehovotNews",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 2
+  }
+ },
+ "tg:jrmnews": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "™▪️ ירושלים עדכונים🥇▪️",
+   "description": "רוצה להתעדכן במה שקורה בירושלים והסביבה?\n\nהגעת למקום הנכון!\nכאן תתעדכן בזמן אמת בכל מה שקורה בירושלים והסביבה\nעדכונים חשובים\n\nבבקשה שתף אותנו לחברים @jrmnews\nהק",
+   "verified": false,
+   "subscribers": "1.35K",
+   "messages": 19,
+   "newest": "2026-11-22T13:10:48+00:00",
+   "age_hours": 62.5,
+   "noise_share": 0.0,
+   "report_share": 0.26,
+   "north_share": 0.0,
+   "regions": {
+    "jerusalem": 5,
+    "shfela": 1
+   },
+   "samples": [
+    "*בוקר טוב* *זהו, החורף מגיע. רק 10 מעלות בירושלים: התחזית לימים הקרובים* היום: מעונן חלקית עד מעונן, תחול ירידה קלה בטמפרטורות, והן ממוצעות לתקופה…",
+    "4 נפגעים, בהם 30 ילדים, באירוע חומרים מסוכנים בבית ספר בירושלים אירוע חומרים מסוכנים התרחש בבית ספר ברחוב אל-אסמעי בירושלים, לאחר ערבוב חומרי ניקוי…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:jrmnews",
+   "username": "jrmnews",
+   "url": "https://t.me/jrmnews",
+   "address": "https://t.me/jrmnews",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 1
+  }
+ },
+ "rss:https://www.jdn.co.il/feed/": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "JDN",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 8,
+   "newest": "2026-11-24T21:36:04+00:00",
+   "age_hours": 6.1,
+   "noise_share": 0.0,
+   "report_share": 0.12,
+   "north_share": 0.12,
+   "regions": {
+    "haifa": 1
+   },
+   "samples": [
+    "התקיפה החמורה מחיית הבר בחיפה ותגובת העירייה. גבר בן 38 נפצע הערב באורח קשה בשכונת הדר עליון בחיפה, לאחר שהותקף בידי חזיר בר שהגיח לעברו. בעקבות…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.jdn.co.il/feed/",
+   "username": "www.jdn.co.il",
+   "url": "https://www.jdn.co.il/",
+   "address": "https://www.jdn.co.il/feed/",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
+ },
+ "tg:israel1": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "🚨 חדשות ישראל ללא צנזורה 🚨",
+   "description": "חדשות ישראל ללא צנזורה בטלגרם\n\nעדכונים ביטחוניים בזמן אמת.\nדיווחים ראשוניים על שיגורים והתפתחויות אזוריות,\n\nאינו תחליף לפיקוד העורף\n#חדשות #ללאצנזורה #ישראל #לל",
+   "verified": false,
+   "subscribers": "303K",
+   "messages": 19,
+   "newest": "2026-11-25T02:36:24+00:00",
+   "age_hours": 1.1,
+   "noise_share": 0.05,
+   "report_share": 0.11,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 1,
+    "shfela": 1,
+    "jerusalem": 1
+   },
+   "samples": [
+    "סמוך לנתב״ג: אישה נהרגה בתאונת רכבת. נסיבות המקרה נבדקות. 🚫 חדשות ישראל ללא צנזורה 🚫 https://t.me/israel1 לשיתוף ב ‎WhatsApp‏ לחצו כאן 💬",
+    "השגרירות האמריקנית בירושלים שלחה הערב התרעה ביטחונית לאזרחי ארה\"ב באזור: ערנות מוגברת בשל האיום הגובר של מתקפות חמושות מצד החות'ים הנתמכים על ידי…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:israel1",
+   "username": "israel1",
+   "url": "https://t.me/israel1",
+   "address": "https://t.me/israel1",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 4
+  }
+ },
+ "tg:amarassadi1": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עמאר אסדי - amar assadi news",
+   "description": "",
+   "verified": false,
+   "subscribers": "186K",
+   "messages": 20,
+   "newest": "2026-11-25T01:53:33+00:00",
+   "age_hours": 1.8,
+   "noise_share": 0.45,
+   "report_share": 0.1,
+   "north_share": 0.0,
+   "regions": {
+    "jerusalem": 1,
+    "dan": 1,
+    "shfela": 1
+   },
+   "samples": [
+    "🚨 توثيق خطير: سائق مركبة خاصة يعرقل سير سيارة إسعاف في طريقها لإنقاذ حياة! يوثّق مقطع فيديو سلوكًا خطيرًا لسائق مركبة خاصة في مدينة القدس، حيث يظهر…",
+    "עדכון מרכבת ישראל אדם אשר נכנס בניגוד להנחיות לשטח המסילה בתחנת נתב\"ג נפגע מרכבת חולפת. צוותי חירום והצלה נמצאים במקום. בשל האירוע חלים עיכובים…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:amarassadi1",
+   "username": "amarassadi1",
+   "url": "https://t.me/amarassadi1",
+   "address": "https://t.me/amarassadi1",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 4
+  }
+ },
+ "tg:raananaupdates": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית רעננה - הערוץ הרשמי",
+   "description": "הערוץ הרשמי של עיריית רעננה בטלגרם",
+   "verified": false,
+   "subscribers": "809",
+   "messages": 20,
+   "newest": "2026-11-24T07:07:37+00:00",
+   "age_hours": 20.6,
+   "noise_share": 0.25,
+   "report_share": 0.1,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 2,
+    "shfela": 1
+   },
+   "samples": [
+    "⚡ ממשיכים לשדרג את תשתיות החשמל ברעננה! 🌳 מכירים את עמודי החשמל שעומדים באמצע המדרכה? את חוטי החשמל השחורים הארוכים למעלה לכל אורך הרחוב? אז רק…",
+    "ברעננה נוהגים בזהירות. גם על שני גלגלים. 🚲 רוכבות ורוכבים על אופניים או קורקינט חשמלי? בואו נשמור יחד על הבטיחות של כולנו במרחב הציבורי. לפני…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:raananaupdates",
+   "username": "RaananaUpdates",
+   "url": "https://t.me/RaananaUpdates",
+   "address": "https://t.me/RaananaUpdates",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 2
+  }
+ },
+ "tg:ashkelonofficial": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית אשקלון",
+   "description": "ערוץ הטלגרם הרישמי של עיריית אשקלון",
+   "verified": false,
+   "subscribers": "2.11K",
+   "messages": 20,
+   "newest": "2026-11-24T14:07:51+00:00",
+   "age_hours": 13.6,
+   "noise_share": 0.0,
+   "report_share": 0.1,
+   "north_share": 0.0,
+   "regions": {
+    "south": 2
+   },
+   "samples": [
+    "דוברות עיריית אשקלון: מחר, שלישי, 24.11.26, יתקיים תרגיל בבניין קריית הממשלה באשקלון, בהשתתפות כוחות הביטחון, משטרת ישראל, כב״ה ויחידות מיוחדות…",
+    "על רגל אחת - איך קמים אחרי שהחיים משתנים ברגע אחד? לציון יום הוקרה לפצועי ופצועות צה\"ל ופעולות האיבה, עיריית אשקלון מזמינה אתכם להרצאה סוחפת ומעוררת…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:ashkelonofficial",
+   "username": "ashkelonofficial",
+   "url": "https://t.me/ashkelonofficial",
+   "address": "https://t.me/ashkelonofficial",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 2
+  }
+ },
+ "tg:hadashotdeskil": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "חדשות הדסק הישראלי🇮🇱",
+   "description": "ערוץ ללא פילטרים, כאן תמצאו את האמת שלא מספרים לכם בתקשורת. \nדעות ימניות, עדכונים חמים וניתוחים שלא מפחדים להעמיד דברים על מקומם. \n\nלדיוניום ללא פילטרים 👇\nhttps",
+   "verified": false,
+   "subscribers": "3.26K",
+   "messages": 20,
+   "newest": "2026-11-24T22:46:50+00:00",
+   "age_hours": 4.9,
+   "noise_share": 0.0,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "dan": 1,
+    "jerusalem": 1
+   },
+   "samples": [
+    "שגרירות ארה״ב בירושלים בהודעה נוספת (וזהה לקודמת): אזרחים אמריקנים במזרח התיכון מתבקשים להגביר את ערנותם לנוכח האיום הגובר של מתקפות חמושות מצד…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:hadashotdeskil",
+   "username": "Hadashotdeskil",
+   "url": "https://t.me/Hadashotdeskil",
+   "address": "https://t.me/Hadashotdeskil",
+   "mentioned_by": [
+    "צוף אפרתי (לא רשמי)"
+   ],
+   "mentions": 3
+  }
+ },
+ "tg:muninahariya": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עיריית נהריה אונליין",
+   "description": "",
+   "verified": false,
+   "subscribers": "3.08K",
+   "messages": 20,
+   "newest": "2026-11-23T14:24:17+00:00",
+   "age_hours": 37.3,
+   "noise_share": 0.05,
+   "report_share": 0.05,
+   "north_share": 0.05,
+   "regions": {
+    "dan": 1,
+    "galil-maaravi": 1
+   },
+   "samples": [
+    "עיריית נהריה: 🫶 ערב הוקרה לפצועי מערכות ישראל ופעולות האיבה מהעיר נהריה הינכם מוזמנים לערב מיוחד ומרגש, שבמרכזו פאנל בהשתתפות תושבי העיר שנפגעו…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:muninahariya",
+   "username": "muninahariya",
+   "url": "https://t.me/muninahariya",
+   "address": "https://t.me/muninahariya",
+   "mentioned_by": [
+    "מדריך aezor"
+   ],
+   "mentions": 2
+  }
  }
 }
