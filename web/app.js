@@ -1,5 +1,5 @@
 "use strict";
-// צפון LIVE – ממשק המשתמש. כל טקסט מהשרת מוכנס כ-textContent בלבד (ללא innerHTML).
+// רדאר LIVE – ממשק המשתמש. כל טקסט מהשרת מוכנס כ-textContent בלבד (ללא innerHTML).
 
 const TYPES = {
   security: ["ביטחון", "🛡️"], accident: ["תאונה", "🚗"], fire: ["שריפה", "🔥"], closure: ["חסימה", "🚧"],

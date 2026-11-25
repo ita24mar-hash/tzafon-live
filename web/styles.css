@@ -1,4 +1,4 @@
-/* צפון LIVE – צבעי הנוף של הגליל: בזלת, אבן גיר, זית. אדום רק לחומרה ולסימן "חי". */
+/* רדאר LIVE – צבעי הנוף של הגליל: בזלת, אבן גיר, זית. אדום רק לחומרה ולסימן "חי". */
 :root {
   --basalt: #1f2a2e;      /* טקסט ראשי, כותרת עליונה */
   --limestone: #eef1ec;   /* רקע */
@@ -369,3 +369,15 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0 2px; padding: 7px 11px;
   border-radius: 8px; background: color-mix(in srgb, var(--amber) 14%, var(--surface)); border: 1px solid var(--line); font-size: .86rem; }
 .active-filters .link-btn { font-weight: 600; }
+
+/* לוגו: מסך רדאר עם קרן סורקת ונקודת אירוע */
+.logo { width: 26px; height: 26px; flex: none; overflow: visible; }
+.lg-ring { fill: none; stroke: #9fc46e; stroke-width: 1.4; opacity: .55; }
+.lg-ring:first-child { opacity: .9; fill: #9fc46e14; }
+.lg-beam { fill: #9fc46e; opacity: .28; }
+.lg-arm { stroke: #c9e89c; stroke-width: 1.6; stroke-linecap: round; }
+.lg-sweep { transform-origin: 16px 16px; animation: sweep 4s linear infinite; }
+.lg-blip { fill: #ff6b52; animation: blip 4s ease-out infinite; }
+@keyframes sweep { to { transform: rotate(360deg); } }
+@keyframes blip { 0%, 12% { opacity: .25; } 16% { opacity: 1; } 60% { opacity: .5; } 100% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .lg-sweep, .lg-blip { animation: none; } }
