@@ -249,3 +249,8 @@ def test_public_health():
     assert (a["type"], a["location"], a["severity"], a["relevant"]) == ("health", "כל הארץ", 2, True)
     a = analyze("משרד הבריאות: תושבי צפת מתבקשים להרתיח את מי השתייה עד להודעה חדשה")
     assert (a["type"], a["location"], a["severity"]) == ("health", "צפת", 3)
+
+
+def test_rabies_is_not_critical():
+    a = analyze("משרד הבריאות: שוב תן נגוע בכלבת אותר בכניסה ליישוב ניר יפה שבגלבוע")
+    assert (a["type"], a["severity"]) == ("health", 2)

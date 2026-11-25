@@ -8,7 +8,7 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-9"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל; rules-9: בריאות הציבור
+VERSION = "rules-10"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל; rules-9: בריאות הציבור; rules-10: כלבת = בינוני
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -58,8 +58,8 @@ def severity_of(etype: str | None, text: str) -> int:
             return 2
         if re.search(r"אזהרה צהובה|אזהרת צהוב", t):
             return 1
-    if etype == "health":       # בריאות הציבור: מי שתייה ומגפה = קריטי; ריקול ואזהרה = בינוני
-        return 3 if re.search(r"להרתיח|הרתיחו|הרתחת מים|זיהום מי השתייה|מי שתייה מזוהמים|התפרצות|שפעת העופות|כלבת", t) else 2
+    if etype == "health":       # בריאות הציבור: קריטי רק כשאסור לשתות את מי הברז; כל השאר (ריקול, כלבת, חצבת) = בינוני
+        return 3 if re.search(r"להרתיח|הרתיחו|הרתחת מים|אין לשתות|זיהום מי השתייה|מי שתייה מזוהמים", t) else 2
     if etype == "cyber":        # התחזות לפיקוד העורף או השבתה של תשתית = קריטי; אזהרת הונאה רגילה = בינוני
         return 3 if re.search(r"פיקוד העורף|תשתית|השבתת|קריסת מערכות|בתי חולים", t) else 2
     m = re.search(r"רעידת אדמה בעוצמה (\d+(?:\.\d)?)", t)
@@ -265,7 +265,7 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
         new = analyze(excerpt)
         if new["relevant"] and new["type"] in ("health", "cyber", "weather", "earthquake"):
             return new
-    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7", "rules-8")):
+    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7", "rules-8", "rules-9")):
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         if g == "report" and old.get("genre") not in (None, "report"):
