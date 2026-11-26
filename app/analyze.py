@@ -8,7 +8,7 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-10"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל; rules-9: בריאות הציבור; rules-10: כלבת = בינוני
+VERSION = "rules-11"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל; rules-9: בריאות הציבור; rules-10: כלבת = בינוני; rules-11: תרגיל = נמוך תמיד
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -46,11 +46,18 @@ FALSE_ALARM = re.compile(r"שווא|זיהוי שגוי")
 MINOR = re.compile(r"רכב בוער|שריפת רכב|רכב עלה באש|רכב עולה באש|ללא נפגעים|אין נפגעים|לא נפגע|באורח קל|פצוע קל|"
                    r"פצועה קל|פצועים קל|שמן על הכביש|שמן בכביש|מפגע|עץ שקרס|נפל עץ|פסולת|ערימת|קוצים|שריפת קוצים|"
                    r"פח אשפה|פחי אשפה|נפלה במדרכה|נפל במדרכה|נפלה מסוס|נפל מסוס")
+# תרגיל או בדיקה מתוכננת: תמיד נמוך, גם אם מוזכרים בו אזעקות, חומ"ס או פצועים (זה תרחיש, לא אירוע).
+# "זה לא תרגיל" / "אין מדובר בתרגיל" = אירוע אמיתי, ולכן לא נחשב תרגיל.
+DRILL = re.compile(r"(?<![א-ת])[ובלמהשכ]{0,2}(?:תרגיל|תרגילי|תרגול|תרגולת|תרגלו|יתרגלו|מתרגלים|מתרגלות|"
+                   r"ניסוי מתוכנן|ניסוי מערכות|בדיקת (?:ה)?צופרים|בדיקת מערכת ההתרעה)(?![א-ת])(?!\s+(?:עוקץ|הונאה|ההונאה|העוקץ))")   # "תרגיל עוקץ" = הונאה, לא תרגיל
+NOT_DRILL = re.compile(r"(?:אינו|איננו|אינה|לא|אין)\s+(?:מדובר\s+)?(?:ב|זה\s+)?ה?תרגיל")
 BUILDING_FIRE = re.compile(r"בניין|דירה|דירת|מבנה|בית |בית מגורים|מפעל|מחסן|חנות|קומה|גג")
 
 
 def severity_of(etype: str | None, text: str) -> int:
     t = re.sub(r"\s+", " ", text or "")
+    if DRILL.search(t) and not NOT_DRILL.search(t):
+        return 1                    # תרגיל / בדיקה מתוכננת – לעולם לא קריטי
     if etype == "weather":      # צבע האזהרה של השירות המטאורולוגי
         if re.search(r"אזהרה אדומה|אזהרת אדום", t):
             return 3
@@ -265,7 +272,7 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
         new = analyze(excerpt)
         if new["relevant"] and new["type"] in ("health", "cyber", "weather", "earthquake"):
             return new
-    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7", "rules-8", "rules-9")):
+    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7", "rules-8", "rules-9", "rules-10")):
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         if g == "report" and old.get("genre") not in (None, "report"):
