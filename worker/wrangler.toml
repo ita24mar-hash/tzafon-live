@@ -1,0 +1,18 @@
+# שירות ההתראות לטלפון. נפרס אוטומטית מ-GitHub (.github/workflows/push-worker.yml).
+name = "ilradar-push"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = false
+routes = [{ pattern = "push.ilradar.stream", custom_domain = true }]
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[[kv_namespaces]]
+binding = "KV"
+id = "__KV_ID__"   # מוחלף בזמן הפריסה במזהה האמיתי
+
+[vars]
+SITE_URL = "https://ilradar.stream/"
+EVENTS_URL = "https://ilradar.stream/data/events.json"
+ALLOWED_ORIGINS = "https://ilradar.stream,https://www.ilradar.stream,https://ita24mar-hash.github.io"

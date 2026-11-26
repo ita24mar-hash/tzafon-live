@@ -381,3 +381,9 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 @keyframes sweep { to { transform: rotate(360deg); } }
 @keyframes blip { 0%, 12% { opacity: .25; } 16% { opacity: 1; } 60% { opacity: .5; } 100% { opacity: .25; } }
 @media (prefers-reduced-motion: reduce) { .lg-sweep, .lg-blip { animation: none; } }
+
+/* התראות לטלפון */
+.push-box { margin: 10px 0 18px; border-color: color-mix(in srgb, var(--olive) 45%, var(--line)); }
+.push-box h3 { margin-top: 2px; }
+.push-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.push-box .status { margin: 10px 0 2px; font-size: .88rem; }

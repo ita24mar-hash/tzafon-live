@@ -1,0 +1,62 @@
+name: פריסת שירות ההתראות (Cloudflare)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["worker/**", ".github/workflows/push-worker.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: push-worker
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: בדיקה שהוגדרו המפתחות
+        id: check
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::notice::עדיין לא הוגדרו CLOUDFLARE_API_TOKEN ו-CLOUDFLARE_ACCOUNT_ID ב-Secrets. מדלג על הפריסה."
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v6
+        if: steps.check.outputs.skip != '1'
+      - uses: actions/setup-node@v6
+        if: steps.check.outputs.skip != '1'
+        with:
+          node-version: "22"
+      - name: בדיקות
+        if: steps.check.outputs.skip != '1'
+        run: node --test worker/test/*.test.js
+      - name: מאגר הנתונים (KV) – מוצאים או יוצרים
+        if: steps.check.outputs.skip != '1'
+        run: |
+          API="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/storage/kv/namespaces"
+          AUTH="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          ID=$(curl -fsS -H "$AUTH" "$API?per_page=100" | jq -r '.result[] | select(.title=="ilradar-push") | .id' | head -1)
+          if [ -z "$ID" ]; then
+            ID=$(curl -fsS -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"title":"ilradar-push"}' "$API" | jq -r '.result.id')
+          fi
+          test -n "$ID" && test "$ID" != "null"
+          sed -i "s/__KV_ID__/$ID/" worker/wrangler.toml
+      - name: פריסה
+        if: steps.check.outputs.skip != '1'
+        working-directory: worker
+        run: npx --yes wrangler@4 deploy
+      - name: בדיקה שהשירות עונה
+        if: steps.check.outputs.skip != '1'
+        run: |
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS https://push.ilradar.stream/vapid; then echo; exit 0; fi
+            sleep 20
+          done
+          echo "::warning::השירות נפרס אבל עדיין לא עונה בכתובת push.ilradar.stream (לפעמים לוקח כמה דקות)."

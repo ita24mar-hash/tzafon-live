@@ -115,7 +115,24 @@
 
   <section id="view-alerts" class="view" hidden>
     <h2>המעקב שלי</h2>
-    <p class="note">מסנן אירועים לפי מקום וסוג. <b>לא שולח התראות לטלפון</b> – האירועים מוצגים כאן כשנכנסים ללשונית. הכללים נשמרים במכשיר שלך בלבד. דיווח ביטחוני לא מאומת אינו התרעה רשמית – יש לפעול לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
+    <div class="card push-box" id="push-box">
+      <h3>🔔 התראות לטלפון</h3>
+      <p class="note">התראה עם צליל כשמזוהה אירוע באזור שבחרת, גם כשהאפליקציה סגורה. ההתראות מגיעות באיחור של כמה דקות, מבוססות על דיווחים לא מאומתים, ו<b>אינן תחליף להתרעות פיקוד העורף</b>.</p>
+      <div class="filters">
+        <label>איפה<select id="p-where"></select></label>
+        <label id="p-km-wrap" hidden>טווח<select id="p-km"><option value="2">2 ק"מ</option><option value="5">5 ק"מ</option>
+          <option value="10" selected>10 ק"מ</option><option value="25">25 ק"מ</option><option value="50">50 ק"מ</option></select></label>
+        <label>חומרה<select id="p-sev"><option value="3">רק אירועים קריטיים</option><option value="2">בינוניים וקריטיים</option></select></label>
+      </div>
+      <div class="push-actions">
+        <button id="p-on" class="btn" type="button">הפעלת התראות</button>
+        <button id="p-test" class="btn ghost" type="button" hidden>התראת ניסיון</button>
+        <button id="p-off" class="btn ghost" type="button" hidden>כיבוי</button>
+      </div>
+      <p class="status" id="p-status" aria-live="polite"></p>
+    </div>
+    <h3>סינון במסך</h3>
+    <p class="note">הכללים כאן מסננים מה מוצג בלשונית הזו בלבד, ונשמרים במכשיר שלך. דיווח ביטחוני לא מאומת אינו התרעה רשמית – יש לפעול לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
     <div class="filters">
       <label>אזור<select id="a-loc"></select></label>
       <label id="a-km-wrap" hidden>טווח<select id="a-km"><option value="2">2 ק"מ</option><option value="5">5 ק"מ</option>

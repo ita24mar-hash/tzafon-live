@@ -636,6 +636,98 @@ async function drawAlerts() {
   } catch (e) { renderFeed($("#a-feed"), [], "לא ניתן לטעון: " + e.message); }
 }
 
+/* ---------- התראות לטלפון (Web Push דרך push.ilradar.stream) ---------- */
+const PUSH_API = "https://push.ilradar.stream";
+const pushSupported = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window
+  && location.protocol === "https:";
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+function keyBytes(b64) {
+  const s = atob(b64.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((b64.length + 3) % 4));
+  return Uint8Array.from(s, (c) => c.charCodeAt(0));
+}
+async function pushCall(path, body) {
+  const res = await fetch(PUSH_API + path, body ? { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body) } : {});
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "שירות ההתראות לא זמין כרגע");
+  return data;
+}
+async function currentSub() {
+  if (!pushSupported()) return null;
+  const reg = await navigator.serviceWorker.getRegistration();
+  return reg ? reg.pushManager.getSubscription() : null;
+}
+function pushStatus(text, active) {
+  $("#p-status").textContent = text;
+  $("#p-on").textContent = active ? "שמירת שינויים" : "הפעלת התראות";
+  $("#p-test").hidden = !active; $("#p-off").hidden = !active;
+}
+function pushPrefsLabel(p) {
+  const where = p.where === "near" ? `עד ${p.km} ק"מ ממך` : p.where ? REGION_NAME[p.where] : "כל הארץ";
+  return `${where} · ${p.sev === 2 ? "בינוניים וקריטיים" : "רק קריטיים"}`;
+}
+async function setupPush() {
+  $("#p-where").replaceChildren(el("option", { value: "" }, "כל הארץ"), el("option", { value: "near" }, "📍 קרוב אליי"),
+    ...REGIONS.map(([id, name]) => el("option", { value: id }, name)));
+  const saved = store.get("tl_push", { where: state.region || "", km: 10, sev: 3 });
+  $("#p-where").value = saved.where; $("#p-km").value = String(saved.km); $("#p-sev").value = String(saved.sev);
+  $("#p-km-wrap").hidden = saved.where !== "near";
+  $("#p-where").addEventListener("change", () => { $("#p-km-wrap").hidden = $("#p-where").value !== "near"; });
+
+  if (!pushSupported()) {
+    $("#p-on").disabled = true;
+    pushStatus(isIOS() && !isStandalone()
+      ? "באייפון: קודם מוסיפים את האפליקציה למסך הבית (בספארי: כפתור השיתוף ← \"הוספה למסך הבית\"), ואז פותחים אותה משם ומפעילים כאן."
+      : "הדפדפן הזה לא תומך בהתראות. נסו בכרום או בספארי עדכני.", false);
+    return;
+  }
+  const sub = await currentSub().catch(() => null);
+  if (sub && Notification.permission === "granted") pushStatus("✓ ההתראות פעילות: " + pushPrefsLabel(saved), true);
+  else if (Notification.permission === "denied") pushStatus("ההתראות חסומות בהגדרות הדפדפן לאתר הזה. כדי להפעיל: הגדרות האתר ← התראות ← לאפשר.", false);
+
+  $("#p-on").addEventListener("click", async () => {
+    const btn = $("#p-on"); btn.disabled = true;
+    try {
+      const prefs = { where: $("#p-where").value, km: Number($("#p-km").value), sev: Number($("#p-sev").value) };
+      pushStatus("מפעיל…", false);
+      if ((await Notification.requestPermission()) !== "granted") throw new Error("לא אושרו התראות. אפשר לאשר בהגדרות האתר בדפדפן.");
+      const reg = await navigator.serviceWorker.ready;
+      let s = await reg.pushManager.getSubscription();
+      if (!s) {
+        const { publicKey } = await pushCall("/vapid");
+        s = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(publicKey) });
+      }
+      const body = { subscription: s.toJSON(), prefs: { minSev: prefs.sev } };
+      if (prefs.where === "near") {
+        const me = await getApproxLocation();
+        Object.assign(body.prefs, { mode: "near", lat: +me.lat, lon: +me.lon, km: prefs.km });
+      } else Object.assign(body.prefs, { mode: "regions", regions: prefs.where ? [prefs.where] : [] });
+      await pushCall("/subscribe", body);
+      store.set("tl_push", prefs);
+      pushStatus("✓ ההתראות פעילות: " + pushPrefsLabel(prefs) + (prefs.where === "near" ? ". המיקום נקבע עכשיו – אם עברת מקום, לחצו שוב \"שמירת שינויים\"." : ""), true);
+    } catch (err) {
+      const s = await currentSub().catch(() => null);
+      pushStatus("לא הצלחנו להפעיל: " + err.message, !!s);
+    } finally { btn.disabled = false; }
+  });
+  $("#p-test").addEventListener("click", async () => {
+    try {
+      const s = await currentSub();
+      if (!s) throw new Error("ההתראות לא פעילות במכשיר הזה");
+      const r = await pushCall("/test", { endpoint: s.endpoint });
+      $("#p-status").textContent = r.ok ? "נשלחה התראת ניסיון – היא אמורה להופיע תוך כמה שניות." : "השליחה נכשלה. נסו לכבות ולהפעיל מחדש.";
+    } catch (err) { $("#p-status").textContent = err.message; }
+  });
+  $("#p-off").addEventListener("click", async () => {
+    try {
+      const s = await currentSub();
+      if (s) { await pushCall("/unsubscribe", { endpoint: s.endpoint }).catch(() => {}); await s.unsubscribe(); }
+      pushStatus("ההתראות כובו.", false);
+    } catch (err) { $("#p-status").textContent = err.message; }
+  });
+}
+
 /* ---------- ניהול מקורות ---------- */
 function sourceCard(s) {
   const act = async (fn) => { try { await fn(); } catch (e) { $("#src-err").textContent = e.message; } loadSources(); };
@@ -871,7 +963,7 @@ async function start() {
   document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => show(b.dataset.view)));
   try { state.locations = await getData("locations"); } catch { state.locations = []; }
   $("#pulse-sources").addEventListener("click", () => show("admin"));
-  setupRegion(); setupFilters(); setupAlerts(); setupAdmin(); setupInstall();
+  setupRegion(); setupFilters(); setupAlerts(); setupAdmin(); setupInstall(); setupPush().catch(() => {});
   // טווח הזמן על המפה: כפתורים שצפים על המפה עצמה, כך שהם תמיד גלויים
   state.mapHours = Number(store.get("tl_maphours", 24));
   const hb = document.querySelectorAll("#map-hours-box button");
