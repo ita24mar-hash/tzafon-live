@@ -1,284 +1,136 @@
 {
- "generated_at": "2026-11-25T03:44:01+00:00",
- "scanned_sources": 30,
- "found": 53,
- "checked": 53,
- "sites_checked": 18,
+ "generated_at": "2026-11-26T03:42:24+00:00",
+ "scanned_sources": 37,
+ "found": 47,
+ "checked": 47,
+ "sites_checked": 17,
  "candidates": [
   {
-   "title": "רחובות ניוז - News rehovot",
-   "description": "#חדשות_רחובות כל מה שחם בעיר #רחובות 24/7.\n\nhttps://instabio.cc/rehovotnewsp\n\nלחדשות רחובות בגוגל\n\nhttps://bit.ly/3DMU8T3\n\n\nלקחתם סרטון או תמונה ממערכת חדשות רח",
-   "verified": false,
-   "subscribers": "4.63K",
-   "messages": 20,
-   "newest": "2026-11-24T11:08:38+00:00",
-   "age_hours": 16.6,
-   "noise_share": 0.0,
-   "report_share": 0.3,
-   "north_share": 0.0,
-   "regions": {
-    "shfela": 6
-   },
-   "samples": [
-    "״אנחנו שבורים לרסיסים״ – חבריו נפרדים מאושר אברהם, לוחם מרחובות שנמצא ללא רוח חיים 💔 אושר אברהם בן 19 מרחובות, לוחם בגדוד 605 של חיל ההנדסה הקרבית…",
-    "*רחובות: רוכב אופנוע כבן 24 נפצע בינוני עד קשה* https://rehovot.news/רחובות-רוכב-אופנוע-בן-24-נפצע-בינוני-עד-ק/"
-   ],
-   "verdict": "recommended",
-   "reason": "פעיל, וחלק ניכר מההודעות הן דיווחים על אירועים בישראל",
-   "kind": "telegram",
-   "key": "tg:rehovotnews",
-   "username": "RehovotNews",
-   "url": "https://t.me/RehovotNews",
-   "address": "https://t.me/RehovotNews",
-   "mentioned_by": [
-    "מדריך aezor"
-   ],
-   "mentions": 2
-  },
-  {
-   "title": "™▪️ ירושלים עדכונים🥇▪️",
-   "description": "רוצה להתעדכן במה שקורה בירושלים והסביבה?\n\nהגעת למקום הנכון!\nכאן תתעדכן בזמן אמת בכל מה שקורה בירושלים והסביבה\nעדכונים חשובים\n\nבבקשה שתף אותנו לחברים @jrmnews\nהק",
-   "verified": false,
-   "subscribers": "1.35K",
-   "messages": 19,
-   "newest": "2026-11-22T13:10:48+00:00",
-   "age_hours": 62.5,
-   "noise_share": 0.0,
-   "report_share": 0.26,
-   "north_share": 0.0,
-   "regions": {
-    "jerusalem": 5,
-    "shfela": 1
-   },
-   "samples": [
-    "*בוקר טוב* *זהו, החורף מגיע. רק 10 מעלות בירושלים: התחזית לימים הקרובים* היום: מעונן חלקית עד מעונן, תחול ירידה קלה בטמפרטורות, והן ממוצעות לתקופה…",
-    "4 נפגעים, בהם 30 ילדים, באירוע חומרים מסוכנים בבית ספר בירושלים אירוע חומרים מסוכנים התרחש בבית ספר ברחוב אל-אסמעי בירושלים, לאחר ערבוב חומרי ניקוי…"
-   ],
-   "verdict": "possible",
-   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
-   "kind": "telegram",
-   "key": "tg:jrmnews",
-   "username": "jrmnews",
-   "url": "https://t.me/jrmnews",
-   "address": "https://t.me/jrmnews",
-   "mentioned_by": [
-    "מדריך aezor"
-   ],
-   "mentions": 1
-  },
-  {
-   "title": "JDN",
+   "title": "חדשות הצפון (hm-news)",
    "description": "",
    "verified": false,
    "subscribers": null,
-   "messages": 8,
-   "newest": "2026-11-24T21:36:04+00:00",
-   "age_hours": 6.1,
+   "messages": 10,
+   "newest": "2026-11-25T21:07:57+00:00",
+   "age_hours": 6.6,
    "noise_share": 0.0,
-   "report_share": 0.12,
-   "north_share": 0.12,
+   "report_share": 0.1,
+   "north_share": 0.0,
    "regions": {
-    "haifa": 1
+    "yosh": 1
    },
    "samples": [
-    "התקיפה החמורה מחיית הבר בחיפה ותגובת העירייה. גבר בן 38 נפצע הערב באורח קשה בשכונת הדר עליון בחיפה, לאחר שהותקף בידי חזיר בר שהגיח לעברו. בעקבות…"
+    "טרגדיה במעלה אדומים: הפעוט בן השנתיים שנפל מגובה – נפטר. טרגדיה במעלה אדומים: פעוט כבן שנתיים שנפל מגובה במהלך משחק ופונה במצב קשה לבית החולים הדסה…"
    ],
    "verdict": "possible",
    "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
    "kind": "rss",
-   "key": "rss:https://www.jdn.co.il/feed/",
-   "username": "www.jdn.co.il",
-   "url": "https://www.jdn.co.il/",
-   "address": "https://www.jdn.co.il/feed/",
+   "key": "rss:https://hm-news.co.il/feed/",
+   "username": "www.hm-news.co.il",
+   "url": "https://www.hm-news.co.il/",
+   "address": "https://hm-news.co.il/feed/",
    "mentioned_by": [
     "רשימת אתרים לבדיקה"
    ],
    "mentions": 0
   },
   {
-   "title": "🚨 חדשות ישראל ללא צנזורה 🚨",
-   "description": "חדשות ישראל ללא צנזורה בטלגרם\n\nעדכונים ביטחוניים בזמן אמת.\nדיווחים ראשוניים על שיגורים והתפתחויות אזוריות,\n\nאינו תחליף לפיקוד העורף\n#חדשות #ללאצנזורה #ישראל #לל",
-   "verified": false,
-   "subscribers": "303K",
-   "messages": 19,
-   "newest": "2026-11-25T02:36:24+00:00",
-   "age_hours": 1.1,
-   "noise_share": 0.05,
-   "report_share": 0.11,
-   "north_share": 0.0,
-   "regions": {
-    "dan": 1,
-    "shfela": 1,
-    "jerusalem": 1
-   },
-   "samples": [
-    "סמוך לנתב״ג: אישה נהרגה בתאונת רכבת. נסיבות המקרה נבדקות. 🚫 חדשות ישראל ללא צנזורה 🚫 https://t.me/israel1 לשיתוף ב ‎WhatsApp‏ לחצו כאן 💬",
-    "השגרירות האמריקנית בירושלים שלחה הערב התרעה ביטחונית לאזרחי ארה\"ב באזור: ערנות מוגברת בשל האיום הגובר של מתקפות חמושות מצד החות'ים הנתמכים על ידי…"
-   ],
-   "verdict": "possible",
-   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
-   "kind": "telegram",
-   "key": "tg:israel1",
-   "username": "israel1",
-   "url": "https://t.me/israel1",
-   "address": "https://t.me/israel1",
-   "mentioned_by": [
-    "מדריך Hebrew_Channels"
-   ],
-   "mentions": 4
-  },
-  {
-   "title": "עמאר אסדי - amar assadi news",
+   "title": "כיכר השבת",
    "description": "",
    "verified": false,
-   "subscribers": "186K",
-   "messages": 20,
-   "newest": "2026-11-25T01:53:33+00:00",
-   "age_hours": 1.8,
-   "noise_share": 0.45,
-   "report_share": 0.1,
-   "north_share": 0.0,
+   "subscribers": null,
+   "messages": 48,
+   "newest": "2026-11-25T22:02:01+00:00",
+   "age_hours": 5.7,
+   "noise_share": 0.02,
+   "report_share": 0.06,
+   "north_share": 0.02,
    "regions": {
     "jerusalem": 1,
-    "dan": 1,
-    "shfela": 1
+    "south": 1,
+    "yosh": 1,
+    "kineret-amakim": 1
    },
    "samples": [
-    "🚨 توثيق خطير: سائق مركبة خاصة يعرقل سير سيارة إسعاف في طريقها لإنقاذ حياة! يوثّق مقطع فيديو سلوكًا خطيرًا لسائق مركبة خاصة في مدينة القدس، حيث يظهر…",
-    "עדכון מרכבת ישראל אדם אשר נכנס בניגוד להנחיות לשטח המסילה בתחנת נתב\"ג נפגע מרכבת חולפת. צוותי חירום והצלה נמצאים במקום. בשל האירוע חלים עיכובים…"
+    "חילוץ חריג: רגלה של בת 40 נלכדה ברכבת הקלה. אישה בת 40 נפגעה הערב באזור אצטדיון טדי בירושלים, לאחר שרגלה נלכדה בין קרון הרכבת הקלה לרציף הנוסעים |…",
+    "טרגדיה: פעוט בן שנתיים נפגע בגן שעשועים - ונפטר בבית החולים. לאחר מאבק על חייו: נקבע מותו של ליעם ירוחם וויינשטיין ז״ל, פעוט בן שנתיים שנפגע במהלך…"
    ],
    "verdict": "possible",
    "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
-   "kind": "telegram",
-   "key": "tg:amarassadi1",
-   "username": "amarassadi1",
-   "url": "https://t.me/amarassadi1",
-   "address": "https://t.me/amarassadi1",
+   "kind": "rss",
+   "key": "rss:https://www.kikar.co.il/feed",
+   "username": "www.kikar.co.il",
+   "url": "https://www.kikar.co.il/",
+   "address": "https://www.kikar.co.il/feed",
    "mentioned_by": [
-    "מדריך Hebrew_Channels"
+    "רשימת אתרים לבדיקה"
    ],
-   "mentions": 4
+   "mentions": 0
   },
   {
-   "title": "עיריית רעננה - הערוץ הרשמי",
-   "description": "הערוץ הרשמי של עיריית רעננה בטלגרם",
+   "title": "רגע חדשות - צבא וביטחון בטלגרם",
+   "description": "חיי חיילינו חשובים מחיי אוכלוסיית האויב\n\n\nעוקבים יקרים, מעכשיו ניתן לפרסם בערוץ.\nלרכישת פרסום לחצו כאן:\nhttps://api.whatsapp.com/send?phone=9720533475624&text=ה",
    "verified": false,
-   "subscribers": "809",
+   "subscribers": "112K",
    "messages": 20,
-   "newest": "2026-11-24T07:07:37+00:00",
-   "age_hours": 20.6,
-   "noise_share": 0.25,
-   "report_share": 0.1,
-   "north_share": 0.0,
-   "regions": {
-    "dan": 2,
-    "shfela": 1
-   },
-   "samples": [
-    "⚡ ממשיכים לשדרג את תשתיות החשמל ברעננה! 🌳 מכירים את עמודי החשמל שעומדים באמצע המדרכה? את חוטי החשמל השחורים הארוכים למעלה לכל אורך הרחוב? אז רק…",
-    "ברעננה נוהגים בזהירות. גם על שני גלגלים. 🚲 רוכבות ורוכבים על אופניים או קורקינט חשמלי? בואו נשמור יחד על הבטיחות של כולנו במרחב הציבורי. לפני…"
-   ],
-   "verdict": "possible",
-   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
-   "kind": "telegram",
-   "key": "tg:raananaupdates",
-   "username": "RaananaUpdates",
-   "url": "https://t.me/RaananaUpdates",
-   "address": "https://t.me/RaananaUpdates",
-   "mentioned_by": [
-    "מדריך aezor"
-   ],
-   "mentions": 2
-  },
-  {
-   "title": "עיריית אשקלון",
-   "description": "ערוץ הטלגרם הרישמי של עיריית אשקלון",
-   "verified": false,
-   "subscribers": "2.11K",
-   "messages": 20,
-   "newest": "2026-11-24T14:07:51+00:00",
-   "age_hours": 13.6,
-   "noise_share": 0.0,
-   "report_share": 0.1,
-   "north_share": 0.0,
-   "regions": {
-    "south": 2
-   },
-   "samples": [
-    "דוברות עיריית אשקלון: מחר, שלישי, 24.11.26, יתקיים תרגיל בבניין קריית הממשלה באשקלון, בהשתתפות כוחות הביטחון, משטרת ישראל, כב״ה ויחידות מיוחדות…",
-    "על רגל אחת - איך קמים אחרי שהחיים משתנים ברגע אחד? לציון יום הוקרה לפצועי ופצועות צה\"ל ופעולות האיבה, עיריית אשקלון מזמינה אתכם להרצאה סוחפת ומעוררת…"
-   ],
-   "verdict": "possible",
-   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
-   "kind": "telegram",
-   "key": "tg:ashkelonofficial",
-   "username": "ashkelonofficial",
-   "url": "https://t.me/ashkelonofficial",
-   "address": "https://t.me/ashkelonofficial",
-   "mentioned_by": [
-    "מדריך aezor"
-   ],
-   "mentions": 2
-  },
-  {
-   "title": "חדשות הדסק הישראלי🇮🇱",
-   "description": "ערוץ ללא פילטרים, כאן תמצאו את האמת שלא מספרים לכם בתקשורת. \nדעות ימניות, עדכונים חמים וניתוחים שלא מפחדים להעמיד דברים על מקומם. \n\nלדיוניום ללא פילטרים 👇\nhttps",
-   "verified": false,
-   "subscribers": "3.26K",
-   "messages": 20,
-   "newest": "2026-11-24T22:46:50+00:00",
-   "age_hours": 4.9,
-   "noise_share": 0.0,
+   "newest": "2026-11-25T22:24:28+00:00",
+   "age_hours": 5.3,
+   "noise_share": 0.1,
    "report_share": 0.05,
    "north_share": 0.0,
    "regions": {
-    "dan": 1,
-    "jerusalem": 1
+    "shfela": 1
    },
    "samples": [
-    "שגרירות ארה״ב בירושלים בהודעה נוספת (וזהה לקודמת): אזרחים אמריקנים במזרח התיכון מתבקשים להגביר את ערנותם לנוכח האיום הגובר של מתקפות חמושות מצד…"
+    "כל מילה! הפסיכולוג הערבי-גרמני אחמד מנסור, שגדל בישראל, מזהיר לאחר שנחשף שהמוסד היה מעורב בסיכול הפיגוע בהופעות של טיילור סוויפט בווינה: \"אלה…"
    ],
    "verdict": "possible",
    "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
    "kind": "telegram",
-   "key": "tg:hadashotdeskil",
-   "username": "Hadashotdeskil",
-   "url": "https://t.me/Hadashotdeskil",
-   "address": "https://t.me/Hadashotdeskil",
+   "key": "tg:baznews9",
+   "username": "baznews9",
+   "url": "https://t.me/baznews9",
+   "address": "https://t.me/baznews9",
    "mentioned_by": [
-    "צוף אפרתי (לא רשמי)"
+    "מדריך Recommended_channels"
    ],
-   "mentions": 3
+   "mentions": 2
   },
   {
-   "title": "עיריית נהריה אונליין",
+   "title": "ישראל היום",
    "description": "",
    "verified": false,
-   "subscribers": "3.08K",
-   "messages": 20,
-   "newest": "2026-11-23T14:24:17+00:00",
-   "age_hours": 37.3,
-   "noise_share": 0.05,
+   "subscribers": null,
+   "messages": 100,
+   "newest": "2026-11-26T02:54:52+00:00",
+   "age_hours": 0.8,
+   "noise_share": 0.01,
    "report_share": 0.05,
-   "north_share": 0.05,
+   "north_share": 0.02,
    "regions": {
+    "south": 2,
     "dan": 1,
-    "galil-maaravi": 1
+    "galil-maaravi": 1,
+    "haifa": 2,
+    "sharon": 2,
+    "shfela": 1,
+    "yosh": 1
    },
    "samples": [
-    "עיריית נהריה: 🫶 ערב הוקרה לפצועי מערכות ישראל ופעולות האיבה מהעיר נהריה הינכם מוזמנים לערב מיוחד ומרגש, שבמרכזו פאנל בהשתתפות תושבי העיר שנפגעו…"
+    "קליע פגע ברכב ביישוב הדרומי - והתושבים חיים בפחד: \"שנייה מאסון\". מטחי ירי בלתי פוסקים מרהט חצו שוב את הגדר ליישוב גבעות בר, כשאחד הקליעים ניקב רכב…",
+    "ספינה איראנית, משלוח המסתורי - ותקיפה אוקראינית: דרמה בים התיכון. לפי \"קוריירה דלה סרה\", ספינת התובלה \"אלבן\", שנפגעה בבנגאזי, נשאה רכיבים ללוחמה…"
    ],
    "verdict": "possible",
    "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
-   "kind": "telegram",
-   "key": "tg:muninahariya",
-   "username": "muninahariya",
-   "url": "https://t.me/muninahariya",
-   "address": "https://t.me/muninahariya",
+   "kind": "rss",
+   "key": "rss:https://www.israelhayom.co.il/rss.xml",
+   "username": "www.israelhayom.co.il",
+   "url": "https://www.israelhayom.co.il/",
+   "address": "https://www.israelhayom.co.il/rss.xml",
    "mentioned_by": [
-    "מדריך aezor"
+    "רשימת אתרים לבדיקה"
    ],
-   "mentions": 2
+   "mentions": 0
   },
   {
    "title": "עדכוני עציון- מדווחים ישירות ובלי חפירות",
@@ -287,7 +139,7 @@
    "subscribers": "1.11K",
    "messages": 20,
    "newest": "2024-08-25T04:40:56+00:00",
-   "age_hours": 19727.0,
+   "age_hours": 19751.0,
    "noise_share": 0.1,
    "report_share": 0.4,
    "north_share": 0.0,
@@ -318,7 +170,7 @@
    "subscribers": "3.03K",
    "messages": 18,
    "newest": "2026-08-31T17:05:05+00:00",
-   "age_hours": 2050.6,
+   "age_hours": 2074.6,
    "noise_share": 0.0,
    "report_share": 0.11,
    "north_share": 0.0,
@@ -348,7 +200,7 @@
    "subscribers": "143",
    "messages": 20,
    "newest": "2026-05-29T15:29:49+00:00",
-   "age_hours": 4308.2,
+   "age_hours": 4332.2,
    "noise_share": 0.05,
    "report_share": 0.1,
    "north_share": 0.1,
@@ -373,82 +225,13 @@
    "mentions": 2
   },
   {
-   "title": "כיכר השבת",
-   "description": "",
-   "verified": false,
-   "subscribers": null,
-   "messages": 49,
-   "newest": "2026-11-24T21:48:19+00:00",
-   "age_hours": 5.9,
-   "noise_share": 0.0,
-   "report_share": 0.04,
-   "north_share": 0.02,
-   "regions": {
-    "dan": 2,
-    "jerusalem": 2,
-    "shfela": 2,
-    "galil-elyon": 1,
-    "galil-maaravi": 1,
-    "haifa": 1,
-    "kineret-amakim": 1,
-    "sharon": 1,
-    "south": 1,
-    "yosh": 1
-   },
-   "samples": [
-    "אסון נורא בנתב\"ג: צעירה בת 22 נפגעה מרכבת חולפת; מותה נקבע במקום. צעירה בת 22 נהרגה הערב בתאונה מחרידה בתחנת הרכבת נתב\"ג | לפי הדיווחים הצעירה נכנסה…",
-    "קיבלתם הודעה על דוח תנועה: אל תלחצו, זו הונאת סייבר. מערך הסייבר מפרסם אזהרה דחופה מפני הודעות המתחזות למשטרת ישראל • בהודעות נטען כי קיים דוח שלא…"
-   ],
-   "verdict": "unsuitable",
-   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
-   "kind": "rss",
-   "key": "rss:https://www.kikar.co.il/feed",
-   "username": "www.kikar.co.il",
-   "url": "https://www.kikar.co.il/",
-   "address": "https://www.kikar.co.il/feed",
-   "mentioned_by": [
-    "רשימת אתרים לבדיקה"
-   ],
-   "mentions": 0
-  },
-  {
-   "title": "סרוגים",
-   "description": "",
-   "verified": false,
-   "subscribers": null,
-   "messages": 50,
-   "newest": "2026-11-24T20:35:57+00:00",
-   "age_hours": 7.1,
-   "noise_share": 0.0,
-   "report_share": 0.02,
-   "north_share": 0.0,
-   "regions": {
-    "dan": 1,
-    "shfela": 1
-   },
-   "samples": [
-    "אירוע חריג בנתב\"ג: צעירה נהרגה מפגיעת רכבת, שיבושים בקווים באזור. צעירה בת 22 נכנסה בניגוד להנחיות לשטח המסילה בתחנת הרכבת בנתב\"ג ונפגעה מרכבת חולפת…"
-   ],
-   "verdict": "unsuitable",
-   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
-   "kind": "rss",
-   "key": "rss:https://www.srugim.co.il/feed",
-   "username": "www.srugim.co.il",
-   "url": "https://www.srugim.co.il/",
-   "address": "https://www.srugim.co.il/feed",
-   "mentioned_by": [
-    "רשימת אתרים לבדיקה"
-   ],
-   "mentions": 0
-  },
-  {
    "title": "טכנולוגיה - המדליף",
    "description": "חדשות כללי:\n@news_HaMadlif\n\nחדשות רוטר:\n@rotter_HaMadlif\n\nחדשות טכנולוגיה:\n@technology_HaMadlif\n\nחדשות ספורט:\n@sport_HaMadlif\n\nחדשות חרדים:\n@haredim_HaMadlif\n\nל",
    "verified": false,
    "subscribers": "14.3K",
    "messages": 20,
-   "newest": "2026-11-24T19:00:18+00:00",
-   "age_hours": 8.7,
+   "newest": "2026-11-25T19:09:07+00:00",
+   "age_hours": 8.5,
    "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -474,9 +257,9 @@
    "verified": false,
    "subscribers": "1.31K",
    "messages": 20,
-   "newest": "2026-11-25T01:03:12+00:00",
-   "age_hours": 2.6,
-   "noise_share": 0.05,
+   "newest": "2026-11-26T02:03:09+00:00",
+   "age_hours": 1.6,
+   "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
    "regions": {},
@@ -523,30 +306,30 @@
    "mentions": 12
   },
   {
-   "title": "בן-ציון מקלס - גיאו-אנליסט",
-   "description": "עדכונים וניתוחים המשלבים אקטואליה וגיאוגרפיה על המתרחש בארץ ובעולם\n\nליצירת קשר, אפשר לפנות בדואר האלקטרוני:\n[מייל הוסתר]\n\nאו בפייסבוק:\nhttps",
+   "title": "",
+   "description": "",
    "verified": false,
-   "subscribers": "26.3K",
-   "messages": 15,
-   "newest": "2026-11-23T19:56:23+00:00",
-   "age_hours": 31.7,
-   "noise_share": 0.0,
-   "report_share": 0.0,
-   "north_share": 0.0,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
    "regions": {},
    "samples": [],
    "verdict": "unsuitable",
-   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
    "kind": "telegram",
-   "key": "tg:bentzionm",
-   "username": "BenTzionM",
-   "url": "https://t.me/BenTzionM",
-   "address": "https://t.me/BenTzionM",
+   "key": "tg:ijerusalem",
+   "username": "ijerusalem",
+   "url": "https://t.me/ijerusalem",
+   "address": "https://t.me/ijerusalem",
    "mentioned_by": [
-    "חֲנַנְאֵל אָבִיב (לא רשמי)",
-    "מדריך Recommended_channels"
+    "מדריך aezor",
+    "™▪️ ירושלים עדכונים🥇▪️ (לא רשמי)"
    ],
-   "mentions": 6
+   "mentions": 5
   },
   {
    "title": "",
@@ -571,7 +354,7 @@
    "mentioned_by": [
     "חדשות ישראל בטלגרם (לא רשמי)"
    ],
-   "mentions": 19
+   "mentions": 13
   },
   {
    "title": "",
@@ -596,7 +379,7 @@
    "mentioned_by": [
     "חדשות ישראל בטלגרם (לא רשמי)"
    ],
-   "mentions": 19
+   "mentions": 13
   },
   {
    "title": "",
@@ -621,7 +404,7 @@
    "mentioned_by": [
     "ידיעות בני ברק (לא רשמי)"
    ],
-   "mentions": 14
+   "mentions": 8
   },
   {
    "title": "KSP.co.il",
@@ -629,9 +412,9 @@
    "verified": false,
    "subscribers": "606K",
    "messages": 20,
-   "newest": "2026-11-24T17:30:18+00:00",
-   "age_hours": 10.2,
-   "noise_share": 1.0,
+   "newest": "2026-11-25T17:32:22+00:00",
+   "age_hours": 10.1,
+   "noise_share": 0.8,
    "report_share": 0.0,
    "north_share": 0.0,
    "regions": {},
@@ -654,9 +437,9 @@
    "verified": true,
    "subscribers": "372K",
    "messages": 20,
-   "newest": "2026-11-24T21:51:48+00:00",
-   "age_hours": 5.8,
-   "noise_share": 0.1,
+   "newest": "2026-11-25T18:34:28+00:00",
+   "age_hours": 9.1,
+   "noise_share": 0.05,
    "report_share": 0.0,
    "north_share": 0.0,
    "regions": {},
@@ -679,9 +462,9 @@
    "verified": false,
    "subscribers": "284K",
    "messages": 20,
-   "newest": "2026-11-24T21:23:57+00:00",
-   "age_hours": 6.3,
-   "noise_share": 0.9,
+   "newest": "2026-11-25T22:04:18+00:00",
+   "age_hours": 5.6,
+   "noise_share": 0.95,
    "report_share": 0.0,
    "north_share": 0.0,
    "regions": {},
@@ -749,31 +532,6 @@
    "mentions": 4
   },
   {
-   "title": "מרלין מעדכן על המזרח התיכון",
-   "description": "ניתוחים ועדכונים על המזרח התיכון ומעבר לו - מזווית קצת אחרת ועם הרבה ציניות בריאה",
-   "verified": false,
-   "subscribers": "8.05K",
-   "messages": 19,
-   "newest": "2026-11-24T19:39:45+00:00",
-   "age_hours": 8.0,
-   "noise_share": 0.0,
-   "report_share": 0.0,
-   "north_share": 0.0,
-   "regions": {},
-   "samples": [],
-   "verdict": "unsuitable",
-   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
-   "kind": "telegram",
-   "key": "tg:merlinmeadken",
-   "username": "MerlinMeadken",
-   "url": "https://t.me/MerlinMeadken",
-   "address": "https://t.me/MerlinMeadken",
-   "mentioned_by": [
-    "חֲנַנְאֵל אָבִיב (לא רשמי)"
-   ],
-   "mentions": 4
-  },
-  {
    "title": "",
    "description": "",
    "verified": false,
@@ -799,13 +557,38 @@
    "mentions": 4
   },
   {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
+   "key": "tg:jerusalemexperiment",
+   "username": "Jerusalemexperiment",
+   "url": "https://t.me/Jerusalemexperiment",
+   "address": "https://t.me/Jerusalemexperiment",
+   "mentioned_by": [
+    "™▪️ ירושלים עדכונים🥇▪️ (לא רשמי)"
+   ],
+   "mentions": 4
+  },
+  {
    "title": "Голос Израиля | Израиль Новости",
    "description": "Израильский канал №1: Война, Ближний Восток, ЦАХАЛ, Инсайды и прочий контент, который нигде не покажут.\nНе претендуем на объективность.\n\nПрислать новость: @koli",
    "verified": false,
    "subscribers": "267K",
    "messages": 20,
-   "newest": "2026-11-24T21:21:16+00:00",
-   "age_hours": 6.3,
+   "newest": "2026-11-25T16:16:25+00:00",
+   "age_hours": 11.4,
    "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -830,7 +613,7 @@
    "subscribers": "77",
    "messages": 20,
    "newest": "2026-11-10T19:15:53+00:00",
-   "age_hours": 344.4,
+   "age_hours": 368.4,
    "noise_share": 0.05,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -880,7 +663,7 @@
    "subscribers": "610",
    "messages": 1,
    "newest": "2025-08-12T08:43:31+00:00",
-   "age_hours": 11275.0,
+   "age_hours": 11298.9,
    "noise_share": 1.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -939,6 +722,56 @@
    "verdict": "unsuitable",
    "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
    "kind": "telegram",
+   "key": "tg:yedioth_bnei_brak_movies",
+   "username": "Yedioth_Bnei_Brak_Movies",
+   "url": "https://t.me/Yedioth_Bnei_Brak_Movies",
+   "address": "https://t.me/Yedioth_Bnei_Brak_Movies",
+   "mentioned_by": [
+    "ידיעות בני ברק (לא רשמי)"
+   ],
+   "mentions": 2
+  },
+  {
+   "title": "מרלין מעדכן על המזרח התיכון",
+   "description": "ניתוחים ועדכונים על המזרח התיכון ומעבר לו - מזווית קצת אחרת ועם הרבה ציניות בריאה",
+   "verified": false,
+   "subscribers": "8.06K",
+   "messages": 20,
+   "newest": "2026-11-25T20:31:22+00:00",
+   "age_hours": 7.1,
+   "noise_share": 0.0,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "telegram",
+   "key": "tg:merlinmeadken",
+   "username": "MerlinMeadken",
+   "url": "https://t.me/MerlinMeadken",
+   "address": "https://t.me/MerlinMeadken",
+   "mentioned_by": [
+    "חֲנַנְאֵל אָבִיב (לא רשמי)"
+   ],
+   "mentions": 2
+  },
+  {
+   "title": "",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 0,
+   "newest": null,
+   "age_hours": null,
+   "noise_share": null,
+   "report_share": null,
+   "north_share": null,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
+   "kind": "telegram",
    "key": "tg:newsil_tme",
    "username": "newsil_tme",
    "url": "https://t.me/newsil_tme",
@@ -952,10 +785,10 @@
    "title": "⚠️ללא צנזורה ⚠️",
    "description": "",
    "verified": false,
-   "subscribers": "396",
+   "subscribers": "395",
    "messages": 3,
    "newest": "2025-12-01T15:46:19+00:00",
-   "age_hours": 8603.9,
+   "age_hours": 8627.9,
    "noise_share": 1.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -977,10 +810,10 @@
    "title": "החצר האחורית",
    "description": "החצר האחורית - הערוץ הרשמי ✅\n \nפה תמצאו את כל מה שקורה בעולם, תוכן התיעודים והחדשות הכי מעודכן שיש ברשת מכל העולם",
    "verified": false,
-   "subscribers": "6.63K",
+   "subscribers": "6.65K",
    "messages": 16,
-   "newest": "2026-11-24T16:23:33+00:00",
-   "age_hours": 11.3,
+   "newest": "2026-11-25T15:14:13+00:00",
+   "age_hours": 12.4,
    "noise_share": 0.06,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1004,8 +837,8 @@
    "verified": false,
    "subscribers": "161K",
    "messages": 20,
-   "newest": "2026-11-24T20:49:18+00:00",
-   "age_hours": 6.9,
+   "newest": "2026-11-25T21:38:48+00:00",
+   "age_hours": 6.0,
    "noise_share": 0.05,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1029,8 +862,8 @@
    "verified": false,
    "subscribers": "127K",
    "messages": 20,
-   "newest": "2026-11-24T22:07:54+00:00",
-   "age_hours": 5.6,
+   "newest": "2026-11-25T20:27:52+00:00",
+   "age_hours": 7.2,
    "noise_share": 1.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1053,16 +886,16 @@
    "description": "הערוץ הרשמי של אייס ישראל - כל מה שצריך לבית ולגינה במקום אחד! מבצעים חמים, מוצרים חדשים ומבצעים בלעדיים לחברי הערוץ!\nhttps://www.ace.co.il",
    "verified": false,
    "subscribers": "125K",
-   "messages": 18,
-   "newest": "2026-11-24T17:01:12+00:00",
-   "age_hours": 10.7,
-   "noise_share": 0.5,
+   "messages": 19,
+   "newest": "2026-11-25T13:40:24+00:00",
+   "age_hours": 14.0,
+   "noise_share": 0.42,
    "report_share": 0.0,
    "north_share": 0.0,
    "regions": {},
    "samples": [],
    "verdict": "unsuitable",
-   "reason": "רוב ההודעות פרסומות, בקשות או רעש",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
    "kind": "telegram",
    "key": "tg:aceisraelofficial",
    "username": "AceIsraelofficial",
@@ -1130,7 +963,7 @@
    "subscribers": "17.4K",
    "messages": 20,
    "newest": "2026-11-22T10:45:22+00:00",
-   "age_hours": 64.9,
+   "age_hours": 88.9,
    "noise_share": 0.05,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1224,14 +1057,14 @@
    "mentions": 2
   },
   {
-   "title": "רגע חדשות - צבא וביטחון בטלגרם",
-   "description": "חיי חיילינו חשובים מחיי אוכלוסיית האויב\n\n\nעוקבים יקרים, מעכשיו ניתן לפרסם בערוץ.\nלרכישת פרסום לחצו כאן:\nhttps://api.whatsapp.com/send?phone=9720533475624&text=ה",
+   "title": "בן-ציון מקלס - גיאו-אנליסט",
+   "description": "עדכונים וניתוחים המשלבים אקטואליה וגיאוגרפיה על המתרחש בארץ ובעולם\n\nליצירת קשר, אפשר לפנות בדואר האלקטרוני:\n[מייל הוסתר]\n\nאו בפייסבוק:\nhttps",
    "verified": false,
-   "subscribers": "112K",
-   "messages": 20,
-   "newest": "2026-11-24T20:50:13+00:00",
-   "age_hours": 6.9,
-   "noise_share": 0.05,
+   "subscribers": "26.3K",
+   "messages": 14,
+   "newest": "2026-11-25T20:07:45+00:00",
+   "age_hours": 7.5,
+   "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
    "regions": {},
@@ -1239,10 +1072,10 @@
    "verdict": "unsuitable",
    "reason": "כמעט אין בו דיווחים על אירועים בישראל",
    "kind": "telegram",
-   "key": "tg:baznews9",
-   "username": "baznews9",
-   "url": "https://t.me/baznews9",
-   "address": "https://t.me/baznews9",
+   "key": "tg:bentzionm",
+   "username": "BenTzionM",
+   "url": "https://t.me/BenTzionM",
+   "address": "https://t.me/BenTzionM",
    "mentioned_by": [
     "מדריך Recommended_channels"
    ],
@@ -1252,11 +1085,11 @@
    "title": "שניים ליום - מסיימים תנ\"ך בשנה",
    "description": "קישור להצטרפות:\nhttps://t.me/shnaimlayom\n\nלומדים שני פרקים ביום וכך נסיים את התנ\"ך בע\"ה בשנה. \n\nכאן נשתדל לשלוח מחשבות ורעיונות קצרים, הפניות לשיעורים ומאמרים מ",
    "verified": false,
-   "subscribers": "929",
+   "subscribers": "930",
    "messages": 20,
-   "newest": "2026-11-24T06:22:20+00:00",
-   "age_hours": 21.3,
-   "noise_share": 0.2,
+   "newest": "2026-11-25T09:42:01+00:00",
+   "age_hours": 18.0,
+   "noise_share": 0.15,
    "report_share": 0.0,
    "north_share": 0.0,
    "regions": {},
@@ -1280,7 +1113,7 @@
    "subscribers": "1.96K",
    "messages": 20,
    "newest": "2026-11-23T16:53:12+00:00",
-   "age_hours": 34.8,
+   "age_hours": 58.8,
    "noise_share": 0.15,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1327,10 +1160,10 @@
    "title": "ספירת העומר",
    "description": "ערוץ תזכורת - ספירת העומר בלבד\n\nמנהל הקבוצה ישלח שתי תזכורות אחת בערב ואחת בבוקר (למי ששכח בערב) בכדי שיוכל להמשיך לברך למחרת.\n\nלא תישלח תזכורת בשבת קודש.\n\nכתוב",
    "verified": false,
-   "subscribers": "1.13K",
+   "subscribers": "1.12K",
    "messages": 20,
    "newest": "2026-05-21T05:00:05+00:00",
-   "age_hours": 4510.7,
+   "age_hours": 4534.7,
    "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1355,7 +1188,7 @@
    "subscribers": "926",
    "messages": 20,
    "newest": "2026-11-24T19:33:43+00:00",
-   "age_hours": 8.1,
+   "age_hours": 32.1,
    "noise_share": 0.25,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1399,38 +1232,13 @@
    "mentions": 2
   },
   {
-   "title": "",
-   "description": "",
-   "verified": false,
-   "subscribers": null,
-   "messages": 0,
-   "newest": null,
-   "age_hours": null,
-   "noise_share": null,
-   "report_share": null,
-   "north_share": null,
-   "regions": {},
-   "samples": [],
-   "verdict": "unsuitable",
-   "reason": "אין דף הודעות ציבורי (קבוצה, ערוץ פרטי או ריק)",
-   "kind": "telegram",
-   "key": "tg:ijerusalem",
-   "username": "ijerusalem",
-   "url": "https://t.me/ijerusalem",
-   "address": "https://t.me/ijerusalem",
-   "mentioned_by": [
-    "מדריך aezor"
-   ],
-   "mentions": 1
-  },
-  {
    "title": "ערוץ העבודות באזור ירושלים",
    "description": "הורידו אפלקצית טלגרם התחברו בקישור לערוץ הזה והתחילו לפרסם 🔎 עבודות - במטרופלין ירושלים, בית שמש, ביתר, וגוש עציון, מודיעין\n\n💠הקבוצה 10K -  @Jobs_Jerusalem\n💠ערו",
    "verified": false,
-   "subscribers": "3.59K",
+   "subscribers": "3.6K",
    "messages": 20,
    "newest": "2026-11-24T10:21:27+00:00",
-   "age_hours": 17.4,
+   "age_hours": 41.3,
    "noise_share": 0.0,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1480,7 +1288,7 @@
    "subscribers": "91",
    "messages": 8,
    "newest": "2024-08-30T11:24:30+00:00",
-   "age_hours": 19600.3,
+   "age_hours": 19624.3,
    "noise_share": 0.25,
    "report_share": 0.0,
    "north_share": 0.0,
@@ -1549,31 +1357,6 @@
    "mentions": 0
   },
   {
-   "title": "ישראל היום",
-   "description": "",
-   "verified": false,
-   "subscribers": null,
-   "messages": 0,
-   "newest": null,
-   "age_hours": null,
-   "noise_share": null,
-   "report_share": null,
-   "north_share": null,
-   "regions": {},
-   "samples": [],
-   "verdict": "unsuitable",
-   "reason": "לא נמצא באתר פיד RSS שאפשר לקרוא",
-   "kind": "rss",
-   "key": "",
-   "username": "www.israelhayom.co.il",
-   "url": "https://www.israelhayom.co.il/",
-   "address": "",
-   "mentioned_by": [
-    "רשימת אתרים לבדיקה"
-   ],
-   "mentions": 0
-  },
-  {
    "title": "mako חדשות",
    "description": "",
    "verified": false,
@@ -1618,6 +1401,31 @@
    "username": "www.kan.org.il",
    "url": "https://www.kan.org.il/",
    "address": "",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  },
+  {
+   "title": "סרוגים",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 50,
+   "newest": "2026-11-25T21:11:01+00:00",
+   "age_hours": 6.5,
+   "noise_share": 0.0,
+   "report_share": 0.0,
+   "north_share": 0.0,
+   "regions": {},
+   "samples": [],
+   "verdict": "unsuitable",
+   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
+   "kind": "rss",
+   "key": "rss:https://www.srugim.co.il/feed",
+   "username": "www.srugim.co.il",
+   "url": "https://www.srugim.co.il/",
+   "address": "https://www.srugim.co.il/feed",
    "mentioned_by": [
     "רשימת אתרים לבדיקה"
    ],
@@ -1743,31 +1551,6 @@
    "username": "www.haipo.co.il",
    "url": "https://www.haipo.co.il/",
    "address": "",
-   "mentioned_by": [
-    "רשימת אתרים לבדיקה"
-   ],
-   "mentions": 0
-  },
-  {
-   "title": "חדשות הצפון (hm-news)",
-   "description": "",
-   "verified": false,
-   "subscribers": null,
-   "messages": 10,
-   "newest": "2026-11-24T22:23:16+00:00",
-   "age_hours": 5.3,
-   "noise_share": 0.0,
-   "report_share": 0.0,
-   "north_share": 0.0,
-   "regions": {},
-   "samples": [],
-   "verdict": "unsuitable",
-   "reason": "כמעט אין בו דיווחים על אירועים בישראל",
-   "kind": "rss",
-   "key": "rss:https://hm-news.co.il/feed/",
-   "username": "www.hm-news.co.il",
-   "url": "https://www.hm-news.co.il/",
-   "address": "https://hm-news.co.il/feed/",
    "mentioned_by": [
     "רשימת אתרים לבדיקה"
    ],

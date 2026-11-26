@@ -1013,5 +1013,148 @@
    ],
    "mentions": 2
   }
+ },
+ "rss:https://hm-news.co.il/feed/": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "חדשות הצפון (hm-news)",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 10,
+   "newest": "2026-11-25T21:07:57+00:00",
+   "age_hours": 6.6,
+   "noise_share": 0.0,
+   "report_share": 0.1,
+   "north_share": 0.0,
+   "regions": {
+    "yosh": 1
+   },
+   "samples": [
+    "טרגדיה במעלה אדומים: הפעוט בן השנתיים שנפל מגובה – נפטר. טרגדיה במעלה אדומים: פעוט כבן שנתיים שנפל מגובה במהלך משחק ופונה במצב קשה לבית החולים הדסה…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://hm-news.co.il/feed/",
+   "username": "www.hm-news.co.il",
+   "url": "https://www.hm-news.co.il/",
+   "address": "https://hm-news.co.il/feed/",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
+ },
+ "rss:https://www.kikar.co.il/feed": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "כיכר השבת",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 48,
+   "newest": "2026-11-25T22:02:01+00:00",
+   "age_hours": 5.7,
+   "noise_share": 0.02,
+   "report_share": 0.06,
+   "north_share": 0.02,
+   "regions": {
+    "jerusalem": 1,
+    "south": 1,
+    "yosh": 1,
+    "kineret-amakim": 1
+   },
+   "samples": [
+    "חילוץ חריג: רגלה של בת 40 נלכדה ברכבת הקלה. אישה בת 40 נפגעה הערב באזור אצטדיון טדי בירושלים, לאחר שרגלה נלכדה בין קרון הרכבת הקלה לרציף הנוסעים |…",
+    "טרגדיה: פעוט בן שנתיים נפגע בגן שעשועים - ונפטר בבית החולים. לאחר מאבק על חייו: נקבע מותו של ליעם ירוחם וויינשטיין ז״ל, פעוט בן שנתיים שנפגע במהלך…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.kikar.co.il/feed",
+   "username": "www.kikar.co.il",
+   "url": "https://www.kikar.co.il/",
+   "address": "https://www.kikar.co.il/feed",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
+ },
+ "tg:baznews9": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "רגע חדשות - צבא וביטחון בטלגרם",
+   "description": "חיי חיילינו חשובים מחיי אוכלוסיית האויב\n\n\nעוקבים יקרים, מעכשיו ניתן לפרסם בערוץ.\nלרכישת פרסום לחצו כאן:\nhttps://api.whatsapp.com/send?phone=9720533475624&text=ה",
+   "verified": false,
+   "subscribers": "112K",
+   "messages": 20,
+   "newest": "2026-11-25T22:24:28+00:00",
+   "age_hours": 5.3,
+   "noise_share": 0.1,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "shfela": 1
+   },
+   "samples": [
+    "כל מילה! הפסיכולוג הערבי-גרמני אחמד מנסור, שגדל בישראל, מזהיר לאחר שנחשף שהמוסד היה מעורב בסיכול הפיגוע בהופעות של טיילור סוויפט בווינה: \"אלה…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:baznews9",
+   "username": "baznews9",
+   "url": "https://t.me/baznews9",
+   "address": "https://t.me/baznews9",
+   "mentioned_by": [
+    "מדריך Recommended_channels"
+   ],
+   "mentions": 2
+  }
+ },
+ "rss:https://www.israelhayom.co.il/rss.xml": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "ישראל היום",
+   "description": "",
+   "verified": false,
+   "subscribers": null,
+   "messages": 100,
+   "newest": "2026-11-26T02:54:52+00:00",
+   "age_hours": 0.8,
+   "noise_share": 0.01,
+   "report_share": 0.05,
+   "north_share": 0.02,
+   "regions": {
+    "south": 2,
+    "dan": 1,
+    "galil-maaravi": 1,
+    "haifa": 2,
+    "sharon": 2,
+    "shfela": 1,
+    "yosh": 1
+   },
+   "samples": [
+    "קליע פגע ברכב ביישוב הדרומי - והתושבים חיים בפחד: \"שנייה מאסון\". מטחי ירי בלתי פוסקים מרהט חצו שוב את הגדר ליישוב גבעות בר, כשאחד הקליעים ניקב רכב…",
+    "ספינה איראנית, משלוח המסתורי - ותקיפה אוקראינית: דרמה בים התיכון. לפי \"קוריירה דלה סרה\", ספינת התובלה \"אלבן\", שנפגעה בבנגאזי, נשאה רכיבים ללוחמה…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "rss",
+   "key": "rss:https://www.israelhayom.co.il/rss.xml",
+   "username": "www.israelhayom.co.il",
+   "url": "https://www.israelhayom.co.il/",
+   "address": "https://www.israelhayom.co.il/rss.xml",
+   "mentioned_by": [
+    "רשימת אתרים לבדיקה"
+   ],
+   "mentions": 0
+  }
  }
 }
