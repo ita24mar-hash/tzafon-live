@@ -117,7 +117,9 @@
     <h2>המעקב שלי</h2>
     <p class="note">מסנן אירועים לפי מקום וסוג. <b>לא שולח התראות לטלפון</b> – האירועים מוצגים כאן כשנכנסים ללשונית. הכללים נשמרים במכשיר שלך בלבד. דיווח ביטחוני לא מאומת אינו התרעה רשמית – יש לפעול לפי הנחיות פיקוד העורף והגורמים המוסמכים.</p>
     <div class="filters">
-      <label>אזור / כביש<select id="a-loc"></select></label>
+      <label>אזור<select id="a-loc"></select></label>
+      <label id="a-km-wrap" hidden>טווח<select id="a-km"><option value="2">2 ק"מ</option><option value="5">5 ק"מ</option>
+        <option value="10" selected>10 ק"מ</option><option value="25">25 ק"מ</option><option value="50">50 ק"מ</option></select></label>
       <label>סוג<select id="a-type"></select></label>
       <button id="a-add" class="btn">הוספת כלל</button>
     </div>

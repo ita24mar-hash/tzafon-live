@@ -83,6 +83,20 @@ REGIONS = [
     ("yosh", "יהודה ושומרון", ["ראמאללה", "ירדן )יריחו(", "חברון", "טול כרם", "בית לחם", "ג'נין", "שכם"]),
 ]
 NORTH_REGIONS = {"galil-elyon", "galil-maaravi", "kineret-amakim", "haifa"}
+
+# אזורים כלליים ל"המעקב שלי": בצפון מפורט יותר (לפי נפה), בשאר הארץ כמו האזורים הראשיים
+AREAS = [
+    ("upper-galilee", "הגליל העליון", ["צפת"]),
+    ("golan", "רמת הגולן", ["גולן"]),
+    ("western-galilee", "הגליל המערבי ומרכז הגליל", ["עכו"]),
+    ("lower-galilee", "הגליל התחתון וטבריה", ["כנרת"]),
+    ("valleys", "העמקים ונצרת", ["עפולה", "נצרת"]),
+    ("haifa", "חיפה והקריות", ["חיפה"]),
+] + [(rid, title, nafot) for rid, title, nafot in REGIONS if rid not in NORTH_REGIONS]
+_NAFA_AREA = {n: aid for aid, _, nafot in AREAS for n in nafot}
+# מקום בלי נפה (כביש, צומת, אזור כללי): לפי האזור הראשי שלו
+_REGION_AREAS = {"galil-elyon": ["upper-galilee", "golan"], "galil-maaravi": ["western-galilee"],
+                 "kineret-amakim": ["lower-galilee", "valleys"], "haifa": ["haifa"]}
 _NAFA_REGION = {n: rid for rid, _, nafot in REGIONS for n in nafot}
 
 # אזורים למקומות שכתבתי ידנית (כבישים, צמתים, אזורים) – ולאזורים כלליים ארציים
@@ -182,6 +196,9 @@ _COORDS_PATH = _Path(__file__).with_name("locality_coords.json")   # OpenStreetM
 COORDS = _json.loads(_COORDS_PATH.read_text(encoding="utf-8"))["coords"] if _COORDS_PATH.exists() else {}
 
 
+_NATIONAL_AREAS: dict = {}
+
+
 def _load_national():
     path = _Path(__file__).with_name("localities.json")
     if not path.exists():
@@ -189,6 +206,7 @@ def _load_national():
     recs = _json.loads(path.read_text(encoding="utf-8"))["records"]
     places, regions = [], {}
     for r in recs:
+        _area = _NAFA_AREA.get((r.get("שם_נפה") or "").strip())
         name = _clean(r.get("שם_ישוב", ""))
         rid = _NAFA_REGION.get((r.get("שם_נפה") or "").strip())
         if not name or not rid:
@@ -199,7 +217,10 @@ def _load_national():
         lat, lon = COORDS.get(name, (None, None))
         places.append(("locality", name, aliases, lat, lon))
         regions.setdefault(name, set()).add(rid)
+        if _area:
+            _NATIONAL_AREAS.setdefault(name, set()).add(_area)
     return places, regions
+
 
 
 _NATIONAL, _NATIONAL_REGIONS = _load_national()
@@ -211,6 +232,8 @@ for _n in _dup:                                   # שם רשמי של מקום 
     _cur = next(p[1] for p in PLACES + EXTRA_PLACES if _n == p[1] or _n in p[2]
                 or set(next(q[2] for q in _NATIONAL if q[1] == _n)) & {p[1], *p[2]})
     MANUAL_REGIONS.setdefault(_cur, sorted(_NATIONAL_REGIONS[_n]))
+    if _n in _NATIONAL_AREAS:
+        _NATIONAL_AREAS.setdefault(_cur, set()).update(_NATIONAL_AREAS[_n])
 PLACES = PLACES + EXTRA_PLACES + [p for p in _NATIONAL if p[1] not in _dup]
 # מקומות מהרשימה הידנית בלי נקודה: נקודה מהרשימה הארצית לפי השם או השם הרשמי ("סח'נין" עבור "סכנין")
 PLACES = [p if p[3] is not None or p[0] != "locality" else
@@ -224,4 +247,26 @@ def regions_for(places) -> list[str]:
     out = set()
     for p in places or []:
         out.update(REGION_OF.get(p, []))
+    return sorted(out)
+
+
+AREA_NAMES = {aid: title for aid, title, _ in AREAS}
+# אזורים בשם (מהרשימה הידנית) שהאזור הכללי שלהם ברור
+AREA_OVERRIDE = {"רמת הגולן": ["golan"], "הגליל העליון": ["upper-galilee"], "אצבע הגליל": ["upper-galilee"],
+                 "מרום הגליל": ["upper-galilee"], "מבואות החרמון": ["upper-galilee"], "הגליל המערבי": ["western-galilee"],
+                 "מרכז הגליל": ["western-galilee"], "הגליל התחתון": ["lower-galilee"]}
+
+
+def areas_for(places) -> list[str]:
+    """אזורים כלליים (גליל עליון, גולן, עמקים...) לפי המקומות שבאירוע."""
+    out = set()
+    for p in places or []:
+        if p in AREA_OVERRIDE:
+            out.update(AREA_OVERRIDE[p])
+            continue
+        if p in _NATIONAL_AREAS:
+            out.update(_NATIONAL_AREAS[p])
+            continue
+        for r in REGION_OF.get(p, []):
+            out.update(_REGION_AREAS.get(r, [r]))
     return sorted(out)

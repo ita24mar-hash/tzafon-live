@@ -9,7 +9,7 @@ from urllib.parse import urlsplit
 from pydantic import BaseModel, Field
 
 from .db import audit, now_iso
-from .gazetteer import regions_for
+from .gazetteer import areas_for, regions_for
 
 EVENT_TYPES = ("security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "medical", "earthquake", "cyber", "health", "other")
 EventType = Literal["security", "accident", "fire", "closure", "infrastructure", "weather", "hazard", "medical", "other"]
@@ -216,7 +216,7 @@ def _event_row(con, r, dist=None) -> dict:
         "location": location, "location_precision": r["location_precision"],
         "occurred_at": r["occurred_at"], "first_reported_at": r["first_reported_at"],
         "updated_at": r["updated_at"], "is_demo": bool(r["is_demo"]),
-        "places": json.loads(r["places"]), "regions": regions_for(json.loads(r["places"])), "analyzer": r["analyzer"],
+        "places": json.loads(r["places"]), "regions": regions_for(json.loads(r["places"])), "areas": areas_for(json.loads(r["places"])), "analyzer": r["analyzer"],
         "independent_sources": len(independent),
         "distance_km": round(dist, 1) if dist is not None else None,
         "reports": [{"source_name": x["source_name"], "is_official": bool(x["is_official"]),

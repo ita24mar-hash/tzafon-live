@@ -567,30 +567,72 @@ function drawMap() {
   setTimeout(() => state.map.invalidateSize(), 50);
 }
 
-/* ---------- התראות (מקומי במכשיר) ---------- */
+/* ---------- המעקב שלי (מקומי במכשיר) ---------- */
+// אזורים כלליים (זהים ל-AREAS ב-app/gazetteer.py)
+const AREAS = [["upper-galilee", "הגליל העליון"], ["golan", "רמת הגולן"], ["western-galilee", "הגליל המערבי ומרכז הגליל"],
+  ["lower-galilee", "הגליל התחתון וטבריה"], ["valleys", "העמקים ונצרת"], ["haifa", "חיפה והקריות"],
+  ["sharon", "השרון וחדרה"], ["dan", "גוש דן"], ["shfela", "השפלה"], ["jerusalem", "ירושלים והסביבה"],
+  ["south", "הדרום"], ["yosh", "יהודה ושומרון"]];
+const AREA_NAME = Object.fromEntries(AREAS);
+const kmBetween = (a, b, c, d) => {
+  const r = Math.PI / 180, x = Math.sin((c - a) * r / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin((d - b) * r / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(x));
+};
+function ruleLabel(r) {
+  const type = r.type ? TYPES[r.type][0] : "כל הסוגים";
+  if (r.near) return `${type} · עד ${r.near} ק"מ ממני`;
+  if (r.area) return `${type} · ${AREA_NAME[r.area] || r.area}`;
+  const old = r.loc && state.locations.find((l) => String(l.id) === r.loc);
+  return `${type} · ${old ? old.name_he : "כל הארץ"}`;
+}
+function getApproxLocation() {
+  // מיקום משוער (~1 ק"מ) בזיכרון בלבד; הדפדפן זוכר את ההרשאה, אנחנו לא שומרים את המיקום
+  return new Promise((ok, fail) => {
+    if (state.gps) return ok(state.gps);
+    if (!navigator.geolocation) return fail(new Error("המכשיר לא תומך בזיהוי מיקום"));
+    navigator.geolocation.getCurrentPosition((p) => {
+      state.gps = { lat: p.coords.latitude.toFixed(2), lon: p.coords.longitude.toFixed(2) }; ok(state.gps);
+    }, () => fail(new Error("לא התקבלה הרשאה למיקום")), { enableHighAccuracy: false, maximumAge: 600000, timeout: 10000 });
+  });
+}
 function setupAlerts() {
-  locationOptions($("#a-loc"), "כל האזורים");
+  $("#a-loc").replaceChildren(el("option", { value: "" }, "כל הארץ"),
+    el("option", { value: "near" }, "📍 קרוב אליי"),
+    ...AREAS.map(([id, name]) => el("option", { value: id }, name)));
+  $("#a-loc").addEventListener("change", () => { $("#a-km-wrap").hidden = $("#a-loc").value !== "near"; });
   $("#a-type").replaceChildren(el("option", { value: "" }, "כל הסוגים"),
     ...Object.entries(TYPES).map(([k, [label]]) => el("option", { value: k }, label)));
   $("#a-add").addEventListener("click", () => {
     const rules = store.get("tl_rules", []);
-    const rule = { loc: $("#a-loc").value, type: $("#a-type").value };
-    if (!rules.some((r) => r.loc === rule.loc && r.type === rule.type)) rules.push(rule);
+    const v = $("#a-loc").value, rule = { type: $("#a-type").value };
+    if (v === "near") rule.near = Number($("#a-km").value); else if (v) rule.area = v;
+    const same = (a, b) => a.type === b.type && (a.near || 0) === (b.near || 0) && (a.area || "") === (b.area || "") && !a.loc;
+    if (!rules.some((r) => same(r, rule))) rules.push(rule);
     store.set("tl_rules", rules); drawAlerts();
   });
 }
 async function drawAlerts() {
   const rules = store.get("tl_rules", []);
-  const name = (id) => state.locations.find((l) => String(l.id) === id)?.name_he || "כל האזורים";
-  $("#a-rules").replaceChildren(...rules.map((r, i) => el("li", {},
-    `${r.type ? TYPES[r.type][0] : "כל הסוגים"} · ${name(r.loc)}`,
+  $("#a-rules").replaceChildren(...rules.map((r, i) => el("li", {}, ruleLabel(r),
     el("button", { class: "btn ghost small", onclick: () => { rules.splice(i, 1); store.set("tl_rules", rules); drawAlerts(); } }, "הסרה"))));
   if (!rules.length) { renderFeed($("#a-feed"), [], "עדיין לא הוגדרו כללים."); return; }
   try {
     const events = await fetchEvents({ hours: 24 });
-    const hit = events.filter((e) => rules.some((r) =>
-      (!r.type || r.type === e.event_type) && (!r.loc || String(e.location?.id) === r.loc)));
-    renderFeed($("#a-feed"), hit, "אין אירועים תואמים ב-24 השעות האחרונות.");
+    let me = null, note = "";
+    if (rules.some((r) => r.near)) {
+      try { me = await getApproxLocation(); } catch (err) { note = ` (${err.message} – כללי "קרוב אליי" לא נבדקו)`; }
+    }
+    const match = (r, e) => {
+      if (r.type && r.type !== e.event_type) return false;
+      if (r.near) {
+        const l = e.location;
+        return !!(me && l && l.lat !== null && kmBetween(+me.lat, +me.lon, l.lat, l.lon) <= r.near);
+      }
+      if (r.area) return (e.areas || []).includes(r.area);
+      return !r.loc || String(e.location?.id) === r.loc;          // כלל ישן לפי מקום מסוים
+    };
+    const hit = events.filter((e) => rules.some((r) => match(r, e)));
+    renderFeed($("#a-feed"), hit, "אין אירועים תואמים ב-24 השעות האחרונות." + note);
   } catch (e) { renderFeed($("#a-feed"), [], "לא ניתן לטעון: " + e.message); }
 }
 
@@ -785,16 +827,15 @@ function show(view) {
 
 /* ---------- בחירת אזור (בלי GPS) ---------- */
 function setupRegion() {
-  state.region = store.get("tl_region", null);
+  // הפיד מציג את כל הארץ. אזור אישי ו"קרוב אליי" קבוע נמצאים ב"המעקב שלי"
+  state.region = "";
   const dlg = $("#region-dialog"), btn = $("#region-btn");
   const label = () => { btn.textContent = state.region ? `האזור שלי: ${REGION_NAME[state.region]} · שינוי` : "כל הארץ · בחירת אזור"; };
   const pick = (r) => { state.region = r; store.set("tl_region", r); label(); dlg.close(); loadEvents(); };
   $("#region-list").replaceChildren(
     ...REGIONS.map(([id, name]) => el("button", { type: "button", class: "region-opt", onclick: () => pick(id) }, name)),
     el("button", { type: "button", class: "region-opt all", onclick: () => pick("") }, "כל הארץ, בלי אזור מועדף"));
-  btn.addEventListener("click", () => dlg.showModal());
-  label();
-  if (state.region === null && dlg.showModal) dlg.showModal();   // ביקור ראשון
+  btn.hidden = true;
 }
 
 /* ---------- התקנה כאפליקציה ---------- */

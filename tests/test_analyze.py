@@ -254,3 +254,11 @@ def test_public_health():
 def test_rabies_is_not_critical():
     a = analyze("משרד הבריאות: שוב תן נגוע בכלבת אותר בכניסה ליישוב ניר יפה שבגלבוע")
     assert (a["type"], a["severity"]) == ("health", 2)
+
+
+def test_watch_areas():
+    from app.gazetteer import areas_for
+    assert areas_for(["קריית שמונה"]) == ["upper-galilee"] and areas_for(["קצרין"]) == ["golan"]
+    assert areas_for(["כרמיאל"]) == ["western-galilee"] and areas_for(["טבריה"]) == ["lower-galilee"]
+    assert areas_for(["עפולה"]) == ["valleys"] and areas_for(["רמת הגולן"]) == ["golan"]
+    assert areas_for(["נתניה"]) == ["sharon"]
