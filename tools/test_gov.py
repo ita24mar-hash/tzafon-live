@@ -3,7 +3,7 @@ import re
 import requests
 from app import feeds
 
-H = {"User-Agent": "Mozilla/5.0 (compatible; TzafonLive/0.1; +https://ita24mar-hash.github.io/tzafon-live/)",
+H = {"User-Agent": "Mozilla/5.0 (compatible; TzafonLive/0.1; +https://ilradar.stream/)",
      "Accept": "text/html,application/xml,application/rss+xml,*/*"}
 pages = ["https://www.gov.il/he/departments/ministry_of_health/RSS", "https://www.gov.il/he/Departments/ministry_of_energy/RSS",
          "https://www.gov.il/he/departments/ministry_of_environmental_protection/RSS"]
