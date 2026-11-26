@@ -1,6 +1,6 @@
 // Service worker: מאפשר התקנה כאפליקציה ופתיחה מהירה.
 // קבצי האפליקציה נשמרים במטמון; הנתונים (data/*.json) תמיד נטענים מהרשת קודם, כדי שלא יוצג מידע ישן כעדכני.
-const SHELL = "shell-v4";
+const SHELL = "shell-v5";
 const FILES = ["./", "index.html", "terms.html", "styles.css", "app.js", "manifest.webmanifest", "icons/icon-192.png"];
 
 self.addEventListener("install", (e) => {

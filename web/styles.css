@@ -387,3 +387,8 @@ fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; 
 .push-box h3 { margin-top: 2px; }
 .push-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .push-box .status { margin: 10px 0 2px; font-size: .88rem; }
+
+/* תקציר כסיפור */
+.b-story { font-size: 1.02rem; line-height: 1.75; margin: 6px 0 4px; }
+.b-meta { color: var(--muted); font-size: .76rem; margin: 2px 0 10px; }
+.b-more > summary { cursor: pointer; color: var(--slate); font-size: .86rem; margin: 4px 0 8px; }

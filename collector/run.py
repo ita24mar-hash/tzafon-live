@@ -135,6 +135,9 @@ def export_site(con, out: Path, results: list, generated_at: str, run_ok: bool, 
     locations = [l for l in repo.list_locations(con) if l["name_he"] in CURATED_NAMES]
     files = {"events": repo.list_events(con), "locations": locations, "meta": meta,
              "raw": ingest.list_raw_reports(con, 300), "sources": sources}
+    from collector import story
+    from app.gazetteer import REGION_OF
+    files["stories"] = story.update(files["events"], {rid: title for rid, title, _ in REGIONS}, set(REGION_OF))
     for name, payload in files.items():
         (data / f"{name}.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
     cands = ROOT / "data" / "candidates.json"          # הצעות סוכן המקורות (אם רץ כבר)

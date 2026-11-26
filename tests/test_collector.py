@@ -125,7 +125,7 @@ def test_repo_has_no_secrets():
         files = subprocess.check_output(["git", "ls-files"], cwd=root, text=True).split()
     except Exception:
         pytest.skip("לא מאגר git")
-    bad = re.compile(r"ghp_[A-Za-z0-9]{20,}|github_pat_\w{20,}|sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}"
+    bad = re.compile(r"ghp_[A-Za-z0-9]{20,}|github_pat_\w{20,}|(?<![\w/.-])sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}"
                      r"|BEGIN [A-Z ]*PRIVATE KEY|[\w.+-]+@(?!users\.noreply)[\w-]+\.(?:com|net|org|il)\b")
     hits = []
     for f in files:
@@ -363,3 +363,32 @@ def test_opendata_quakes_and_flights():
     a = analyze(m[0]["content"])
     assert (a["type"], a["severity"], a["places"]) == ("infrastructure", 3, ["נמל התעופה בן גוריון"])
     assert "22 מתוך 40" in m[0]["content"] and m[0]["external_id"] == "flights-2026112314"
+
+
+def test_story_written_checked_and_rate_limited(tmp_path):
+    """תקציר כסיפור: נכתב מהאירועים, נפסל אם הומצא מספר או מקום, ולא קוראים ל-AI יותר מפעם ב-20 דקות."""
+    from datetime import datetime, timedelta, timezone
+    from collector import story
+    now = datetime(2026, 11, 27, 10, 0, tzinfo=timezone.utc)
+    ev = lambda **o: {"event_type": "fire", "severity": 3, "status": "active", "verification": "single_source",
+                      "is_demo": False, "first_reported_at": "2026-11-27T09:40:00+00:00",
+                      "updated_at": "2026-11-27T09:50:00+00:00", "places": ["כרמיאל"], "regions": ["galil-maaravi"],
+                      "location": {"name": "כרמיאל"}, "title": "שריפה בחורש ליד כרמיאל, 3 צוותים בשטח", **o}
+    titles = {"galil-maaravi": "הגליל המערבי", "south": "הדרום"}
+    places = {"כרמיאל", "אשקלון", "נהריה"}
+    calls = []
+
+    def fake(wanted, _titles):
+        calls.append(sorted(wanted))
+        return {"all": "דיווח ראשוני על שריפה בחורש ליד כרמיאל משעה 11:40, 3 צוותים בשטח.",
+                "galil-maaravi": "שריפה ליד נהריה עם 5 צוותים."}          # ממציא מקום ומספר – ייפסל
+
+    state = tmp_path / "stories.json"
+    out = story.update([ev()], titles, places, now=now, call=fake, state_path=state)
+    assert calls == [["all", "galil-maaravi"]]
+    assert "כרמיאל" in out["all"]["text"] and "galil-maaravi" not in out
+    # 5 דקות אחר כך, אירוע חדש – עדיין לא קוראים שוב
+    out = story.update([ev(), ev(event_type="accident", places=["אשקלון"], regions=["south"], location={"name": "אשקלון"},
+                                 title="תאונה באשקלון")], titles, places, now=now + timedelta(minutes=5), call=fake, state_path=state)
+    assert len(calls) == 1 and out["all"]["current"] is False
+    assert story.check("שריפה ב-12:00", [{"שעה": "11:40"}], set()) is not None

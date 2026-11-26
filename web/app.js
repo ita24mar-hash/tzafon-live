@@ -276,7 +276,16 @@ function renderBrief(recent) {
     el("span", {}, el("b", {}, "קריטי בשאר הארץ: "), elsewhere.slice(0, 3).map((e) => `${TYPES[e.event_type][0]} ב${placeOf(e)} (${hhmm(e.updated_at)})`).join(" · "))));
   const parts = [el("p", { class: "b-head" }, head), el("ul", {}, ...rows, ...extra)];
   if (low) parts.push(el("p", { class: "b-foot" }, `ועוד ${low === 1 ? "אירוע אחד" : low + " אירועים"} בחומרה נמוכה באזור.`));
-  box.replaceChildren(...parts);
+  // תקציר כסיפור (נכתב ב-AI מהאירועים עצמם ונבדק מולם). בלי סיפור – הרשימה לבדה
+  const st = !nearOn() && (state.stories || {})[state.region || "all"];
+  if (st && st.text) {
+    const story = [el("p", { class: "b-head" }, `${regionIn(state.region)}, ב-24 השעות האחרונות`),
+      el("p", { class: "b-story", dir: "auto" }, st.text),
+      el("p", { class: "b-meta" }, `✨ נכתב אוטומטית בעזרת AI מתוך הדיווחים בלבד · ${hhmm(st.at)}` +
+        (st.current ? "" : " · יש דיווחים חדשים, הסיפור יתעדכן בקרוב") + ". ייתכנו טעויות – הפירוט המלא למטה."),
+      el("details", { class: "b-more" }, el("summary", {}, "פירוט לפי תחום"), ...parts)];
+    box.replaceChildren(...story);
+  } else box.replaceChildren(...parts);
   box.hidden = false;
 }
 
@@ -339,8 +348,9 @@ async function loadEvents() {
     if (f.radius_km) q.radius_km = f.radius_km;
   }
   try {
-    const [allTypes, meta, sources] = await Promise.all([fetchEvents(q), getData("meta"),
-      getData("sources").catch(() => [])]);
+    const [allTypes, meta, sources, stories] = await Promise.all([fetchEvents(q), getData("meta"),
+      getData("sources").catch(() => []), getData("stories").catch(() => ({}))]);
+    state.stories = stories || {};
     // הסינון לפי סוג נעשה כאן, כדי שאפשר יהיה להציג כמה אירועים יש מכל סוג
     // חומרה: ברירת המחדל מסתירה אירועים בחומרה נמוכה (למשל פצוע אחד במצב קל, רכב בוער)
     const bySev = allTypes.filter((e) => (e.severity || 1) >= state.minSev);
