@@ -1,4 +1,6 @@
-"""תקציר כסיפור קצר לכל אזור, נכתב בעזרת מודל AI של GitHub Models (חינם, עם GITHUB_TOKEN של ההרצה).
+"""תקציר כסיפור קצר לכל אזור, נכתב בעזרת מודל AI.
+
+הערה: GitHub Models נסגר ביולי 2026, ולכן כרגע אין ספק מוגדר והתקציר מוצג כרשימה. ספק חדש יחובר כאן.
 
 כללי בטיחות:
 - המודל מקבל רק את האירועים עצמם (סוג, מקום, שעה, חומרה, כותרת) ומתבקש לא להוסיף שום דבר.
@@ -109,9 +111,9 @@ def check(story: str, rows: list[dict], place_names: set[str]) -> str | None:
 
 def call_model(regions_rows: dict[str, list[dict]], region_titles: dict[str, str]) -> dict[str, str]:
     import requests
-    token = os.environ.get("GITHUB_TOKEN")
+    token = os.environ.get("STORY_AI_TOKEN")
     if not token:
-        raise RuntimeError("אין GITHUB_TOKEN")
+        raise RuntimeError("אין STORY_AI_TOKEN")
     payload = {rid: {"שם האזור": region_titles.get(rid, "כל הארץ"), "אירועים": rows} for rid, rows in regions_rows.items()}
     r = requests.post(API, timeout=60, headers={"Authorization": "Bearer " + token, "Content-Type": "application/json",
                           "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
@@ -152,6 +154,9 @@ def update(events: list[dict], region_titles: dict[str, str], place_names: set[s
         if not old or old.get("fp") != fp or now - _ts(old["at"]) > MAX_AGE - MIN_GAP:
             wanted[rid] = rows
     log = []
+    enabled = call is not call_model or bool(os.environ.get("STORY_AI_TOKEN"))
+    if wanted and not enabled:
+        wanted = {}                                 # אין ספק AI מוגדר – האפליקציה מציגה את הרשימה הרגילה
     if wanted and (not last_call or now - last_call >= MIN_GAP):
         state["last_call"] = now.isoformat(timespec="seconds")
         try:

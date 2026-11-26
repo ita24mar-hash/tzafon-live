@@ -21,7 +21,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write              # רק לשמירת יומן ההודעות במאגר הזה
-      models: read                 # תקציר כסיפור: GitHub Models (חינם, בלי מפתח נוסף)
     outputs:
       ok: ${{ steps.collect.outputs.ok }}
     steps:
@@ -37,7 +36,6 @@ jobs:
         id: collect
         env:
           MAX_REPORTS_PER_SOURCE: "2000"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python -m collector.run --out _site
       - name: בדיקת 5 הודעות מול הקישור המקורי בטלגרם
         run: python -m collector.verify
