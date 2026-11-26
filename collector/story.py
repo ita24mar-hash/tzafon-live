@@ -120,8 +120,12 @@ def call_model(regions_rows: dict[str, list[dict]], region_titles: dict[str, str
                                          {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}]})
     if r.status_code != 200:
         raise RuntimeError(f"GitHub Models החזיר {r.status_code}: {r.text[:200]}")
-    content = r.json()["choices"][0]["message"]["content"]
-    return json.loads(content).get("stories", {})
+    content = (r.json()["choices"][0]["message"].get("content") or "").strip()
+    m = re.search(r"\{.*\}", content, re.S)              # לפעמים המודל עוטף ב-```json
+    if not m:
+        raise RuntimeError(f"תשובה בלי JSON: {content[:200]!r}")
+    data = json.loads(m.group(0))
+    return data.get("stories", data)
 
 
 def update(events: list[dict], region_titles: dict[str, str], place_names: set[str],
