@@ -113,7 +113,8 @@ def call_model(regions_rows: dict[str, list[dict]], region_titles: dict[str, str
     if not token:
         raise RuntimeError("אין GITHUB_TOKEN")
     payload = {rid: {"שם האזור": region_titles.get(rid, "כל הארץ"), "אירועים": rows} for rid, rows in regions_rows.items()}
-    r = requests.post(API, timeout=60, headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"},
+    r = requests.post(API, timeout=60, headers={"Authorization": "Bearer " + token, "Content-Type": "application/json",
+                          "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
                       json={"model": MODEL, "temperature": 0.2, "max_tokens": 2500,
                             "response_format": {"type": "json_object"},
                             "messages": [{"role": "system", "content": SYSTEM},

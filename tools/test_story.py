@@ -9,7 +9,8 @@ for model in ["openai/gpt-4.1-mini", "openai/gpt-4o-mini"]:
         if fmt:
             body["response_format"] = {"type": "json_object"}
         r = requests.post("https://models.github.ai/inference/chat/completions", timeout=60,
-                          headers={"Authorization": "Bearer " + os.environ["GITHUB_TOKEN"], "Content-Type": "application/json"},
+                          headers={"Authorization": "Bearer " + os.environ["GITHUB_TOKEN"], "Content-Type": "application/json",
+                          "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
                           json=body)
         print("MODEL", model, "json_format", fmt, "STATUS", r.status_code, "CTYPE", r.headers.get("content-type"),
               "LEN", len(r.content), "BODY", r.text[:300].replace("\n", " "))
