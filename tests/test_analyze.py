@@ -272,3 +272,19 @@ def test_watch_areas():
     assert areas_for(["כרמיאל"]) == ["western-galilee"] and areas_for(["טבריה"]) == ["lower-galilee"]
     assert areas_for(["עפולה"]) == ["valleys"] and areas_for(["רמת הגולן"]) == ["golan"]
     assert areas_for(["נתניה"]) == ["sharon"]
+
+
+def test_elon_musk_is_not_kibbutz_eilon():
+    a = analyze('למרות התנגדות אמזון: המהלך הדרמטי של אילון מאסק בחלל. רשות התקשורת הפדרלית בארה"ב (FCC) '
+                'העניקה ל-SpaceX אישור מותנה לשיגור מערך של עד מיליון לוויינים')
+    assert a["places"] == [] and a["type"] is None and not a["relevant"]
+
+
+def test_space_launch_is_not_security_but_rocket_alert_is():
+    assert analyze("שיגור לוויין של SpaceX הצליח")["type"] is None
+    assert analyze("זוהה שיגור מלבנון לעבר אילון, צבע אדום")["type"] == "security"
+
+
+def test_ayalon_fire_station_is_not_eilon():
+    assert "אילון" not in analyze("לוחמי האש מתחנת אילון הוזעקו לשריפה")["places"]
+    assert analyze("שריפה פרצה בקיבוץ אילון")["places"] == ["אילון"]

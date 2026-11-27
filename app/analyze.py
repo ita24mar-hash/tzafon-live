@@ -8,7 +8,7 @@ import re
 
 from .gazetteer import NORTH_REGIONS, PLACES, STREETLIKE, regions_for
 
-VERSION = "rules-11"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל; rules-9: בריאות הציבור; rules-10: כלבת = בינוני; rules-11: תרגיל = נמוך תמיד
+VERSION = "rules-12"   # rules-2: כיסוי ארצי + שיוך לאזורים; rules-3: הבחנה בין דיווח למאמר/סיכום; rules-4: סיכום בדיעבד; rules-5: רק דיווחים מהשטח; rules-6: רמת חומרה; rules-7: "כל הארץ" רק לאזהרה רשמית; rules-8: הודעות אבל; rules-9: בריאות הציבור; rules-10: כלבת = בינוני; rules-11: תרגיל = נמוך תמיד; rules-12: שמות אנשים שאינם מקום (אילון מאסק), שיגור לחלל אינו ביטחוני
 HEB = "֐-׿"
 
 TYPE_RULES = [  # הסדר קובע עדיפות כשיש כמה התאמות
@@ -227,12 +227,20 @@ def genre(text: str) -> str:
     return "report"
 
 
+# שמות שזהים לשם של יישוב: "אילון מאסק" ו"תחנת אילון" (כבאות, מחוז מרכז) הם לא קיבוץ אילון
+NOT_PLACE = re.compile(r"(?<![א-ת])[ובלמהשכ]{0,2}(?:אילון|אלון|איילון)\s+מאסק|תחנת (?:ה)?(?:כיבוי )?אילון|(?<![א-ת])[ובלמהשכ]{0,2}מאסק(?![א-ת])")
+# כתבה על חלל ולוויינים: אין בה אירוע ביטחוני גם אם מופיעות המילים "שיגור" או "טיל"
+SPACE = re.compile(r"SpaceX|ספייס.?אקס|סטארלינק|Starlink|נאס\"א|NASA|חללית|לוויינ|לווינ|תחנת החלל|בלו אוריג'ין")
+
+
 def analyze(text: str) -> dict:
     t = re.sub(r"\s+", " ", text or "")
-    places = find_places(STREET.sub(" ", HOSPITAL.sub(" ", t)))
+    places = find_places(NOT_PLACE.sub(" ", STREET.sub(" ", HOSPITAL.sub(" ", t))))
     if places and ABROAD.search(t) and all(p["name"] in GENERIC for p in places):
         places = []   # למשל "פיצוצים בכפר בלבנון ... ליד גבול הצפון": האירוע בלבנון, לא בצפון
     etype = next((name for name, rx in TYPE_RULES if re.search(rx, t)), None)
+    if etype == "security" and SPACE.search(t) and not re.search(r"צבע אדום|אזעק|יירוט|נפילה|מרחב מוגן|פיקוד העורף", t):
+        etype = None   # כתבת חלל (שיגור לוויינים) – לא אירוע ביטחוני
     # בלי מקום: רק אזהרה רשמית לציבור נחשבת "כל הארץ" (לא כתבה שמזכירה סערה או פריצה)
     national = (etype == "health" and re.search(r"משרד הבריאות|שירות המזון|ריקול|קריאה להחזרת|קוראת להחזרת", t)) or \
                (etype == "weather" and re.search(r"אזהרה (?:צהובה|כתומה|אדומה)|השירות המטאורולוגי", t)) or \
@@ -264,6 +272,8 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
     את המקומות והסוג שלה ורק מוסיפים אזורים. כל השאר מנותח מחדש מהקטע השמור."""
     if old and old.get("v") == VERSION:
         return old
+    if NOT_PLACE.search(excerpt or "") or SPACE.search(excerpt or ""):
+        return analyze(excerpt)          # תיקון rules-12: מקום או סוג שזוהו בטעות
     if old and "כל הארץ" in (old.get("places") or []):
         return analyze(excerpt)          # "כל הארץ" נקבע בכללים ישנים ורופפים – מחשבים מחדש
     if old and not old.get("relevant"):
@@ -272,7 +282,7 @@ def upgrade(old: dict | None, excerpt: str) -> dict:
         new = analyze(excerpt)
         if new["relevant"] and new["type"] in ("health", "cyber", "weather", "earthquake"):
             return new
-    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7", "rules-8", "rules-9", "rules-10")):
+    if old and (old.get("relevant") or old.get("v") in ("rules-2", "rules-3", "rules-4", "rules-5", "rules-6", "rules-7", "rules-8", "rules-9", "rules-10", "rules-11")):
         regions = regions_for(old["places"])
         g = genre(excerpt)          # רק הקטע השמור זמין; התחלת ההודעה מספיקה לרוב
         if g == "report" and old.get("genre") not in (None, "report"):

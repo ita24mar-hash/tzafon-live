@@ -163,9 +163,15 @@ function eventCard(e, pos = {}) {
     ? e.location.name + (e.location.lat !== null && e.location_precision === "approx" ? ", מיקום משוער" : "")
     : "מיקום לא ידוע";
   const reports = e.reports.map((r) => el("li", {},
-    r.url ? el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, r.source_name) : r.source_name,
+    r.url ? el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, r.source_name + " ↗") : r.source_name,
     ` · ${clock(r.published_at)}`, r.relation === "copy" ? " (העתק)" : r.relation === "update" ? " (עדכון)" : r.relation === "recap" ? " (סיכום בדיעבד)" : ""));
   const n = e.independent_sources;
+  // כפתור בולט למקור: הדיווח הראשון שיש לו קישור. מציג את שם האתר/הערוץ כדי שיהיה ברור לאן עוברים
+  const main = e.reports.find((r) => r.url);
+  const host = (u) => { try { const h = new URL(u).hostname.replace(/^www\./, ""); return h === "t.me" ? "טלגרם" : h; } catch { return ""; } };
+  const srcBtn = main && el("a", { class: "src-btn", href: main.url, target: "_blank", rel: "noopener noreferrer",
+    title: "פותח את ההודעה המקורית בחלון חדש" },
+    "לדיווח המקורי ↗", el("small", {}, ` ${main.source_name}${host(main.url) ? " · " + host(main.url) : ""}`));
   return el("article", { class: `ev sev-${e.severity}${e.status === "ended" ? " ended" : ""}${isNow(e.updated_at) ? "" : " earlier"}${pos.first ? " first" : ""}${pos.last ? " last" : ""}`,
     style: `--c: var(--t-${e.event_type})` },
     el("div", { class: "ev-time", title: clock(e.updated_at) }, hhmm(e.updated_at), el("small", {}, dayLabel(e.updated_at))),
@@ -179,9 +185,10 @@ function eventCard(e, pos = {}) {
       !e.location && el("div", { class: "ev-where" }, "מיקום לא ידוע"),
       e.summary && el("p", { class: "ev-text", dir: "auto" }, e.summary),
       el("div", { class: "ev-foot" },
+        srcBtn,
         el("span", { class: `trust ${e.verification}` }, TRUST[e.verification]),
         el("details", { class: "ev-more" },
-          el("summary", {}, n === 1 ? "המקור" : `${n} מקורות`),
+          el("summary", {}, n === 1 ? "פרטים" : `כל ${n} המקורות`),
           el("ul", {}, reports),
           el("p", {}, (e.places && e.places.length > 1 ? "מקומות שהוזכרו: " + e.places.join(", ") : "מקום: " + where) + "."),
           el("p", {}, `פורסם לראשונה ${clock(e.first_reported_at)}. ` +
