@@ -1156,5 +1156,38 @@
    ],
    "mentions": 0
   }
+ },
+ "tg:amitsegal": {
+  "status": "proposed",
+  "issue": null,
+  "candidate": {
+   "title": "עמית סגל",
+   "description": "24/6\n\nלפרסום בערוץ: [מייל הוסתר]",
+   "verified": true,
+   "subscribers": "372K",
+   "messages": 20,
+   "newest": "2026-11-27T14:14:59+00:00",
+   "age_hours": 13.3,
+   "noise_share": 0.15,
+   "report_share": 0.05,
+   "north_share": 0.0,
+   "regions": {
+    "south": 1
+   },
+   "samples": [
+    "הליכוד: בעוד רגע הציבור הישראלי יצפה בהצגת שווא של מנסור עבאס שנכתבה על ידי גוש השמאל. בעוד רגע תשמעו פרשנים מוחאים כפיים על מס השפתיים של מנסור…"
+   ],
+   "verdict": "possible",
+   "reason": "יש בו דיווחים, אבל מעטים או לא עדכניים",
+   "kind": "telegram",
+   "key": "tg:amitsegal",
+   "username": "amitsegal",
+   "url": "https://t.me/amitsegal",
+   "address": "https://t.me/amitsegal",
+   "mentioned_by": [
+    "מדריך Hebrew_Channels"
+   ],
+   "mentions": 6
+  }
  }
 }
